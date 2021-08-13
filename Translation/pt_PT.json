@@ -1,0 +1,16 @@
+{
+    "connect-a-printer": "Connect a printer",
+    "connect-a-printer-p": "To connect a printer you must first add it and then use the application to print tickets.",
+    "cut-command": "Comando de corte",
+    "download-app": "Download App",
+    "gift": "Gift",
+    "line-length": "Line length",
+    "open-command": "Open command",
+    "print-ticket": "Print ticket",
+    "printed": "Printed",
+    "printer": "Printer",
+    "printers": "Printers",
+    "sending-to-printer": "Sending to printer",
+    "ticket": "Ticket",
+    "tickets": "Tickets"
+}

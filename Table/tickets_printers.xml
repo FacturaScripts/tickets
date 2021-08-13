@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table>
+    <column>
+        <name>apikey</name>
+        <type>character varying(99)</type>
+    </column>
+    <column>
+        <name>creationdate</name>
+        <type>date</type>
+    </column>
+    <column>
+        <name>cutcommand</name>
+        <type>character varying(20)</type>
+    </column>
+    <column>
+        <name>id</name>
+        <type>serial</type>
+    </column>
+    <column>
+        <name>idapikey</name>
+        <type>integer</type>
+        <null>NO</null>
+    </column>
+    <column>
+        <name>lastactivity</name>
+        <type>timestamp</type>
+    </column>
+    <column>
+        <name>linelen</name>
+        <type>integer</type>
+    </column>
+    <column>
+        <name>name</name>
+        <type>character varying(100)</type>
+    </column>
+    <column>
+        <name>nick</name>
+        <type>character varying(50)</type>
+    </column>
+    <column>
+        <name>opencommand</name>
+        <type>character varying(20)</type>
+    </column>
+    <constraint>
+        <name>tickets_printers_pkey</name>
+        <type>PRIMARY KEY (id)</type>
+    </constraint>
+    <constraint>
+        <name>ca_tickets_printers_api</name>
+        <type>FOREIGN KEY (idapikey) REFERENCES api_keys (id) ON DELETE RESTRICT ON UPDATE CASCADE</type>
+    </constraint>
+</table>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<view>
+    <columns>
+        <column name="user" order="100">
+            <widget type="text" fieldname="nick" />
+        </column>
+        <column name="printer" order="110">
+            <widget type="select" fieldname="idprinter">
+                <values source="tickets_printers" fieldcode="id" fieldtitle="name" />
+            </widget>
+        </column>
+        <column name="title" order="120">
+            <widget type="text" fieldname="title" />
+        </column>
+        <column name="printed" order="130">
+            <widget type="checkbox" fieldname="printed" />
+        </column>
+        <column name="creation-date" display="right" order="140">
+            <widget type="datetime" fieldname="creationdate" />
+        </column>
+    </columns>
+    <rows>
+        <row type="status">
+            <option color="success" fieldname="printed" title="completed">1</option>
+            <option color="warning" fieldname="printed" title="pending">0</option>
+        </row>
+    </rows>
+</view>

@@ -1,0 +1,69 @@
+{% extends "Master/MenuTemplate.html.twig" %}
+
+{% block body %}
+    <div class="container" style="margin-top: -60px;">
+        <div class="row">
+            <div class="col-12">
+                <form action="{{ fsc.url() }}" method="post">
+                    <input type="hidden" name="modelClassName" value="{{ fsc.modelClassName }}" />
+                    <input type="hidden" name="modelCode" value="{{ fsc.modelCode }}" />
+                    <div class="card shadow mb-4">
+                        <div class="card-body">
+                            <h1 class="h2 mb-3">
+                                <i class="{{ fsc.getPageData().icon }}"></i> {{ fsc.title }}
+                            </h1>
+                            <div class="form-group">
+                                <select name="format" class="form-control">
+                                    {% for format in fsc.formats %}
+                                        <option value="{{ format }}">{{ i18n.trans(format) }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            {% for printer in fsc.printers %}
+                                {% if printer.isActive() %}
+                                    <button type="submit" name="printer" value="{{ printer.id }}" class="btn btn-block btn-lg btn-success mt-3">
+                                        <i class="fas fa-print"></i>&nbsp; {{ printer.name }}
+                                    </button>
+                                {% else %}
+                                    <button type="submit" name="printer" value="{{ printer.id }}" class="btn btn-block btn-lg btn-warning">
+                                        <i class="fas fa-print"></i>&nbsp; {{ printer.name }}
+                                    </button>
+                                    <p class="text-muted">
+                                        {{ i18n.trans('last-activity') }}: {{ printer.lastactivity }}
+                                    </p>
+                                {% endif %}
+                            {% else %}
+                                <div class="alert alert-warning mb-0">
+                                    {{ i18n.trans('no-printer-connected') }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="card shadow mb-5">
+                        <div class="card-body">
+                            <h2 class="h3">
+                                <i class="fas fa-print"></i> {{ i18n.trans('connect-a-printer') }}
+                            </h2>
+                            <p>{{ i18n.trans('connect-a-printer-p') }}</p>
+                            <a href="ListTicketPrinter" class="btn btn-secondary">
+                                {{ i18n.trans('printers') }}
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <img src="http://localhost:8089/" alt="remote-printer" class="d-none" />
+{% endblock %}
+
+{% block css %}
+    {{ parent() }}
+    <style>
+        .bg-header {
+            background-color: #FAFBFC;
+            padding-bottom: 90px;
+        }
+    </style>
+{% endblock %}
