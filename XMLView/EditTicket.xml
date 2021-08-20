@@ -3,26 +3,27 @@
     <columns>
         <group name="data" numcolumns="12">
             <column name="code" display="none" order="100">
-                <widget type="text" fieldname="id" />
+                <widget type="text" fieldname="id"/>
             </column>
             <column name="title" order="110">
-                <widget type="text" fieldname="title" required="" readonly="dinamic" />
+                <widget type="text" fieldname="title" required="" readonly="dinamic"/>
             </column>
             <column name="printer" titleurl="ListTicketPrinter" order="120">
                 <widget type="select" fieldname="idprinter" icon="fas fa-print" readonly="dinamic" required="true">
-                    <values source="tickets_printers" fieldcode="id" fieldtitle="name" />
+                    <values source="tickets_printers" fieldcode="id" fieldtitle="name"/>
                 </widget>
             </column>
             <column name="user" titleurl="ListUser" order="130">
-                <widget type="select" fieldname="nick" icon="fas fa-user-circle" onclick="EditUser" readonly="true" required="true">
-                    <values source="users" fieldcode="nick" fieldtitle="nick" />
+                <widget type="select" fieldname="nick" icon="fas fa-user-circle" onclick="EditUser" readonly="true"
+                        required="true">
+                    <values source="users" fieldcode="nick" fieldtitle="nick"/>
                 </widget>
             </column>
             <column name="creation-date" order="140">
-                <widget type="datetime" fieldname="creationdate" readonly="dinamic" />
+                <widget type="datetime" fieldname="creationdate" readonly="dinamic"/>
             </column>
             <column name="body" numcolumns="12" order="150">
-                <widget type="textarea" fieldname="body" readonly="dinamic" rows="12" />
+                <widget type="textarea" fieldname="body" readonly="dinamic" rows="12"/>
             </column>
         </group>
     </columns>

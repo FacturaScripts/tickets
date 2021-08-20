@@ -20,7 +20,7 @@ class EditTicketPrinter extends \FacturaScripts\Core\Lib\ExtendedController\Edit
      */
     public function getAppUrl(): string
     {
-        return 'https://megacity20.com'.\FS_ROUTE;
+        return 'https://megacity20.com' . \FS_ROUTE;
     }
 
     /**

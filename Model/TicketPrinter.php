@@ -88,6 +88,46 @@ class TicketPrinter extends ModelClass
     }
 
     /**
+     * @param string $command
+     *
+     * @return string
+     */
+    public function getCommandStr(string $command): string
+    {
+        $commandStr = '';
+        switch ($command) {
+            case 'cut':
+                $chars = explode('.', $this->cutcommand);
+                foreach ($chars as $char) {
+                    $commandStr .= chr($char);
+                }
+                break;
+
+            case 'open':
+                $chars = explode('.', $this->opencommand);
+                foreach ($chars as $char) {
+                    $commandStr .= chr($char);
+                }
+                break;
+        }
+
+        return $commandStr;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDashLine(): string
+    {
+        $line = '';
+        while (strlen($line) < $this->linelen) {
+            $line .= '-';
+        }
+
+        return $line;
+    }
+
+    /**
      * @return bool
      */
     public function isActive(): bool

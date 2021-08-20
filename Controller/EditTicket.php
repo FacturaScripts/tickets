@@ -1,4 +1,5 @@
 <?php
+
 namespace FacturaScripts\Plugins\Tickets\Controller;
 
 class EditTicket extends \FacturaScripts\Core\Lib\ExtendedController\EditController
@@ -6,14 +7,16 @@ class EditTicket extends \FacturaScripts\Core\Lib\ExtendedController\EditControl
     /**
      * @return string
      */
-    public function getModelClassName() {
+    public function getModelClassName()
+    {
         return "Ticket";
     }
 
     /**
      * @return array
      */
-    public function getPageData() {
+    public function getPageData()
+    {
         $pageData = parent::getPageData();
         $pageData["title"] = "Ticket";
         $pageData["icon"] = "fas fa-search";

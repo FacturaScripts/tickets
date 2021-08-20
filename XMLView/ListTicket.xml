@@ -2,21 +2,21 @@
 <view>
     <columns>
         <column name="user" order="100">
-            <widget type="text" fieldname="nick" />
+            <widget type="text" fieldname="nick"/>
         </column>
         <column name="printer" order="110">
             <widget type="select" fieldname="idprinter">
-                <values source="tickets_printers" fieldcode="id" fieldtitle="name" />
+                <values source="tickets_printers" fieldcode="id" fieldtitle="name"/>
             </widget>
         </column>
         <column name="title" order="120">
-            <widget type="text" fieldname="title" />
+            <widget type="text" fieldname="title"/>
         </column>
         <column name="printed" order="130">
-            <widget type="checkbox" fieldname="printed" />
+            <widget type="checkbox" fieldname="printed"/>
         </column>
         <column name="creation-date" display="right" order="140">
-            <widget type="datetime" fieldname="creationdate" />
+            <widget type="datetime" fieldname="creationdate"/>
         </column>
     </columns>
     <rows>

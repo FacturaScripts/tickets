@@ -5,8 +5,8 @@
         <div class="row">
             <div class="col-12">
                 <form action="{{ fsc.url() }}" method="post">
-                    <input type="hidden" name="modelClassName" value="{{ fsc.modelClassName }}" />
-                    <input type="hidden" name="modelCode" value="{{ fsc.modelCode }}" />
+                    <input type="hidden" name="modelClassName" value="{{ fsc.modelClassName }}"/>
+                    <input type="hidden" name="modelCode" value="{{ fsc.modelCode }}"/>
                     <div class="card shadow mb-4">
                         <div class="card-body">
                             <h1 class="h2 mb-3">
@@ -21,11 +21,13 @@
                             </div>
                             {% for printer in fsc.printers %}
                                 {% if printer.isActive() %}
-                                    <button type="submit" name="printer" value="{{ printer.id }}" class="btn btn-block btn-lg btn-success mt-3">
+                                    <button type="submit" name="printer" value="{{ printer.id }}"
+                                            class="btn btn-block btn-lg btn-success mt-3">
                                         <i class="fas fa-print"></i>&nbsp; {{ printer.name }}
                                     </button>
                                 {% else %}
-                                    <button type="submit" name="printer" value="{{ printer.id }}" class="btn btn-block btn-lg btn-warning">
+                                    <button type="submit" name="printer" value="{{ printer.id }}"
+                                            class="btn btn-block btn-lg btn-warning">
                                         <i class="fas fa-print"></i>&nbsp; {{ printer.name }}
                                     </button>
                                     <p class="text-muted">
@@ -55,7 +57,7 @@
         </div>
     </div>
 
-    <img src="http://localhost:8089/" alt="remote-printer" class="d-none" />
+    <img src="http://localhost:8089/" alt="remote-printer" class="d-none"/>
 {% endblock %}
 
 {% block css %}
