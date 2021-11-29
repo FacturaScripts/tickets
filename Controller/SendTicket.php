@@ -4,8 +4,10 @@ namespace FacturaScripts\Plugins\Tickets\Controller;
 
 use FacturaScripts\Core\Base\Controller;
 use FacturaScripts\Core\Model\Base\SalesDocument;
+use FacturaScripts\Plugins\Servicios\Model\ServicioAT;
 use FacturaScripts\Plugins\Tickets\Lib\Tickets\Gift;
 use FacturaScripts\Plugins\Tickets\Lib\Tickets\Normal;
+use FacturaScripts\Plugins\Tickets\Lib\Tickets\Service;
 use FacturaScripts\Plugins\Tickets\Model\TicketPrinter;
 
 class SendTicket extends Controller
@@ -46,12 +48,18 @@ class SendTicket extends Controller
     public function privateCore(&$response, $user, $permissions)
     {
         parent::privateCore($response, $user, $permissions);
+
         $this->modelClassName = $this->request->get('modelClassName');
         $this->modelCode = $this->request->get('modelCode');
         $this->loadPrinters();
         $this->loadFormats();
 
         $modelClass = '\\FacturaScripts\\Dinamic\\Model\\' . $this->modelClassName;
+        if (empty($this->modelClassName) || empty($this->modelCode) || false === class_exists($modelClass)) {
+            $this->setTemplate('Error/SendTicket');
+            return;
+        }
+
         $model = new $modelClass();
         $model->loadFromCode($this->modelCode);
 
@@ -64,6 +72,10 @@ class SendTicket extends Controller
 
             case 'normal':
                 $this->printNormal($model, $printer);
+                break;
+
+            case 'service':
+                $this->printService($model, $printer);
                 break;
         }
     }
@@ -86,8 +98,19 @@ class SendTicket extends Controller
 
     protected function loadFormats()
     {
-        $this->formats[] = 'normal';
-        $this->formats[] = 'gift';
+        switch ($this->modelClassName) {
+            case 'AlbaranCliente':
+            case 'FacturaCliente':
+            case 'PedidoCliente':
+            case 'PresupuestoCliente':
+                $this->formats[] = 'normal';
+                $this->formats[] = 'gift';
+                break;
+
+            case 'ServicioAT':
+                $this->formats[] = 'service';
+                break;
+        }
     }
 
     protected function loadPrinters()
@@ -115,6 +138,18 @@ class SendTicket extends Controller
     protected function printNormal(SalesDocument $model, TicketPrinter $printer)
     {
         if (Normal::print($model, $printer, $this->user)) {
+            $this->toolBox()->i18nLog()->notice('sending-to-printer');
+            $this->redirect($model->url(), 1);
+        }
+    }
+
+    /**
+     * @param ServicioAT $model
+     * @param TicketPrinter $printer
+     */
+    protected function printService(ServicioAT $model, TicketPrinter $printer)
+    {
+        if (Service::print($model, $printer, $this->user)) {
             $this->toolBox()->i18nLog()->notice('sending-to-printer');
             $this->redirect($model->url(), 1);
         }

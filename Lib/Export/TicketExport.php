@@ -27,6 +27,8 @@ class TicketExport extends ExportBase
 
     public function addModelPage($model, $columns, $title = ''): bool
     {
+        $this->sendParams['modelClassName'] = $model->modelClassName();
+        $this->sendParams['modelCode'] = $model->primaryColumnValue();
         return true;
     }
 

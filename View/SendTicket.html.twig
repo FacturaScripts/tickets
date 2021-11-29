@@ -13,7 +13,7 @@
                                 <i class="{{ fsc.getPageData().icon }}"></i> {{ fsc.title }}
                             </h1>
                             <div class="form-group">
-                                <select name="format" class="form-control">
+                                <select name="format" class="form-control" required>
                                     {% for format in fsc.formats %}
                                         <option value="{{ format }}">{{ i18n.trans(format) }}</option>
                                     {% endfor %}

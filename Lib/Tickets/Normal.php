@@ -12,7 +12,13 @@ use FacturaScripts\Plugins\Tickets\Model\TicketPrinter;
 
 class Normal
 {
-    public static function print(SalesDocument $doc, TicketPrinter $printer, User $user): bool
+    /**
+     * @param SalesDocument $doc
+     * @param TicketPrinter $printer
+     * @param User $user
+     * @return bool
+     */
+    public static function print($doc, TicketPrinter $printer, User $user): bool
     {
         $i18n = ToolBox::i18n();
 
