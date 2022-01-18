@@ -1,4 +1,7 @@
 <?php
+/**
+ * Copyright (C) 2019-2022 Carlos Garcia Gomez <carlos@facturascripts.com>
+ */
 
 namespace FacturaScripts\Plugins\Tickets\Model;
 
@@ -8,6 +11,10 @@ use FacturaScripts\Dinamic\Model\ApiAccess;
 use FacturaScripts\Dinamic\Model\ApiKey;
 use function date;
 
+/**
+ *
+ * @author Carlos Garcia Gomez <carlos@facturascripts.com>
+ */
 class TicketPrinter extends ModelClass
 {
     use ModelTrait;

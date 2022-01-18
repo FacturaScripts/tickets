@@ -1,11 +1,19 @@
 <?php
+/**
+ * Copyright (C) 2019-2022 Carlos Garcia Gomez <carlos@facturascripts.com>
+ */
 
 namespace FacturaScripts\Plugins\Tickets\Controller;
 
+use FacturaScripts\Core\Lib\ExtendedController\EditController;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Lib\ExtendedController\BaseView;
 
-class EditTicketPrinter extends \FacturaScripts\Core\Lib\ExtendedController\EditController
+/**
+ *
+ * @author Carlos Garcia Gomez <carlos@facturascripts.com>
+ */
+class EditTicketPrinter extends EditController
 {
     /**
      * @return string

@@ -1,4 +1,7 @@
 <?php
+/**
+ * Copyright (C) 2019-2022 Carlos Garcia Gomez <carlos@facturascripts.com>
+ */
 
 namespace FacturaScripts\Plugins\Tickets\Lib\Tickets;
 
@@ -8,6 +11,10 @@ use FacturaScripts\Dinamic\Model\User;
 use FacturaScripts\Plugins\Tickets\Model\Ticket;
 use FacturaScripts\Plugins\Tickets\Model\TicketPrinter;
 
+/**
+ *
+ * @author Carlos Garcia Gomez <carlos@facturascripts.com>
+ */
 class Gift extends Normal
 {
     /**
