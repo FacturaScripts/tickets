@@ -1,4 +1,7 @@
 <?php
+/**
+ * Copyright (C) 2019-2022 Carlos Garcia Gomez <carlos@facturascripts.com>
+ */
 
 namespace FacturaScripts\Plugins\Tickets\Lib\Export;
 
@@ -6,6 +9,10 @@ use FacturaScripts\Core\Lib\Export\ExportBase;
 use Symfony\Component\HttpFoundation\Response;
 use function http_build_query;
 
+/**
+ *
+ * @author Carlos Garcia Gomez <carlos@facturascripts.com>
+ */
 class TicketExport extends ExportBase
 {
     /**

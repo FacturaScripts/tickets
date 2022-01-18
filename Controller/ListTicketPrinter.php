@@ -1,8 +1,17 @@
 <?php
+/**
+ * Copyright (C) 2019-2022 Carlos Garcia Gomez <carlos@facturascripts.com>
+ */
 
 namespace FacturaScripts\Plugins\Tickets\Controller;
 
-class ListTicketPrinter extends \FacturaScripts\Core\Lib\ExtendedController\ListController
+use FacturaScripts\Core\Lib\ExtendedController\ListController;
+
+/**
+ *
+ * @author Carlos Garcia Gomez <carlos@facturascripts.com>
+ */
+class ListTicketPrinter extends ListController
 {
     /**
      * @return array
