@@ -8,6 +8,7 @@ namespace FacturaScripts\Plugins\Tickets\Lib\Tickets;
 use FacturaScripts\Core\Base\ToolBox;
 use FacturaScripts\Core\Model\Base\SalesDocument;
 use FacturaScripts\Dinamic\Model\User;
+use FacturaScripts\Dinamic\Model\Agente;
 use FacturaScripts\Plugins\Tickets\Model\Ticket;
 use FacturaScripts\Plugins\Tickets\Model\TicketPrinter;
 
@@ -23,12 +24,16 @@ class Gift extends Normal
      * @param User $user
      * @return bool
      */
-    public static function print($doc, TicketPrinter $printer, User $user): bool
+    public static function print($doc, TicketPrinter $printer, User $user, Agente $agent = null): bool
     {
         $ticket = new Ticket();
         $ticket->idprinter = $printer->id;
         $ticket->nick = $user->nick;
         $ticket->title = ToolBox::i18n()->trans($doc->modelClassName() . '-min') . ' ' . $doc->codigo;
+
+        if ($agent) {
+            $ticket->codagente = $agent->codagente;
+        }
 
         $company = $doc->getCompany();
         $ticket->body = "\x1B" . "!" . "\x38" . $company->nombre . "\n" . "\x1B" . "!" . "\x00"

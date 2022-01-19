@@ -10,6 +10,7 @@ use FacturaScripts\Core\Model\Base\SalesDocument;
 use FacturaScripts\Core\Model\Base\SalesDocumentLine;
 use FacturaScripts\Dinamic\Model\Impuesto;
 use FacturaScripts\Dinamic\Model\User;
+use FacturaScripts\Dinamic\Model\Agente;
 use FacturaScripts\Plugins\Tickets\Model\Ticket;
 use FacturaScripts\Plugins\Tickets\Model\TicketPrinter;
 
@@ -23,9 +24,10 @@ class Normal
      * @param SalesDocument $doc
      * @param TicketPrinter $printer
      * @param User $user
+     * @param Agente $agent
      * @return bool
      */
-    public static function print($doc, TicketPrinter $printer, User $user): bool
+    public static function print($doc, TicketPrinter $printer, User $user, Agente $agent = null): bool
     {
         $i18n = ToolBox::i18n();
 
@@ -33,6 +35,10 @@ class Normal
         $ticket->idprinter = $printer->id;
         $ticket->nick = $user->nick;
         $ticket->title = $i18n->trans($doc->modelClassName() . '-min') . ' ' . $doc->codigo;
+
+        if ($agent) {
+            $ticket->codagente = $agent->codagente;
+        }
 
         $company = $doc->getCompany();
         $ticket->body = "\x1B" . "!" . "\x38" . $company->nombre . "\n" . "\x1B" . "!" . "\x00"
