@@ -1,13 +1,21 @@
 <?php
+/**
+ * Copyright (C) 2019-2022 Carlos Garcia Gomez <carlos@facturascripts.com>
+ */
 
 namespace FacturaScripts\Plugins\Tickets\Lib\Tickets;
 
 use FacturaScripts\Core\Base\ToolBox;
 use FacturaScripts\Dinamic\Model\User;
+use FacturaScripts\Dinamic\Model\Agente;
 use FacturaScripts\Plugins\Servicios\Model\ServicioAT;
 use FacturaScripts\Plugins\Tickets\Model\Ticket;
 use FacturaScripts\Plugins\Tickets\Model\TicketPrinter;
 
+/**
+ *
+ * @author Carlos Garcia Gomez <carlos@facturascripts.com>
+ */
 class Service extends Normal
 {
     /**
@@ -16,12 +24,16 @@ class Service extends Normal
      * @param User $user
      * @return bool
      */
-    public static function print($doc, TicketPrinter $printer, User $user): bool
+    public static function print($doc, TicketPrinter $printer, User $user, Agente $agent = null): bool
     {
         $ticket = new Ticket();
         $ticket->idprinter = $printer->id;
         $ticket->nick = $user->nick;
         $ticket->title = ToolBox::i18n()->trans('service') . ' ' . $doc->primaryColumnValue();
+
+        if ($agent) {
+            $ticket->codagente = $agent->codagente;
+        }
 
         $company = $doc->getCompany();
         $ticket->body = "\x1B" . "!" . "\x38" . $company->nombre . "\n" . "\x1B" . "!" . "\x00"

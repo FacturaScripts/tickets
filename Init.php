@@ -1,10 +1,18 @@
 <?php
+/**
+ * Copyright (C) 2019-2022 Carlos Garcia Gomez <carlos@facturascripts.com>
+ */
 
 namespace FacturaScripts\Plugins\Tickets;
 
 use FacturaScripts\Dinamic\Lib\ExportManager;
+use FacturaScripts\Core\Base\InitClass;
 
-class Init extends \FacturaScripts\Core\Base\InitClass
+/**
+ *
+ * @author Carlos Garcia Gomez <carlos@facturascripts.com>
+ */
+class Init extends InitClass
 {
     public function init()
     {

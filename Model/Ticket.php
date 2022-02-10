@@ -1,10 +1,20 @@
 <?php
+/**
+ * Copyright (C) 2019-2022 Carlos Garcia Gomez <carlos@facturascripts.com>
+ */
 
 namespace FacturaScripts\Plugins\Tickets\Model;
 
-class Ticket extends \FacturaScripts\Core\Model\Base\ModelClass
+use FacturaScripts\Core\Model\Base\ModelClass;
+use FacturaScripts\Core\Model\Base\ModelTrait;
+
+/**
+ *
+ * @author Carlos Garcia Gomez <carlos@facturascripts.com>
+ */
+class Ticket extends ModelClass
 {
-    use \FacturaScripts\Core\Model\Base\ModelTrait;
+    use ModelTrait;
 
     /**
      * @var string

@@ -1,4 +1,7 @@
 <?php
+/**
+ * Copyright (C) 2019-2022 Carlos Garcia Gomez <carlos@facturascripts.com>
+ */
 
 namespace FacturaScripts\Plugins\Tickets\Controller;
 
@@ -10,6 +13,10 @@ use FacturaScripts\Plugins\Tickets\Lib\Tickets\Normal;
 use FacturaScripts\Plugins\Tickets\Lib\Tickets\Service;
 use FacturaScripts\Plugins\Tickets\Model\TicketPrinter;
 
+/**
+ *
+ * @author Carlos Garcia Gomez <carlos@facturascripts.com>
+ */
 class SendTicket extends Controller
 {
     /**
