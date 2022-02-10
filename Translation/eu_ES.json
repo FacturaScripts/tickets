@@ -5,6 +5,7 @@
     "download-app": "Aplikazioa deskargatu",
     "gift": "Oparia",
     "line-length": "Lerro bakoitzeko karaktereak",
+    "no-printer-connected": "Ez dago inprimagailurik konektatuta edo konfiguratuta.",
     "open-command": "Irekitzeko komandoa",
     "print-ticket": "Tiketa inprimatu",
     "printed": "Inprimakia",

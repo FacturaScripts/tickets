@@ -5,6 +5,7 @@
     "download-app": "Download App",
     "gift": "Gift",
     "line-length": "Line length",
+    "no-printer-connected": "No printer connected or configured.",
     "open-command": "Open command",
     "print-ticket": "Print ticket",
     "printed": "Printed",

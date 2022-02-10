@@ -1,4 +1,10 @@
-{% extends "Master/MenuTemplate.html.twig" %}
+{% extends "Master/MenuBghTemplate.html.twig" %}
+
+{% block bodyHeaderOptions %}
+    <br/>
+    <br/>
+    <br/>
+{% endblock %}
 
 {% block body %}
     <div class="container" style="margin-top: -60px;">
@@ -58,14 +64,4 @@
     </div>
 
     <img src="http://localhost:8089/" alt="remote-printer" class="d-none"/>
-{% endblock %}
-
-{% block css %}
-    {{ parent() }}
-    <style>
-        .bg-header {
-            background-color: #FAFBFC;
-            padding-bottom: 90px;
-        }
-    </style>
 {% endblock %}
