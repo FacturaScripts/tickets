@@ -7,6 +7,7 @@
     "line-length": "Caràcters per línia",
     "no-printer-connected": "Cap impressora connectada o configurada.",
     "open-command": "Comanament d'obertura",
+    "print-delay": "Tiempo impresión (s)",
     "print-ticket": "Imprimir tiquet",
     "printed": "Imprès",
     "printer": "Impressora",

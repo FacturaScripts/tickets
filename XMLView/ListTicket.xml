@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- * Copyright (C) 2019-2021 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2019-2022 Carlos Garcia Gomez <carlos@facturascripts.com>
  * Author Carlos Garcia Gomez <carlos@facturascripts.com>
 -->
 <view>
@@ -19,7 +19,10 @@
         <column name="printed" order="130">
             <widget type="checkbox" fieldname="printed"/>
         </column>
-        <column name="creation-date" display="right" order="140">
+        <column name="print-delay" display="right" order="140">
+            <widget type="number" fieldname="printdelay" decimal="0"/>
+        </column>
+        <column name="creation-date" display="right" order="150">
             <widget type="datetime" fieldname="creationdate"/>
         </column>
     </columns>

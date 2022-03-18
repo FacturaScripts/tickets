@@ -7,6 +7,7 @@
     "line-length": "Lerro bakoitzeko karaktereak",
     "no-printer-connected": "Ez dago inprimagailurik konektatuta edo konfiguratuta.",
     "open-command": "Irekitzeko komandoa",
+    "print-delay": "Tiempo impresión (s)",
     "print-ticket": "Tiketa inprimatu",
     "printed": "Inprimakia",
     "printer": "Imprimagailua",

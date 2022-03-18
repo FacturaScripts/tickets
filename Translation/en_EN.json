@@ -7,6 +7,7 @@
     "line-length": "Line length",
     "no-printer-connected": "No printer connected or configured.",
     "open-command": "Open command",
+    "print-delay": "Tiempo impresión (s)",
     "print-ticket": "Print ticket",
     "printed": "Printed",
     "printer": "Printer",
