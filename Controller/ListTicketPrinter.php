@@ -42,7 +42,7 @@ class ListTicketPrinter extends ListController
         $this->addOrderBy($viewName, ["creationdate"], "date", 2);
         $this->addSearchFields($viewName, ["title"]);
 
-        /// disable new button
+        // disable new button
         $this->setSettings($viewName, 'btnNew', false);
     }
 

@@ -42,6 +42,11 @@ class Ticket extends ModelClass
     public $nick;
 
     /**
+     * @var int
+     */
+    public $printdelay;
+
+    /**
      * @var bool
      */
     public $printed;
@@ -54,13 +59,10 @@ class Ticket extends ModelClass
     public function clear()
     {
         parent::clear();
-        $this->creationdate = \date(self::DATETIME_STYLE);
+        $this->creationdate = date(self::DATETIME_STYLE);
         $this->printed = false;
     }
 
-    /**
-     * @return TicketPrinter
-     */
     public function getPrinter(): TicketPrinter
     {
         $printer = new TicketPrinter();
@@ -84,6 +86,11 @@ class Ticket extends ModelClass
         $this->body = $this->sanitize($this->body);
         $this->title = $this->toolBox()->utils()->noHtml($this->title);
 
+        if ($this->printed && empty($this->printdelay)) {
+            // calculamos cuantos segundos ha tardado en imprimir
+            $this->printdelay = time() - strtotime($this->creationdate);
+        }
+
         return parent::save();
     }
 
@@ -106,11 +113,6 @@ class Ticket extends ModelClass
         return $type === 'list' ? $this->getPrinter()->url() : parent::url($type, $list);
     }
 
-    /**
-     * @param string $txt
-     *
-     * @return string
-     */
     protected function sanitize(string $txt): string
     {
         $changes = ['/à/' => 'a', '/á/' => 'a', '/â/' => 'a', '/ã/' => 'a', '/ä/' => 'a',
@@ -129,6 +131,6 @@ class Ticket extends ModelClass
         ];
 
         $txtNoHtml = $this->toolBox()->utils()->noHtml($txt);
-        return \preg_replace(\array_keys($changes), $changes, $txtNoHtml);
+        return preg_replace(array_keys($changes), $changes, $txtNoHtml);
     }
 }

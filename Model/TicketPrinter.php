@@ -9,15 +9,15 @@ use FacturaScripts\Core\Model\Base\ModelClass;
 use FacturaScripts\Core\Model\Base\ModelTrait;
 use FacturaScripts\Dinamic\Model\ApiAccess;
 use FacturaScripts\Dinamic\Model\ApiKey;
-use function date;
 
 /**
- *
  * @author Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 class TicketPrinter extends ModelClass
 {
     use ModelTrait;
+
+    const MAX_INACTIVITY = 600;
 
     /**
      * @var string
@@ -139,7 +139,7 @@ class TicketPrinter extends ModelClass
      */
     public function isActive(): bool
     {
-        return \time() - \strtotime($this->lastactivity) < 300;
+        return time() - strtotime($this->lastactivity) < self::MAX_INACTIVITY;
     }
 
     /**

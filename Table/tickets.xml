@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- * Copyright (C) 2019-2021 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2019-2022 Carlos Garcia Gomez <carlos@facturascripts.com>
  * Author Carlos Garcia Gomez <carlos@facturascripts.com>
 -->
 <table>
@@ -31,6 +31,10 @@
     <column>
         <name>printed</name>
         <type>boolean</type>
+    </column>
+    <column>
+        <name>printdelay</name>
+        <type>int</type>
     </column>
     <column>
         <name>title</name>
