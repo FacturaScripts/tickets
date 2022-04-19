@@ -104,6 +104,10 @@ class TicketPrinter extends ModelClass
         $commandStr = '';
         switch ($command) {
             case 'cut':
+                if (empty($this->cutcommand)) {
+                    break;
+                }
+
                 $chars = explode('.', $this->cutcommand);
                 foreach ($chars as $char) {
                     $commandStr .= chr($char);
@@ -111,6 +115,10 @@ class TicketPrinter extends ModelClass
                 break;
 
             case 'open':
+                if (empty($this->opencommand)) {
+                    break;
+                }
+
                 $chars = explode('.', $this->opencommand);
                 foreach ($chars as $char) {
                     $commandStr .= chr($char);
