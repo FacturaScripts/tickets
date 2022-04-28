@@ -14,7 +14,6 @@ use FacturaScripts\Plugins\Tickets\Lib\Tickets\Service;
 use FacturaScripts\Plugins\Tickets\Model\TicketPrinter;
 
 /**
- *
  * @author Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 class SendTicket extends Controller
@@ -39,10 +38,7 @@ class SendTicket extends Controller
      */
     public $printers = [];
 
-    /**
-     * @return array
-     */
-    public function getPageData()
+    public function getPageData(): array
     {
         $data = parent::getPageData();
         $data['menu'] = 'sales';

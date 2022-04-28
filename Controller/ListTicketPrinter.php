@@ -8,15 +8,11 @@ namespace FacturaScripts\Plugins\Tickets\Controller;
 use FacturaScripts\Core\Lib\ExtendedController\ListController;
 
 /**
- *
  * @author Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 class ListTicketPrinter extends ListController
 {
-    /**
-     * @return array
-     */
-    public function getPageData()
+    public function getPageData(): array
     {
         $pageData = parent::getPageData();
         $pageData["title"] = "tickets";
@@ -31,9 +27,6 @@ class ListTicketPrinter extends ListController
         $this->createViewsTicket();
     }
 
-    /**
-     * @param string $viewName
-     */
     protected function createViewsTicket(string $viewName = "ListTicket")
     {
         $this->addView($viewName, "Ticket", "tickets", "fas fa-receipt");
@@ -46,9 +39,6 @@ class ListTicketPrinter extends ListController
         $this->setSettings($viewName, 'btnNew', false);
     }
 
-    /**
-     * @param string $viewName
-     */
     protected function createViewsTicketPrinter(string $viewName = "ListTicketPrinter")
     {
         $this->addView($viewName, "TicketPrinter", "printers", "fas fa-print");

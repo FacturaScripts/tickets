@@ -70,18 +70,12 @@ class Ticket extends ModelClass
         return $printer;
     }
 
-    /**
-     * @return string
-     */
-    public static function primaryColumn()
+    public static function primaryColumn(): string
     {
         return "id";
     }
 
-    /**
-     * @return bool
-     */
-    public function save()
+    public function save(): bool
     {
         $this->body = $this->sanitize($this->body);
         $this->title = $this->toolBox()->utils()->noHtml($this->title);
@@ -94,21 +88,12 @@ class Ticket extends ModelClass
         return parent::save();
     }
 
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return "tickets";
     }
 
-    /**
-     * @param string $type
-     * @param string $list
-     *
-     * @return string
-     */
-    public function url(string $type = 'auto', string $list = 'List')
+    public function url(string $type = 'auto', string $list = 'List'): string
     {
         return $type === 'list' ? $this->getPrinter()->url() : parent::url($type, $list);
     }

@@ -5,12 +5,11 @@
 
 namespace FacturaScripts\Plugins\Tickets\Controller;
 
-use FacturaScripts\Core\Lib\ExtendedController\EditController;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Lib\ExtendedController\BaseView;
+use FacturaScripts\Core\Lib\ExtendedController\EditController;
 
 /**
- *
  * @author Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 class EditTicketPrinter extends EditController
@@ -22,34 +21,23 @@ class EditTicketPrinter extends EditController
 
     public function getAppUrl(): string
     {
-        return 'https://megacity20.com' . FS_ROUTE;
+        $url = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+        $url .= '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        return substr($url, 0, strrpos($url, '/'));
     }
 
-    /**
-     * @return string
-     */
-    public function getModelClassName()
+    public function getModelClassName(): string
     {
         return "TicketPrinter";
     }
 
-    /**
-     * @return array
-     */
-    public function getPageData()
+    public function getPageData(): array
     {
         $pageData = parent::getPageData();
         $pageData["menu"] = "admin";
         $pageData["title"] = "printer";
         $pageData["icon"] = "fas fa-print";
         return $pageData;
-    }
-
-    public function getSiteUrl(): string
-    {
-        $url = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
-        $url .= '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-        return \substr($url, 0, \strrpos($url, '/'));
     }
 
     protected function createViews()

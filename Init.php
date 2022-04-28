@@ -5,12 +5,11 @@
 
 namespace FacturaScripts\Plugins\Tickets;
 
+use FacturaScripts\Core\Base\InitClass;
 use FacturaScripts\Core\Base\ToolBox;
 use FacturaScripts\Dinamic\Lib\ExportManager;
-use FacturaScripts\Core\Base\InitClass;
 
 /**
- *
  * @author Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 class Init extends InitClass
