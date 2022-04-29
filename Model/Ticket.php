@@ -90,7 +90,7 @@ class Ticket extends ModelClass
 
     public static function tableName(): string
     {
-        return "tickets";
+        return "tickets_docs";
     }
 
     public function url(string $type = 'auto', string $list = 'List'): string

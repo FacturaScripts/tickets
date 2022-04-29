@@ -5,6 +5,7 @@
 
 namespace FacturaScripts\Plugins\Tickets;
 
+use FacturaScripts\Core\Base\DataBase;
 use FacturaScripts\Core\Base\InitClass;
 use FacturaScripts\Core\Base\ToolBox;
 use FacturaScripts\Dinamic\Lib\ExportManager;
@@ -25,5 +26,18 @@ class Init extends InitClass
         $appSettings = ToolBox::appSettings();
         $appSettings->set('default', 'enable_api', true);
         $appSettings->save();
+        $this->renameTable();
+    }
+
+    private function renameTable()
+    {
+        $table = 'tickets';
+        $dataBase = new DataBase();
+        if ($dataBase->tableExists($table)) {
+            $columns = $dataBase->getColumns($table);
+            if (isset($columns['id']) && isset($columns['idprinter'])) {
+                $dataBase->exec("RENAME TABLE " . $table . " TO " . $table . "_docs;");
+            }
+        }
     }
 }
