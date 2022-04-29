@@ -76,17 +76,11 @@ class TicketPrinter extends ModelClass
         $this->linelen = 48;
     }
 
-    /**
-     * @return bool
-     */
-    public function delete()
+    public function delete(): bool
     {
         return parent::delete() && $this->getApiKey()->delete();
     }
 
-    /**
-     * @return ApiKey
-     */
     public function getApiKey(): ApiKey
     {
         $apikey = new ApiKey();
@@ -94,11 +88,6 @@ class TicketPrinter extends ModelClass
         return $apikey;
     }
 
-    /**
-     * @param string $command
-     *
-     * @return string
-     */
     public function getCommandStr(string $command): string
     {
         $commandStr = '';
@@ -129,9 +118,6 @@ class TicketPrinter extends ModelClass
         return $commandStr;
     }
 
-    /**
-     * @return string
-     */
     public function getDashLine(): string
     {
         $line = '';
@@ -142,26 +128,17 @@ class TicketPrinter extends ModelClass
         return $line;
     }
 
-    /**
-     * @return bool
-     */
     public function isActive(): bool
     {
         return time() - strtotime($this->lastactivity) < self::MAX_INACTIVITY;
     }
 
-    /**
-     * @return string
-     */
-    public static function primaryColumn()
+    public static function primaryColumn(): string
     {
         return "id";
     }
 
-    /**
-     * @return bool
-     */
-    public function save()
+    public function save(): bool
     {
         if (empty($this->idapikey) && false === $this->newApiKey()) {
             return false;
@@ -175,17 +152,11 @@ class TicketPrinter extends ModelClass
         return parent::save();
     }
 
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         return "tickets_printers";
     }
 
-    /**
-     * @return bool
-     */
     protected function newApiKey(): bool
     {
         $apikey = new ApiKey();
