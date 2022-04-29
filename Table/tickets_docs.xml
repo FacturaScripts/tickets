@@ -45,11 +45,11 @@
         <type>PRIMARY KEY (id)</type>
     </constraint>
     <constraint>
-        <name>ca_tickets_printers</name>
+        <name>ca_tickets_docs_tickets_printers</name>
         <type>FOREIGN KEY (idprinter) REFERENCES tickets_printers (id) ON DELETE CASCADE ON UPDATE CASCADE</type>
     </constraint>
     <constraint>
-        <name>ca_tickets_agentes</name>
+        <name>ca_tickets_docs_agentes</name>
         <type>FOREIGN KEY (codagente) REFERENCES agentes (codagente) ON DELETE CASCADE ON UPDATE CASCADE</type>
     </constraint>
 </table>
