@@ -8,14 +8,13 @@ namespace FacturaScripts\Plugins\Tickets\Lib\Tickets;
 use FacturaScripts\Core\Base\ToolBox;
 use FacturaScripts\Core\Model\Base\SalesDocument;
 use FacturaScripts\Core\Model\Base\SalesDocumentLine;
+use FacturaScripts\Dinamic\Model\Agente;
 use FacturaScripts\Dinamic\Model\Impuesto;
 use FacturaScripts\Dinamic\Model\User;
-use FacturaScripts\Dinamic\Model\Agente;
 use FacturaScripts\Plugins\Tickets\Model\Ticket;
 use FacturaScripts\Plugins\Tickets\Model\TicketPrinter;
 
 /**
- *
  * @author Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 class Normal
@@ -24,7 +23,7 @@ class Normal
      * @param SalesDocument $doc
      * @param TicketPrinter $printer
      * @param User $user
-     * @param Agente $agent
+     * @param Agente|null $agent
      * @return bool
      */
     public static function print($doc, TicketPrinter $printer, User $user, Agente $agent = null): bool
@@ -41,7 +40,7 @@ class Normal
         }
 
         $company = $doc->getCompany();
-        $ticket->body = "\x1B" . "!" . "\x38" . $company->nombre . "\n" . "\x1B" . "!" . "\x00"
+        $ticket->body = static::getBigText($company->nombre, $printer->linelen)
             . $company->direccion . "\nCP: " . $company->codpostal . ', ' . $company->ciudad . "\n"
             . $company->tipoidfiscal . ': ' . $company->cifnif . "\n\n"
             . $ticket->title . "\n"
@@ -74,6 +73,32 @@ class Normal
         $ticket->body .= "\n\n\n\n\n\n" . $printer->getCommandStr('open') . "\n"
             . $printer->getCommandStr('cut') . "\n";
         return $ticket->save();
+    }
+
+    protected static function getBigText(string $text, int $lineLength): string
+    {
+        $bigLine = '';
+        $bigLineLength = 0;
+        $bigLineMax = intval($lineLength / 2);
+        $words = explode(' ', $text);
+        foreach ($words as $word) {
+            if ($bigLineLength === 0) {
+                $bigLine .= $word;
+                $bigLineLength += strlen($word);
+                continue;
+            }
+
+            $bigLineLength += strlen($word) + 1;
+            if ($bigLineLength <= $bigLineMax) {
+                $bigLine .= ' ' . $word;
+                continue;
+            }
+
+            $bigLine .= "\n" . $word;
+            $bigLineLength = strlen($word);
+        }
+
+        return "\x1B" . "!" . "\x38" . $bigLine . "\n" . "\x1B" . "!" . "\x00";
     }
 
     /**
