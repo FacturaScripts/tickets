@@ -23,21 +23,26 @@ class Init extends InitClass
     public function update()
     {
         // se ejecuta cada vez que se instala o actualiza el plugin
+        // activamos la API
         $appSettings = ToolBox::appSettings();
         $appSettings->set('default', 'enable_api', true);
         $appSettings->save();
-        $this->renameTable();
+
+        // renombramos la tabla de tickets de antiguas versiones
+        $this->renameTicketsTable('tickets', 'tickets_docs');
     }
 
-    private function renameTable()
+    private function renameTicketsTable(string $oldTable, string $newTable)
     {
-        $table = 'tickets';
         $dataBase = new DataBase();
-        if ($dataBase->tableExists($table)) {
-            $columns = $dataBase->getColumns($table);
-            if (isset($columns['id']) && isset($columns['idprinter'])) {
-                $dataBase->exec("RENAME TABLE " . $table . " TO " . $table . "_docs;");
-            }
+        if (false === $dataBase->tableExists($oldTable)) {
+            return;
+        }
+
+        // comprobamos las columnas de la tabla antigua
+        $columns = $dataBase->getColumns($oldTable);
+        if (isset($columns['id']) && isset($columns['idprinter'])) {
+            $dataBase->exec("RENAME TABLE " . $oldTable . " TO " . $newTable . ";");
         }
     }
 }
