@@ -63,7 +63,6 @@ class Init extends InitClass
             $apiKey->nick = $_COOKIE['fsNick'];
         }
         $apiKey->enabled = true;
-        $apiKey->fullaccess = true;
         if (false === $apiKey->save()) {
             return;
         }
