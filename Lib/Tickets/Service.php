@@ -5,15 +5,15 @@
 
 namespace FacturaScripts\Plugins\Tickets\Lib\Tickets;
 
+use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\ToolBox;
-use FacturaScripts\Dinamic\Model\User;
 use FacturaScripts\Dinamic\Model\Agente;
+use FacturaScripts\Dinamic\Model\User;
 use FacturaScripts\Plugins\Servicios\Model\ServicioAT;
 use FacturaScripts\Plugins\Tickets\Model\Ticket;
 use FacturaScripts\Plugins\Tickets\Model\TicketPrinter;
 
 /**
- *
  * @author Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 class Service extends Normal
@@ -22,9 +22,10 @@ class Service extends Normal
      * @param ServicioAT $doc
      * @param TicketPrinter $printer
      * @param User $user
+     * @param Agente|null $agent
      * @return bool
      */
-    public static function print($doc, TicketPrinter $printer, User $user, Agente $agent = null): bool
+    public static function print($doc, TicketPrinter $printer, User $user, ?Agente $agent = null): bool
     {
         $ticket = new Ticket();
         $ticket->idprinter = $printer->id;
@@ -56,7 +57,9 @@ class Service extends Normal
             $ticket->body .= "\n" . ToolBox::i18n()->trans('material') . ': ' . $doc->material . "\n";
         }
 
-        $ticket->body .= $printer->getDashLine() . "\n\n\n\n\n\n\n"
+        $ticket->body .= $printer->getDashLine(). "\n"
+            . AppSettings::get('servicios', 'footertext', '')
+            . "\n\n\n\n\n\n\n"
             . $printer->getCommandStr('open') . "\n"
             . $printer->getCommandStr('cut') . "\n";
         return $ticket->save();
