@@ -7,6 +7,8 @@ namespace FacturaScripts\Plugins\Tickets\Model;
 
 use FacturaScripts\Core\Model\Base\ModelClass;
 use FacturaScripts\Core\Model\Base\ModelTrait;
+use FacturaScripts\Dinamic\Model\Agente;
+use FacturaScripts\Dinamic\Model\TicketPrinter;
 
 /**
  *
@@ -68,6 +70,14 @@ class Ticket extends ModelClass
         $printer = new TicketPrinter();
         $printer->loadFromCode($this->idprinter);
         return $printer;
+    }
+
+    public function install(): string
+    {
+        // necesario para cargar las calves ajenas
+        new Agente();
+        new TicketPrinter();
+        return parent::install();
     }
 
     public static function primaryColumn(): string
