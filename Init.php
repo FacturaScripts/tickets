@@ -22,7 +22,7 @@ class Init extends InitClass
 
     public function update()
     {
-        // activamos y creamos la API
+        // activamos la API
         $this->setAPI();
 
         // renombramos la tabla de tickets de antiguas versiones
