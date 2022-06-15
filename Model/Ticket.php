@@ -74,9 +74,10 @@ class Ticket extends ModelClass
 
     public function install(): string
     {
-        // necesario para cargar las calves ajenas
+        // necesario para cargar las claves ajenas
         new Agente();
         new TicketPrinter();
+
         return parent::install();
     }
 
@@ -108,7 +109,7 @@ class Ticket extends ModelClass
         return $type === 'list' ? $this->getPrinter()->url() : parent::url($type, $list);
     }
 
-    protected function sanitize(string $txt): string
+    protected function sanitize(?string $txt): string
     {
         $changes = ['/à/' => 'a', '/á/' => 'a', '/â/' => 'a', '/ã/' => 'a', '/ä/' => 'a',
             '/å/' => 'a', '/æ/' => 'ae', '/ç/' => 'c', '/è/' => 'e', '/é/' => 'e', '/ê/' => 'e',
@@ -125,7 +126,7 @@ class Ticket extends ModelClass
             '/Ý/' => 'Y', '/Ÿ/' => 'Y'
         ];
 
-        $txtNoHtml = $this->toolBox()->utils()->noHtml($txt);
+        $txtNoHtml = $this->toolBox()->utils()->noHtml($txt) ?? '';
         return preg_replace(array_keys($changes), $changes, $txtNoHtml);
     }
 }

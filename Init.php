@@ -48,26 +48,29 @@ class Init extends InitClass
 
     private function setAPI()
     {
-        // activamos la API
-        $appSettings = ToolBox::appSettings();
-        $appSettings->set('default', 'enable_api', true);
-        if (false === $appSettings->save()) {
+        // si se está usando megacity, no hacemos nada
+        if (defined('MC20_INSTALLATION')) {
             return;
         }
 
-        // creamos una API
+        // activamos la API
+        $appSettings = ToolBox::appSettings();
+        $appSettings->set('default', 'enable_api', true);
+        $appSettings->save();
+
+        // creamos una clave de API, si no existe
         $apiKey = new ApiKey();
         $where = [new DataBaseWhere('description', 'tickets')];
         if (false === $apiKey->loadFromCode('', $where)) {
             $apiKey->description = 'tickets';
             $apiKey->nick = $_COOKIE['fsNick'];
-        }
-        $apiKey->enabled = true;
-        if (false === $apiKey->save()) {
-            return;
-        }
+            $apiKey->enabled = true;
+            if (false === $apiKey->save()) {
+                return;
+            }
 
-        // asignamos los permisos
-        ApiAccess::addResourcesToApiKey($apiKey->id, ['ticketes', 'ticketprinteres'], true);
+            // asignamos los permisos
+            ApiAccess::addResourcesToApiKey($apiKey->id, ['ticketes', 'ticketprinteres'], true);
+        }
     }
 }
