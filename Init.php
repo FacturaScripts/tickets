@@ -6,12 +6,9 @@
 namespace FacturaScripts\Plugins\Tickets;
 
 use FacturaScripts\Core\Base\DataBase;
-use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\InitClass;
 use FacturaScripts\Core\Base\ToolBox;
 use FacturaScripts\Dinamic\Lib\ExportManager;
-use FacturaScripts\Dinamic\Model\ApiAccess;
-use FacturaScripts\Dinamic\Model\ApiKey;
 
 /**
  * @author Carlos Garcia Gomez <carlos@facturascripts.com>
@@ -57,20 +54,5 @@ class Init extends InitClass
         $appSettings = ToolBox::appSettings();
         $appSettings->set('default', 'enable_api', true);
         $appSettings->save();
-
-        // creamos una clave de API, si no existe
-        $apiKey = new ApiKey();
-        $where = [new DataBaseWhere('description', 'tickets')];
-        if (false === $apiKey->loadFromCode('', $where)) {
-            $apiKey->description = 'tickets';
-            $apiKey->nick = $_COOKIE['fsNick'];
-            $apiKey->enabled = true;
-            if (false === $apiKey->save()) {
-                return;
-            }
-
-            // asignamos los permisos
-            ApiAccess::addResourcesToApiKey($apiKey->id, ['ticketes', 'ticketprinteres'], true);
-        }
     }
 }
