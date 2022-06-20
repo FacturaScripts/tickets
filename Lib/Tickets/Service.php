@@ -52,14 +52,22 @@ class Service extends Normal
             $ticket->body .= ToolBox::i18n()->trans('phone') . ': ' . $customer->telefono2 . "\n";
         }
 
+        if ($printer->head) {
+            $ticket->body .= "\n" . $printer->head . "\n";
+        }
+
         $ticket->body .= "\n" . ToolBox::i18n()->trans('description') . ': ' . $doc->descripcion . "\n";
         if ($doc->material) {
             $ticket->body .= "\n" . ToolBox::i18n()->trans('material') . ': ' . $doc->material . "\n";
         }
+        $ticket->body .= $printer->getDashLine();
 
-        $ticket->body .= $printer->getDashLine(). "\n"
-            . AppSettings::get('servicios', 'footertext', '')
-            . "\n\n\n\n\n\n\n"
+        if ($printer->footer) {
+            $ticket->body .= "\n\n" . $printer->footer . "\n";
+        }
+
+        $ticket->body .= AppSettings::get('servicios', 'footertext', '')
+            . "\n\n\n\n\n\n"
             . $printer->getCommandStr('open') . "\n"
             . $printer->getCommandStr('cut') . "\n";
         return $ticket->save();
