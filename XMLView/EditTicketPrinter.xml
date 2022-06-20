@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- * Copyright (C) 2019-2021 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2019-2022 Carlos Garcia Gomez <carlos@facturascripts.com>
  * Author Carlos Garcia Gomez <carlos@facturascripts.com>
 -->
 <view>
@@ -35,10 +35,10 @@
             <column name="last-activity" numcolumns="3" order="180">
                 <widget type="datetime" fieldname="lastactivity" readonly="true"/>
             </column>
-            <column name="head" numcolumns="12" order="190">
+            <column name="ticket-head" numcolumns="6" order="190">
                 <widget type="textarea" fieldname="head"/>
             </column>
-            <column name="footer" numcolumns="12" order="190">
+            <column name="ticket-footer" numcolumns="6" order="190">
                 <widget type="textarea" fieldname="footer"/>
             </column>
         </group>

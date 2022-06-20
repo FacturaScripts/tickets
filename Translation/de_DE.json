@@ -14,5 +14,7 @@
     "printers": "Drucker",
     "sending-to-printer": "Sending to printer",
     "ticket": "Ticket",
+    "ticket-footer": "Pié de página",
+    "ticket-head": "Cabecera",
     "tickets": "Tickets"
 }
