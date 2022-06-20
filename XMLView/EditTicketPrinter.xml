@@ -35,6 +35,12 @@
             <column name="last-activity" numcolumns="3" order="180">
                 <widget type="datetime" fieldname="lastactivity" readonly="true"/>
             </column>
+            <column name="head" numcolumns="12" order="190">
+                <widget type="textarea" fieldname="head"/>
+            </column>
+            <column name="footer" numcolumns="12" order="190">
+                <widget type="textarea" fieldname="footer"/>
+            </column>
         </group>
     </columns>
 </view>

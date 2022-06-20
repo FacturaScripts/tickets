@@ -46,6 +46,10 @@ class Normal
             . $ticket->title . "\n"
             . $i18n->trans('date') . ': ' . $doc->fecha . ' ' . $doc->hora . "\n\n";
 
+        if ($printer->head) {
+            $ticket->body .= $printer->head . "\n\n";
+        }
+
         $width = $printer->linelen - 17;
         $ticket->body .= sprintf("%5s", $i18n->trans('quantity-abb')) . " "
             . sprintf("%-" . $width . "s", $i18n->trans('description')) . " "
@@ -70,7 +74,12 @@ class Normal
                 . sprintf("%10s", ToolBox::numbers()::format($item['taxamount'])) . "\n";
         }
 
-        $ticket->body .= "\n\n\n\n\n\n" . $printer->getCommandStr('open') . "\n"
+        if ($printer->footer) {
+            $ticket->body .= "\n" . $printer->footer;
+        }
+
+        $ticket->body .= "\n\n\n\n\n\n"
+            . $printer->getCommandStr('open') . "\n"
             . $printer->getCommandStr('cut') . "\n";
         return $ticket->save();
     }

@@ -42,6 +42,10 @@ class Gift extends Normal
             . $ticket->title . "\n"
             . ToolBox::i18n()->trans('date') . ': ' . $doc->fecha . ' ' . $doc->hora . "\n\n";
 
+        if ($printer->head) {
+            $ticket->body .= $printer->head . "\n\n";
+        }
+
         $width = $printer->linelen - 6;
         $ticket->body .= sprintf("%5s", ToolBox::i18n()->trans('quantity-abb')) . " "
             . sprintf("%-" . $width . "s", ToolBox::i18n()->trans('description')) . "\n";
@@ -52,8 +56,13 @@ class Gift extends Normal
             $ticket->body .= sprintf("%5s", $line->cantidad) . " "
                 . sprintf("%-" . $width . "s", $description) . "\n";
         }
+        $ticket->body .= $printer->getDashLine();
 
-        $ticket->body .= $printer->getDashLine() . "\n\n\n\n\n\n\n"
+        if ($printer->footer) {
+            $ticket->body .= "\n\n" . $printer->footer;
+        }
+
+        $ticket->body .=  "\n\n\n\n\n\n"
             . $printer->getCommandStr('open') . "\n"
             . $printer->getCommandStr('cut') . "\n";
         return $ticket->save();

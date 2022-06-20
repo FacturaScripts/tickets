@@ -35,6 +35,16 @@ class TicketPrinter extends ModelClass
     public $cutcommand;
 
     /**
+     * @var string
+     */
+    public $footer;
+
+    /**
+     * @var string
+     */
+    public $head;
+
+    /**
      * @var int
      */
     public $id;

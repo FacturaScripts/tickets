@@ -17,6 +17,14 @@
         <type>character varying(20)</type>
     </column>
     <column>
+        <name>footer</name>
+        <type>text</type>
+    </column>
+    <column>
+        <name>head</name>
+        <type>text</type>
+    </column>
+    <column>
         <name>id</name>
         <type>serial</type>
     </column>
