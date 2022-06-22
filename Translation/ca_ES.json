@@ -14,5 +14,7 @@
     "printers": "Impressores",
     "sending-to-printer": "Enviant el document a la impressora",
     "ticket": "Tiquet",
+    "ticket-footer": "Pié de página",
+    "ticket-head": "Cabecera",
     "tickets": "Tiquets"
 }
