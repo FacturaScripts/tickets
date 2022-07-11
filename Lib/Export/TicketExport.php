@@ -7,10 +7,8 @@ namespace FacturaScripts\Plugins\Tickets\Lib\Export;
 
 use FacturaScripts\Core\Lib\Export\ExportBase;
 use Symfony\Component\HttpFoundation\Response;
-use function http_build_query;
 
 /**
- *
  * @author Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 class TicketExport extends ExportBase
@@ -39,7 +37,7 @@ class TicketExport extends ExportBase
         return true;
     }
 
-    public function addTablePage($headers, $rows): bool
+    public function addTablePage($headers, $rows, $options = [], $title = ''): bool
     {
         return true;
     }
@@ -51,12 +49,10 @@ class TicketExport extends ExportBase
 
     public function newDoc(string $title, int $idformat, string $langcode)
     {
-        // TODO: Implement newDoc() method.
     }
 
     public function setOrientation(string $orientation)
     {
-        // TODO: Implement setOrientation() method.
     }
 
     public function show(Response &$response)
