@@ -11,6 +11,7 @@ use FacturaScripts\Plugins\Servicios\Model\ServicioAT;
 use FacturaScripts\Plugins\Tickets\Lib\Tickets\Gift;
 use FacturaScripts\Plugins\Tickets\Lib\Tickets\Normal;
 use FacturaScripts\Plugins\Tickets\Lib\Tickets\Service;
+use FacturaScripts\Plugins\Tickets\Lib\Tickets\TicketBai;
 use FacturaScripts\Plugins\Tickets\Model\TicketPrinter;
 
 /**
@@ -80,6 +81,10 @@ class SendTicket extends Controller
             case 'service':
                 $this->printService($model, $printer);
                 break;
+
+            case 'ticketbai':
+                $this->printTicketBai($model, $printer);
+                break;
         }
     }
 
@@ -108,6 +113,7 @@ class SendTicket extends Controller
             case 'PresupuestoCliente':
                 $this->formats[] = 'normal';
                 $this->formats[] = 'gift';
+                $this->formats[] = 'ticketbai';
                 break;
 
             case 'ServicioAT':
@@ -153,6 +159,18 @@ class SendTicket extends Controller
     protected function printService(ServicioAT $model, TicketPrinter $printer)
     {
         if (Service::print($model, $printer, $this->user)) {
+            $this->toolBox()->i18nLog()->notice('sending-to-printer');
+            $this->redirect($model->url(), 1);
+        }
+    }
+
+    /**
+     * @param SalesDocument $model
+     * @param TicketPrinter $printer
+     */
+    protected function printTicketBai(SalesDocument $model, TicketPrinter $printer)
+    {
+        if (TicketBai::print($model, $printer, $this->user)) {
             $this->toolBox()->i18nLog()->notice('sending-to-printer');
             $this->redirect($model->url(), 1);
         }

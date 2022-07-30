@@ -5,6 +5,15 @@
 -->
 <table>
     <column>
+        <name>appversion</name>
+        <type>double precision</type>
+    </column>
+    <column>
+        <name>base64</name>
+        <type>boolean</type>
+        <default>false</default>
+    </column>
+    <column>
         <name>body</name>
         <type>text</type>
     </column>
