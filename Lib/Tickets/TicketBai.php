@@ -111,7 +111,7 @@ class TicketBai
         if (isset($doc->tbaicodbar)) {
             $escpos->setJustification(Printer::JUSTIFY_CENTER);
             $escpos->text("\n" . $doc->tbaicodbar . "\n");
-            $escpos->qrCode($doc->codigo, Printer::QR_ECLEVEL_L, 13);
+            $escpos->qrCode($doc->tbaicodbar, Printer::QR_ECLEVEL_L, 13);
             $escpos->setJustification();
         }
 
