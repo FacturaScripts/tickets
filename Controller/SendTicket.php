@@ -7,10 +7,13 @@ namespace FacturaScripts\Plugins\Tickets\Controller;
 
 use FacturaScripts\Core\Base\Controller;
 use FacturaScripts\Core\Model\Base\SalesDocument;
+use FacturaScripts\Core\Model\ReciboCliente;
 use FacturaScripts\Plugins\Servicios\Model\ServicioAT;
 use FacturaScripts\Plugins\Tickets\Lib\Tickets\Gift;
 use FacturaScripts\Plugins\Tickets\Lib\Tickets\Normal;
+use FacturaScripts\Plugins\Tickets\Lib\Tickets\PaymentReceipt;
 use FacturaScripts\Plugins\Tickets\Lib\Tickets\Service;
+use FacturaScripts\Plugins\Tickets\Lib\Tickets\TicketBai;
 use FacturaScripts\Plugins\Tickets\Model\TicketPrinter;
 
 /**
@@ -18,24 +21,16 @@ use FacturaScripts\Plugins\Tickets\Model\TicketPrinter;
  */
 class SendTicket extends Controller
 {
-    /**
-     * @var array
-     */
+    /** @var array */
     public $formats = [];
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $modelClassName = '';
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $modelCode = '';
 
-    /**
-     * @var TicketPrinter[]
-     */
+    /** @var TicketPrinter[] */
     public $printers = [];
 
     public function getPageData(): array
@@ -64,7 +59,10 @@ class SendTicket extends Controller
         }
 
         $model = new $modelClass();
-        $model->loadFromCode($this->modelCode);
+        if (false === $model->loadFromCode($this->modelCode)) {
+            $this->setTemplate('Error/SendTicket');
+            return;
+        }
 
         $format = $this->request->request->get('format');
         $printer = $this->getPrinter((int)$this->request->request->get('printer'));
@@ -77,17 +75,20 @@ class SendTicket extends Controller
                 $this->printNormal($model, $printer);
                 break;
 
+            case 'receipt':
+                $this->printPaymentReceipt($model, $printer);
+                break;
+
             case 'service':
                 $this->printService($model, $printer);
+                break;
+
+            case 'ticketbai':
+                $this->printTicketBai($model, $printer);
                 break;
         }
     }
 
-    /**
-     * @param int $id
-     *
-     * @return TicketPrinter
-     */
     protected function getPrinter(int $id): TicketPrinter
     {
         foreach ($this->printers as $printer) {
@@ -108,6 +109,11 @@ class SendTicket extends Controller
             case 'PresupuestoCliente':
                 $this->formats[] = 'normal';
                 $this->formats[] = 'gift';
+                $this->formats[] = 'ticketbai';
+                break;
+
+            case 'ReciboCliente':
+                $this->formats[] = 'receipt';
                 break;
 
             case 'ServicioAT':
@@ -122,10 +128,6 @@ class SendTicket extends Controller
         $this->printers = $printerModel->all([], ['creationdate' => 'DESC'], 0, 0);
     }
 
-    /**
-     * @param SalesDocument $model
-     * @param TicketPrinter $printer
-     */
     protected function printGift(SalesDocument $model, TicketPrinter $printer)
     {
         if (Gift::print($model, $printer, $this->user)) {
@@ -134,10 +136,6 @@ class SendTicket extends Controller
         }
     }
 
-    /**
-     * @param SalesDocument $model
-     * @param TicketPrinter $printer
-     */
     protected function printNormal(SalesDocument $model, TicketPrinter $printer)
     {
         if (Normal::print($model, $printer, $this->user)) {
@@ -146,13 +144,25 @@ class SendTicket extends Controller
         }
     }
 
-    /**
-     * @param ServicioAT $model
-     * @param TicketPrinter $printer
-     */
+    protected function printPaymentReceipt(ReciboCliente $model, TicketPrinter $printer)
+    {
+        if (PaymentReceipt::print($model, $printer, $this->user)) {
+            $this->toolBox()->i18nLog()->notice('sending-to-printer');
+            $this->redirect($model->url(), 1);
+        }
+    }
+
     protected function printService(ServicioAT $model, TicketPrinter $printer)
     {
         if (Service::print($model, $printer, $this->user)) {
+            $this->toolBox()->i18nLog()->notice('sending-to-printer');
+            $this->redirect($model->url(), 1);
+        }
+    }
+
+    protected function printTicketBai(SalesDocument $model, TicketPrinter $printer)
+    {
+        if (TicketBai::print($model, $printer, $this->user)) {
             $this->toolBox()->i18nLog()->notice('sending-to-printer');
             $this->redirect($model->url(), 1);
         }

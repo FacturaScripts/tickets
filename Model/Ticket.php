@@ -8,10 +8,8 @@ namespace FacturaScripts\Plugins\Tickets\Model;
 use FacturaScripts\Core\Model\Base\ModelClass;
 use FacturaScripts\Core\Model\Base\ModelTrait;
 use FacturaScripts\Dinamic\Model\Agente;
-use FacturaScripts\Dinamic\Model\TicketPrinter;
 
 /**
- *
  * @author Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 class Ticket extends ModelClass
@@ -19,9 +17,24 @@ class Ticket extends ModelClass
     use ModelTrait;
 
     /**
+     * @var float
+     */
+    public $appversion;
+
+    /**
+     * @var bool
+     */
+    public $base64;
+
+    /**
      * @var string
      */
     public $body;
+
+    /**
+     * @var string
+     */
+    public $codagente;
 
     /**
      * @var string
@@ -61,6 +74,8 @@ class Ticket extends ModelClass
     public function clear()
     {
         parent::clear();
+        $this->appversion = 0.0;
+        $this->base64 = false;
         $this->creationdate = date(self::DATETIME_STYLE);
         $this->printed = false;
     }
@@ -88,7 +103,7 @@ class Ticket extends ModelClass
 
     public function save(): bool
     {
-        $this->body = $this->sanitize($this->body);
+        $this->body = $this->base64 ? $this->body : $this->sanitize($this->body);
         $this->title = $this->toolBox()->utils()->noHtml($this->title);
 
         if ($this->printed && empty($this->printdelay)) {
