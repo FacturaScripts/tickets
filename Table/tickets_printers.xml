@@ -53,6 +53,11 @@
         <name>opencommand</name>
         <type>character varying(20)</type>
     </column>
+    <column>
+        <name>receipts</name>
+        <type>boolean</type>
+        <default>false</default>
+    </column>
     <constraint>
         <name>tickets_printers_pkey</name>
         <type>PRIMARY KEY (id)</type>

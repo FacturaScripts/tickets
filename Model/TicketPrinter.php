@@ -19,71 +19,51 @@ class TicketPrinter extends ModelClass
 
     const MAX_INACTIVITY = 600;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $apikey;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $creationdate;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $cutcommand;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $footer;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $head;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     public $id;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     public $idapikey;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $lastactivity;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     public $linelen;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $name;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $nick;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $opencommand;
+
+    /** bool */
+    public $receipts;
 
     public function clear()
     {
         parent::clear();
         $this->creationdate = date(self::DATE_STYLE);
         $this->linelen = 48;
+        $this->receipts = false;
     }
 
     public function delete(): bool

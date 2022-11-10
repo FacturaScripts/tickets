@@ -42,5 +42,10 @@
                 <widget type="textarea" fieldname="footer"/>
             </column>
         </group>
+        <group name="advanced" numcolumns="12">
+            <column name="show-receipts" order="100">
+                <widget type="checkbox" fieldname="receipts"/>
+            </column>
+        </group>
     </columns>
 </view>
