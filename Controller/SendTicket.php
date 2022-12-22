@@ -9,11 +9,11 @@ use FacturaScripts\Core\Base\Controller;
 use FacturaScripts\Core\Model\Base\SalesDocument;
 use FacturaScripts\Core\Model\ReciboCliente;
 use FacturaScripts\Plugins\Servicios\Model\ServicioAT;
-use FacturaScripts\Plugins\Tickets\Lib\Tickets\Gift;
-use FacturaScripts\Plugins\Tickets\Lib\Tickets\Normal;
-use FacturaScripts\Plugins\Tickets\Lib\Tickets\PaymentReceipt;
-use FacturaScripts\Plugins\Tickets\Lib\Tickets\Service;
-use FacturaScripts\Plugins\Tickets\Lib\Tickets\TicketBai;
+use FacturaScripts\Dinamic\Lib\Tickets\Gift;
+use FacturaScripts\Dinamic\Lib\Tickets\Normal;
+use FacturaScripts\Dinamic\Lib\Tickets\PaymentReceipt;
+use FacturaScripts\Dinamic\Lib\Tickets\Service;
+use FacturaScripts\Dinamic\Lib\Tickets\TicketBai;
 use FacturaScripts\Plugins\Tickets\Model\TicketPrinter;
 
 /**
