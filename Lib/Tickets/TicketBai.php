@@ -108,7 +108,7 @@ class TicketBai
             $escpos->text(static::sanitize($text) . "\n");
         }
 
-        if ($printer->receipts && $doc->modelClassName() === 'FacturaCliente') {
+        if ($printer->print_invoice_receipts && $doc->modelClassName() === 'FacturaCliente') {
             $escpos->text(static::sanitize(self::getReceipts($doc, $printer, $i18n)));
         }
 

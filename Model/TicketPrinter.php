@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2019-2022 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2019-2023 Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 
 namespace FacturaScripts\Plugins\Tickets\Model;
@@ -56,14 +56,14 @@ class TicketPrinter extends ModelClass
     public $opencommand;
 
     /** bool */
-    public $receipts;
+    public $print_invoice_receipts;
 
     public function clear()
     {
         parent::clear();
         $this->creationdate = date(self::DATE_STYLE);
         $this->linelen = 48;
-        $this->receipts = false;
+        $this->print_invoice_receipts = false;
     }
 
     public function delete(): bool
@@ -159,14 +159,14 @@ class TicketPrinter extends ModelClass
         }
 
         foreach (['ticketes', 'ticketprinteres'] as $resource) {
-            $apiaccess = new ApiAccess();
-            $apiaccess->allowdelete = false;
-            $apiaccess->allowget = true;
-            $apiaccess->allowpost = false;
-            $apiaccess->allowput = true;
-            $apiaccess->idapikey = $apikey->id;
-            $apiaccess->resource = $resource;
-            if (false === $apiaccess->save()) {
+            $access = new ApiAccess();
+            $access->allowdelete = false;
+            $access->allowget = true;
+            $access->allowpost = false;
+            $access->allowput = true;
+            $access->idapikey = $apikey->id;
+            $access->resource = $resource;
+            if (false === $access->save()) {
                 return false;
             }
         }

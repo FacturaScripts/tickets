@@ -67,6 +67,14 @@ class Normal
         $ticket->body .= $printer->getDashLine() . "\n";
         $ticket->body .= sprintf("%" . ($printer->linelen - 11) . "s", $i18n->trans('total')) . " "
             . sprintf("%10s", ToolBox::numbers()::format($doc->total)) . "\n";
+        if (property_exists($doc, 'tpv_efectivo') && $doc->tpv_efectivo > 0) {
+            $ticket->body .= sprintf("%" . ($printer->linelen - 11) . "s", $i18n->trans('cash')) . " "
+                . sprintf("%10s", ToolBox::numbers()::format($doc->tpv_efectivo)) . "\n";
+        }
+        if (property_exists($doc, 'tpv_cambio') && $doc->tpv_cambio > 0) {
+            $ticket->body .= sprintf("%" . ($printer->linelen - 11) . "s", $i18n->trans('money-change')) . " "
+                . sprintf("%10s", ToolBox::numbers()::format($doc->tpv_cambio)) . "\n";
+        }
 
         foreach (self::getSubtotals($doc, $lines) as $item) {
             $ticket->body .= sprintf("%" . ($printer->linelen - 11) . "s", $i18n->trans('tax-base') . ' ' . $item['taxp']) . " "
@@ -75,7 +83,7 @@ class Normal
                 . sprintf("%10s", ToolBox::numbers()::format($item['taxamount'])) . "\n";
         }
 
-        if ($printer->receipts && $doc->modelClassName() === 'FacturaCliente') {
+        if ($printer->print_invoice_receipts && $doc->modelClassName() === 'FacturaCliente') {
             $ticket->body .= self::getReceipts($doc, $printer, $i18n);
         }
 
