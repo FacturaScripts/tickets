@@ -9,6 +9,7 @@ use FacturaScripts\Core\Base\ToolBox;
 use FacturaScripts\Core\Model\Base\SalesDocument;
 use FacturaScripts\Core\Model\Base\SalesDocumentLine;
 use FacturaScripts\Dinamic\Model\Agente;
+use FacturaScripts\Dinamic\Model\Base\ModelCore;
 use FacturaScripts\Dinamic\Model\Impuesto;
 use FacturaScripts\Dinamic\Model\User;
 use FacturaScripts\Plugins\Tickets\Model\Ticket;
@@ -107,6 +108,10 @@ class TicketBai
             $escpos->text(static::sanitize($text) . "\n");
         }
 
+        if ($printer->receipts && $doc->modelClassName() === 'FacturaCliente') {
+            $escpos->text(static::sanitize(self::getReceipts($doc, $printer, $i18n)));
+        }
+
         // añadimos el qr de ticketbai
         if (isset($doc->tbaicodbar)) {
             $escpos->setJustification(Printer::JUSTIFY_CENTER);
@@ -131,6 +136,52 @@ class TicketBai
         $body = $escpos->getPrintConnector()->getData();
         $escpos->close();
         return base64_encode($body);
+    }
+
+    protected static function getReceipts($doc, $printer, $i18n): string
+    {
+        $paid = 0;
+        $total = 0;
+        $receipts = '';
+        $widthTotal = $printer->linelen - 22;
+
+        foreach ($doc->getReceipts() as $receipt) {
+            if (false === empty($receipts)) {
+                $receipts .= "\n";
+            }
+
+            $total += $receipt->importe;
+
+            if (empty($receipt->fechapago)) {
+                $datePaid = '';
+            } else {
+                $paid += $receipt->importe;
+                $datePaid = date(ModelCore::DATE_STYLE, strtotime($receipt->fechapago));
+            }
+
+            $receipts .= sprintf("%10s", date(ModelCore::DATE_STYLE, strtotime($receipt->vencimiento))) . " "
+                . sprintf("%10s", $datePaid) . " "
+                . sprintf("%" . $widthTotal . "s", ToolBox::numbers()::format($receipt->importe));
+        }
+
+        if (empty($receipts)) {
+            return '';
+        }
+
+        return "\n\n"
+            . sprintf("%" . $printer->linelen . "s", $i18n->trans('receipts')) . "\n"
+            . sprintf("%10s", $i18n->trans('expiration-abb')) . " "
+            . sprintf("%10s", $i18n->trans('paid')) . " "
+            . sprintf("%" . $widthTotal . "s", $i18n->trans('total')) . "\n"
+            . $printer->getDashLine() . "\n"
+            . $receipts . "\n"
+            . $printer->getDashLine() . "\n"
+            . sprintf("%" . ($printer->linelen - $widthTotal - 1) . "s", $i18n->trans('total')) . " "
+            . sprintf("%" . $widthTotal . "s", ToolBox::numbers()::format($total)) . "\n"
+            . sprintf("%" . ($printer->linelen - $widthTotal - 1) . "s", $i18n->trans('paid')) . " "
+            . sprintf("%" . $widthTotal . "s", ToolBox::numbers()::format($paid)) . "\n"
+            . sprintf("%" . ($printer->linelen - $widthTotal - 1) . "s", $i18n->trans('pending')) . " "
+            . sprintf("%" . $widthTotal . "s", ToolBox::numbers()::format($total - $paid)) . "\n\n";
     }
 
     /**
