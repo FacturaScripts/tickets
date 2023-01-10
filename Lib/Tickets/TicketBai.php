@@ -67,7 +67,8 @@ class TicketBai
         $escpos->text(static::sanitize("CP: " . $company->codpostal . ', ' . $company->ciudad) . "\n");
         $escpos->text(static::sanitize($company->tipoidfiscal . ': ' . $company->cifnif) . "\n\n");
         $escpos->text(static::sanitize($title) . "\n");
-        $escpos->text(static::sanitize($i18n->trans('date') . ': ' . $doc->fecha . ' ' . $doc->hora) . "\n\n");
+        $escpos->text(static::sanitize($i18n->trans('date') . ': ' . $doc->fecha . ' ' . $doc->hora) . "\n");
+        $escpos->text(static::sanitize($i18n->trans('customer') . ': ' . $doc->nombrecliente) . "\n\n");
 
         // añadimos la cabecera
         if ($printer->head) {

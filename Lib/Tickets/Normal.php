@@ -45,7 +45,8 @@ class Normal
             . $company->direccion . "\nCP: " . $company->codpostal . ', ' . $company->ciudad . "\n"
             . $company->tipoidfiscal . ': ' . $company->cifnif . "\n\n"
             . $ticket->title . "\n"
-            . $i18n->trans('date') . ': ' . $doc->fecha . ' ' . $doc->hora . "\n\n";
+            . $i18n->trans('date') . ': ' . $doc->fecha . ' ' . $doc->hora . "\n"
+            . $i18n->trans('customer') . ': ' . $doc->nombrecliente . "\n\n";
 
         if ($printer->head) {
             $ticket->body .= $printer->head . "\n\n";
