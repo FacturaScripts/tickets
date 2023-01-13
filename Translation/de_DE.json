@@ -8,6 +8,7 @@
     "no-printer-connected": "Ninguna impresora conectada o configurada.",
     "open-command": "Open command",
     "print-delay": "Tiempo impresión (s)",
+    "print-invoice-receipts": "Imprimir recibos en facturas",
     "print-ticket": "Ticket drucken",
     "printer": "Drucker",
     "printers": "Drucker",

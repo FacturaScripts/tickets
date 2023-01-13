@@ -8,6 +8,7 @@
     "no-printer-connected": "Cap impressora connectada o configurada.",
     "open-command": "Comanament d'obertura",
     "print-delay": "Temps impressió (s)",
+    "print-invoice-receipts": "Imprimir rebuts a les factures",
     "print-ticket": "Imprimir tiquet",
     "printer": "Impressora",
     "printers": "Impressores",

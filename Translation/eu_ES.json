@@ -8,6 +8,7 @@
     "no-printer-connected": "Ez dago inprimagailurik konektatuta edo konfiguratuta.",
     "open-command": "Irekitzeko komandoa",
     "print-delay": "Inprimatzeko denbora (s)",
+    "print-invoice-receipts": "Fakturetan ordainagiriak inprimatu",
     "print-ticket": "Tiketa inprimatu",
     "printer": "Imprimagailua",
     "printers": "Inprimagailuak",

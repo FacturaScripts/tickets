@@ -8,6 +8,7 @@
     "no-printer-connected": "No printer connected or configured.",
     "open-command": "Open command",
     "print-delay": "Printing delay (s)",
+    "print-invoice-receipts": "Imprimir recibos en facturas",
     "print-ticket": "Print ticket",
     "printer": "Printer",
     "printers": "Printers",

@@ -3,12 +3,12 @@
     "connect-a-printer-p": "Para conectar una impresora primero debe añadirla y después usar la aplicación para imprimir tickets.",
     "cut-command": "Comando de corte",
     "download-app": "Descargar App",
-    "expiration-abb": "Vcto.",
     "gift": "Regalo",
     "line-length": "Caracteres por línea",
     "no-printer-connected": "Ninguna impresora conectada o configurada.",
     "open-command": "Comando de apertura",
     "print-delay": "Tiempo impresión (s)",
+    "print-invoice-receipts": "Imprimir recibos en facturas",
     "print-ticket": "Imprimir ticket",
     "printer": "Impresora",
     "printers": "Impresoras",
@@ -16,6 +16,5 @@
     "ticket": "Ticket",
     "ticket-footer": "Pié de página",
     "ticket-head": "Cabecera",
-    "tickets": "Tickets",
-    "show-receipts": "Mostrar recibos"
+    "tickets": "Tickets"
 }
