@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2019-2022 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2019-2023 Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 
 namespace FacturaScripts\Plugins\Tickets;
@@ -47,8 +47,8 @@ class Init extends InitClass
 
     private function setAPI()
     {
-        // si se está usando megacity, no hacemos nada
-        if (defined('MC20_INSTALLATION')) {
+        // si hay clave de API en el config, no hacemos nada
+        if (defined('FS_API_KEY')) {
             return;
         }
 
