@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2019-2022 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2019-2023 Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 
 namespace FacturaScripts\Plugins\Tickets\Lib\Tickets;
@@ -117,7 +117,7 @@ class TicketBai
         if (isset($doc->tbaicodbar)) {
             $escpos->setJustification(Printer::JUSTIFY_CENTER);
             $escpos->text("\n" . $doc->tbaicodbar . "\n");
-            $escpos->qrCode($doc->tbaiurl, Printer::QR_ECLEVEL_L, 13);
+            $escpos->qrCode($doc->tbaiurl, Printer::QR_ECLEVEL_L, 7);
             $escpos->setJustification();
         }
 
@@ -129,7 +129,7 @@ class TicketBai
         }
 
         // dejamos espacio, abrimos el cajón y cortamos el papel
-        $escpos->feed(6);
+        $escpos->feed();
         $escpos->pulse();
         $escpos->cut();
 
