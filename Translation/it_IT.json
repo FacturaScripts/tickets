@@ -3,6 +3,7 @@
     "connect-a-printer-p": "To connect a printer you must first add it and then use the application to print tickets.",
     "cut-command": "Comando de corte",
     "download-app": "Download App",
+    "expiration-abb": "Vencimiento",
     "gift": "Gift",
     "line-length": "Line length",
     "no-printer-connected": "Ninguna impresora conectada o configurada.",

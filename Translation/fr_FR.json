@@ -3,6 +3,7 @@
     "connect-a-printer-p": "Pour connecter une imprimante, vous devez d'abord l'ajouter et ensuite utiliser l'application pour imprimer des tickets..",
     "cut-command": "Commande de coupe",
     "download-app": "Télécharger l'application",
+    "expiration-abb": "Vencimiento",
     "gift": "Cadeau",
     "line-length": "Longueur de ligne",
     "no-printer-connected": "Aucune imprimante connectée ou configurée.",

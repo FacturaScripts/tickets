@@ -3,6 +3,7 @@
     "connect-a-printer-p": "Per connectar una impressora primer ha d'afegir-la i després emprar l'aplicació per imprimir tiquets.",
     "cut-command": "Comanda de tallar",
     "download-app": "Descarregar App",
+    "expiration-abb": "Venciment",
     "gift": "Regal",
     "line-length": "Caràcters per línia",
     "no-printer-connected": "Cap impressora connectada o configurada.",
