@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2019-2022 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2019-2023 Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 
 namespace FacturaScripts\Plugins\Tickets\Lib\Tickets;
@@ -46,7 +46,11 @@ class Normal
             . $company->tipoidfiscal . ': ' . $company->cifnif . "\n\n"
             . $ticket->title . "\n"
             . $i18n->trans('date') . ': ' . $doc->fecha . ' ' . $doc->hora . "\n"
-            . $i18n->trans('customer') . ': ' . $doc->nombrecliente . "\n\n";
+            . $i18n->trans('customer') . ': ' . $doc->nombrecliente . "\n";
+        if ($doc->cifnif) {
+            $ticket->body .= $i18n->trans('cifnif') . ': ' . $doc->cifnif . "\n";
+        }
+        $ticket->body .= "\n";
 
         if ($printer->head) {
             $ticket->body .= $printer->head . "\n\n";
