@@ -8,6 +8,7 @@ namespace FacturaScripts\Plugins\Tickets\Lib\Tickets;
 use FacturaScripts\Core\Base\ToolBox;
 use FacturaScripts\Core\Model\Base\SalesDocument;
 use FacturaScripts\Core\Model\Base\SalesDocumentLine;
+use FacturaScripts\Core\Plugins;
 use FacturaScripts\Dinamic\Model\Agente;
 use FacturaScripts\Dinamic\Model\Base\ModelCore;
 use FacturaScripts\Dinamic\Model\Impuesto;
@@ -93,6 +94,7 @@ class TicketBai
                 . sprintf("%-" . $width . "s", $description) . " "
                 . sprintf("%10s", ToolBox::numbers()::format($total));
             $escpos->text(static::sanitize($text) . "\n");
+            $escpos->text(static::getTrazabilidad($line, $width));
         }
         $escpos->text($printer->getDashLine() . "\n");
 
@@ -129,6 +131,9 @@ class TicketBai
         }
 
         // dejamos espacio, abrimos el cajón y cortamos el papel
+        $escpos->feed();
+        $escpos->feed();
+        $escpos->feed();
         $escpos->feed();
         $escpos->pulse();
         $escpos->cut();
@@ -239,5 +244,68 @@ class TicketBai
         ];
 
         return preg_replace(array_keys($changes), $changes, $txt);
+    }
+
+    protected static function getTrazabilidad(SalesDocumentLine $line, int $width): string
+    {
+        if (empty($line->referencia) || false === Plugins::isEnabled('Trazabilidad')) {
+            return '';
+        }
+
+        // obtenemos los movimientos de trazabilidad de la línea
+        $MovimientosTraza = $line->getMovimientosLinea();
+        if (empty($MovimientosTraza)) {
+            return '';
+        }
+
+        $numSeries = [];
+        foreach ($MovimientosTraza as $movimientoTraza) {
+            $numSeries[] = $movimientoTraza->numserie;
+        }
+
+        $result = '';
+        $txtLine = '';
+        foreach ($numSeries as $numserie) {
+            // añadimos el numserie carácter por carácter
+            // cuando llegamos al ancho máximo, añadimos un salto de línea
+            // y continuamos con el mismo numserie hasta terminar con el
+            // después continuamos con el siguiente numserie
+            // separamos cada numserie con una coma
+            $numserieLength = strlen($numserie);
+            for ($i = 0; $i < $numserieLength; $i++) {
+                if (strlen($txtLine) + 1 > $width) {
+                    $result .= sprintf("%5s", '') . " "
+                        . sprintf("%-" . $width . "s", $txtLine) . " "
+                        . sprintf("%10s", '') . "\n";
+                    $txtLine = '';
+                }
+
+                $txtLine .= $numserie[$i];
+            }
+
+            if (strlen($txtLine) + 2 > $width) {
+                $result .= sprintf("%5s", '') . " "
+                    . sprintf("%-" . $width . "s", $txtLine) . " "
+                    . sprintf("%10s", '') . "\n";
+                $txtLine = ', ';
+                continue;
+            }
+
+            $txtLine .= ', ';
+        }
+
+        // comprobamos si los 2 últimos caracteres son una coma y un espacio
+        // si es así, los eliminamos
+        if (substr($txtLine, -2) === ', ') {
+            $txtLine = substr($txtLine, 0, -2);
+        }
+
+        if (empty($txtLine)) {
+            return '';
+        }
+
+        return $result . sprintf("%5s", '') . " "
+            . sprintf("%-" . $width . "s", $txtLine) . " "
+            . sprintf("%10s", '') . "\n";
     }
 }
