@@ -8,7 +8,6 @@ namespace FacturaScripts\Plugins\Tickets\Lib\Tickets;
 use FacturaScripts\Core\Base\ToolBox;
 use FacturaScripts\Core\Model\Base\SalesDocument;
 use FacturaScripts\Core\Model\Base\SalesDocumentLine;
-use FacturaScripts\Core\Plugins;
 use FacturaScripts\Dinamic\Model\Agente;
 use FacturaScripts\Dinamic\Model\Base\ModelCore;
 use FacturaScripts\Dinamic\Model\Impuesto;
@@ -214,7 +213,8 @@ class Normal
 
     protected static function getTrazabilidad(SalesDocumentLine $line, int $width): string
     {
-        if (empty($line->referencia) || false === Plugins::isEnabled('Trazabilidad')) {
+        $class = "\\FacturaScripts\\Dinamic\\Model\\ProductoLote";
+        if (empty($line->referencia) || false === class_exists($class)) {
             return '';
         }
 
@@ -241,8 +241,8 @@ class Normal
             for ($i = 0; $i < $numserieLength; $i++) {
                 if (strlen($txtLine) + 1 > $width) {
                     $result .= sprintf("%5s", '') . " "
-                    . sprintf("%-" . $width . "s", $txtLine) . " "
-                    . sprintf("%10s", '') . "\n";
+                        . sprintf("%-" . $width . "s", $txtLine) . " "
+                        . sprintf("%10s", '') . "\n";
                     $txtLine = '';
                 }
 

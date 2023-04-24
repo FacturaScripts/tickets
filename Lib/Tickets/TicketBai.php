@@ -8,7 +8,6 @@ namespace FacturaScripts\Plugins\Tickets\Lib\Tickets;
 use FacturaScripts\Core\Base\ToolBox;
 use FacturaScripts\Core\Model\Base\SalesDocument;
 use FacturaScripts\Core\Model\Base\SalesDocumentLine;
-use FacturaScripts\Core\Plugins;
 use FacturaScripts\Dinamic\Model\Agente;
 use FacturaScripts\Dinamic\Model\Base\ModelCore;
 use FacturaScripts\Dinamic\Model\Impuesto;
@@ -248,7 +247,8 @@ class TicketBai
 
     protected static function getTrazabilidad(SalesDocumentLine $line, int $width): string
     {
-        if (empty($line->referencia) || false === Plugins::isEnabled('Trazabilidad')) {
+        $class = "\\FacturaScripts\\Dinamic\\Model\\ProductoLote";
+        if (empty($line->referencia) || false === class_exists($class)) {
             return '';
         }
 
