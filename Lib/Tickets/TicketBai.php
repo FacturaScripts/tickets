@@ -97,18 +97,25 @@ class TicketBai
         }
         $escpos->text($printer->getDashLine() . "\n");
 
-        // añadimos los totales
-        $text = sprintf("%" . ($printer->linelen - 11) . "s", $i18n->trans('total')) . " "
-            . sprintf("%10s", ToolBox::numbers()::format($doc->total));
-        $escpos->text(static::sanitize($text) . "\n");
-
         foreach (self::getSubtotals($doc, $lines) as $item) {
             $text = sprintf("%" . ($printer->linelen - 11) . "s", $i18n->trans('tax-base') . ' ' . $item['taxp']) . " "
                 . sprintf("%10s", ToolBox::numbers()::format($item['taxbase'])) . "\n"
                 . sprintf("%" . ($printer->linelen - 11) . "s", $item['tax']) . " "
                 . sprintf("%10s", ToolBox::numbers()::format($item['taxamount']));
             $escpos->text(static::sanitize($text) . "\n");
+
+            if ($item['taxsurcharge']) {
+                $text = sprintf("%" . ($printer->linelen - 11) . "s", "RE " . $item['taxsurchargep']) . " "
+                    . sprintf("%10s", ToolBox::numbers()::format($item['taxsurcharge']));
+                $escpos->text(static::sanitize($text) . "\n");
+            }
         }
+        $escpos->text($printer->getDashLine() . "\n");
+
+        // añadimos los totales
+        $text = sprintf("%" . ($printer->linelen - 11) . "s", $i18n->trans('total')) . " "
+            . sprintf("%10s", ToolBox::numbers()::format($doc->total));
+        $escpos->text(static::sanitize($text) . "\n");
 
         if ($printer->print_invoice_receipts && $doc->modelClassName() === 'FacturaCliente') {
             $escpos->text(static::sanitize(self::getReceipts($doc, $printer, $i18n)));
@@ -201,25 +208,27 @@ class TicketBai
         $eud = $doc->getEUDiscount();
 
         foreach ($lines as $line) {
-            if (!isset($subtotals[$line->codimpuesto])) {
-                $subtotals[$line->codimpuesto] = [
+            $key = $line->iva . '_' . $line->recargo;
+            if (!isset($subtotals[$key])) {
+                $subtotals[$key] = [
                     'tax' => $line->codimpuesto,
                     'taxp' => $line->iva . '%',
                     'taxbase' => 0,
                     'taxamount' => 0,
-                    'taxsurcharge' => 0
+                    'taxsurcharge' => 0,
+                    'taxsurchargep' => $line->recargo . '%',
                 ];
 
                 $impuesto = new Impuesto();
                 if ($line->codimpuesto && $impuesto->loadFromCode($line->codimpuesto)) {
-                    $subtotals[$line->codimpuesto]['tax'] = $impuesto->descripcion;
+                    $subtotals[$key]['tax'] = $impuesto->descripcion;
                 }
             }
 
 
-            $subtotals[$line->codimpuesto]['taxbase'] += $line->pvptotal * $eud;
-            $subtotals[$line->codimpuesto]['taxamount'] += $line->pvptotal * $eud * $line->iva / 100;
-            $subtotals[$line->codimpuesto]['taxsurcharge'] += $line->pvptotal * $eud * $line->recargo / 100;
+            $subtotals[$key]['taxbase'] += $line->pvptotal * $eud;
+            $subtotals[$key]['taxamount'] += $line->pvptotal * $eud * $line->iva / 100;
+            $subtotals[$key]['taxsurcharge'] += $line->pvptotal * $eud * $line->recargo / 100;
         }
 
         return $subtotals;

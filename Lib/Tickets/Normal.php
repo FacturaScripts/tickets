@@ -71,6 +71,20 @@ class Normal
             $ticket->body .= static::getTrazabilidad($line, $width);
         }
         $ticket->body .= $printer->getDashLine() . "\n";
+
+        foreach (self::getSubtotals($doc, $lines) as $item) {
+            $ticket->body .= sprintf("%" . ($printer->linelen - 11) . "s", $i18n->trans('tax-base') . ' ' . $item['taxp']) . " "
+                . sprintf("%10s", ToolBox::numbers()::format($item['taxbase'])) . "\n"
+                . sprintf("%" . ($printer->linelen - 11) . "s", $item['tax']) . " "
+                . sprintf("%10s", ToolBox::numbers()::format($item['taxamount'])) . "\n";
+
+            if ($item['taxsurcharge']) {
+                $ticket->body .= sprintf("%" . ($printer->linelen - 11) . "s", "RE " . $item['taxsurchargep']) . " "
+                    . sprintf("%10s", ToolBox::numbers()::format($item['taxsurcharge'])) . "\n";
+            }
+        }
+        $ticket->body .= $printer->getDashLine() . "\n";
+
         $ticket->body .= sprintf("%" . ($printer->linelen - 11) . "s", $i18n->trans('total')) . " "
             . sprintf("%10s", ToolBox::numbers()::format($doc->total)) . "\n";
         if (property_exists($doc, 'tpv_efectivo') && $doc->tpv_efectivo > 0) {
@@ -80,13 +94,6 @@ class Normal
         if (property_exists($doc, 'tpv_cambio') && $doc->tpv_cambio > 0) {
             $ticket->body .= sprintf("%" . ($printer->linelen - 11) . "s", $i18n->trans('money-change')) . " "
                 . sprintf("%10s", ToolBox::numbers()::format($doc->tpv_cambio)) . "\n";
-        }
-
-        foreach (self::getSubtotals($doc, $lines) as $item) {
-            $ticket->body .= sprintf("%" . ($printer->linelen - 11) . "s", $i18n->trans('tax-base') . ' ' . $item['taxp']) . " "
-                . sprintf("%10s", ToolBox::numbers()::format($item['taxbase'])) . "\n"
-                . sprintf("%" . ($printer->linelen - 11) . "s", $item['tax']) . " "
-                . sprintf("%10s", ToolBox::numbers()::format($item['taxamount'])) . "\n";
         }
 
         if ($printer->print_invoice_receipts && $doc->modelClassName() === 'FacturaCliente') {
@@ -187,25 +194,27 @@ class Normal
         $eud = $doc->getEUDiscount();
 
         foreach ($lines as $line) {
-            if (!isset($subtotals[$line->codimpuesto])) {
-                $subtotals[$line->codimpuesto] = [
+            $key = $line->iva . '_' . $line->recargo;
+            if (!isset($subtotals[$key])) {
+                $subtotals[$key] = [
                     'tax' => $line->codimpuesto,
                     'taxp' => $line->iva . '%',
                     'taxbase' => 0,
                     'taxamount' => 0,
-                    'taxsurcharge' => 0
+                    'taxsurcharge' => 0,
+                    'taxsurchargep' => $line->recargo . '%',
                 ];
 
                 $impuesto = new Impuesto();
                 if ($line->codimpuesto && $impuesto->loadFromCode($line->codimpuesto)) {
-                    $subtotals[$line->codimpuesto]['tax'] = $impuesto->descripcion;
+                    $subtotals[$key]['tax'] = $impuesto->descripcion;
                 }
             }
 
 
-            $subtotals[$line->codimpuesto]['taxbase'] += $line->pvptotal * $eud;
-            $subtotals[$line->codimpuesto]['taxamount'] += $line->pvptotal * $eud * $line->iva / 100;
-            $subtotals[$line->codimpuesto]['taxsurcharge'] += $line->pvptotal * $eud * $line->recargo / 100;
+            $subtotals[$key]['taxbase'] += $line->pvptotal * $eud;
+            $subtotals[$key]['taxamount'] += $line->pvptotal * $eud * $line->iva / 100;
+            $subtotals[$key]['taxsurcharge'] += $line->pvptotal * $eud * $line->recargo / 100;
         }
 
         return $subtotals;
