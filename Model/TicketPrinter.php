@@ -58,12 +58,16 @@ class TicketPrinter extends ModelClass
     /** bool */
     public $print_invoice_receipts;
 
+    /** bool */
+    public $print_lines_net;
+
     public function clear()
     {
         parent::clear();
         $this->creationdate = date(self::DATE_STYLE);
         $this->linelen = 48;
         $this->print_invoice_receipts = false;
+        $this->print_lines_net = false;
     }
 
     public function delete(): bool

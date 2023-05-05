@@ -56,21 +56,8 @@ class Normal
             $ticket->body .= $printer->head . "\n\n";
         }
 
-        $width = $printer->linelen - 17;
-        $ticket->body .= sprintf("%5s", $i18n->trans('quantity-abb')) . " "
-            . sprintf("%-" . $width . "s", $i18n->trans('description')) . " "
-            . sprintf("%11s", $i18n->trans('total')) . "\n";
-        $ticket->body .= $printer->getDashLine() . "\n";
         $lines = $doc->getLines();
-        foreach ($lines as $line) {
-            $description = mb_substr($line->descripcion, 0, $width);
-            $total = $line->pvptotal * (100 + $line->iva + $line->recargo) / 100;
-            $ticket->body .= sprintf("%5s", $line->cantidad) . " "
-                . sprintf("%-" . $width . "s", $description) . " "
-                . sprintf("%10s", ToolBox::numbers()::format($total)) . "\n";
-            $ticket->body .= static::getTrazabilidad($line, $width);
-        }
-        $ticket->body .= $printer->getDashLine() . "\n";
+        static::printLines($printer, $ticket, $lines);
 
         foreach (self::getSubtotals($doc, $lines) as $item) {
             $ticket->body .= sprintf("%" . ($printer->linelen - 11) . "s", $i18n->trans('tax-base') . ' ' . $item['taxp']) . " "
@@ -282,5 +269,40 @@ class Normal
         return $result . sprintf("%5s", '') . " "
             . sprintf("%-" . $width . "s", $txtLine) . " "
             . sprintf("%10s", '') . "\n";
+    }
+
+    protected static function printLines(TicketPrinter $printer, Ticket $ticket, array $lines): void
+    {
+        $i18n = ToolBox::i18n();
+        $width = $printer->linelen - 17;
+
+        $ticket->body .= sprintf("%5s", $i18n->trans('quantity-abb')) . " "
+            . sprintf("%-" . $width . "s", $i18n->trans('description')) . " ";
+
+        if ($printer->print_lines_net) {
+            $ticket->body .= sprintf("%11s", $i18n->trans('net')) . "\n";
+        } else {
+            $ticket->body .= sprintf("%11s", $i18n->trans('total')) . "\n";
+        }
+
+        $ticket->body .= $printer->getDashLine() . "\n";
+
+        foreach ($lines as $line) {
+            $description = mb_substr($line->descripcion, 0, $width);
+
+            $ticket->body .= sprintf("%5s", $line->cantidad) . " "
+                . sprintf("%-" . $width . "s", $description) . " ";
+
+            if ($printer->print_lines_net) {
+                $ticket->body .= sprintf("%10s", ToolBox::numbers()::format($line->pvptotal)) . "\n";
+            } else {
+                $total = $line->pvptotal * (100 + $line->iva + $line->recargo) / 100;
+                $ticket->body .= sprintf("%10s", ToolBox::numbers()::format($total)) . "\n";
+            }
+
+            $ticket->body .= static::getTrazabilidad($line, $width);
+        }
+
+        $ticket->body .= $printer->getDashLine() . "\n";
     }
 }

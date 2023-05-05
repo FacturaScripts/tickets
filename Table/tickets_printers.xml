@@ -58,6 +58,11 @@
         <type>boolean</type>
         <default>false</default>
     </column>
+    <column>
+        <name>print_lines_net</name>
+        <type>boolean</type>
+        <default>false</default>
+    </column>
     <constraint>
         <name>tickets_printers_pkey</name>
         <type>PRIMARY KEY (id)</type>
