@@ -30,18 +30,21 @@ class Normal
     public static function print($doc, TicketPrinter $printer, User $user, Agente $agent = null): bool
     {
         $i18n = ToolBox::i18n();
+        $company = $doc->getCompany();
 
         $ticket = new Ticket();
         $ticket->idprinter = $printer->id;
         $ticket->nick = $user->nick;
         $ticket->title = $i18n->trans($doc->modelClassName() . '-min') . ' ' . $doc->codigo;
-
         if ($agent) {
             $ticket->codagente = $agent->codagente;
         }
 
-        $company = $doc->getCompany();
-        $ticket->body = static::getBigText($company->nombre, $printer->linelen)
+        if ($printer->print_stored_logo) {
+            $ticket->body = "\x1Cp\x01\x00\x00";
+        }
+
+        $ticket->body .= static::getBigText($company->nombre, $printer->linelen)
             . $company->direccion . "\nCP: " . $company->codpostal . ', ' . $company->ciudad . "\n"
             . $company->tipoidfiscal . ': ' . $company->cifnif . "\n\n"
             . $ticket->title . "\n"
