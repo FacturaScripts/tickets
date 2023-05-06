@@ -10,6 +10,8 @@
     "open-command": "Open command",
     "print-delay": "Tiempo impresión (s)",
     "print-invoice-receipts": "Imprimir recibos en facturas",
+    "print-lines-net": "Imprimir importe neto en las líneas",
+    "print-stored-logo": "Imprimir logotipo almacenado en la impresora",
     "print-ticket": "Ticket drucken",
     "printer": "Drucker",
     "printers": "Drucker",

@@ -10,6 +10,8 @@
     "open-command": "Comado de apertura",
     "print-delay": "Tempo impresión (s)",
     "print-invoice-receipts": "Imprimir recibos en facturas",
+    "print-lines-net": "Imprimir importe neto en las líneas",
+    "print-stored-logo": "Imprimir logotipo almacenado en la impresora",
     "print-ticket": "Imprimir ticket",
     "printer": "Impresora",
     "printers": "Impresoras",

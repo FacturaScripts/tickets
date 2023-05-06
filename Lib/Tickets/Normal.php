@@ -159,7 +159,7 @@ class Normal
         return "\n\n"
             . sprintf("%" . $printer->linelen . "s", $i18n->trans('receipts')) . "\n"
             . sprintf("%10s", $i18n->trans('expiration-abb')) . " "
-            . sprintf("%10s", $i18n->trans('paid')) . " "
+            . sprintf("%10s", $i18n->trans('paid'))
             . sprintf("%" . $widthTotal . "s", $i18n->trans('total')) . "\n"
             . $printer->getDashLine() . "\n"
             . $receipts . "\n"
@@ -174,7 +174,7 @@ class Normal
 
     /**
      * @param SalesDocument $doc
-     * @param SalesDocumentLine $lines
+     * @param SalesDocumentLine[] $lines
      *
      * @return array
      */
