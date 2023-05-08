@@ -46,10 +46,13 @@
             <column name="print-stored-logo" order="120">
                 <widget type="checkbox" fieldname="print_stored_logo"/>
             </column>
-            <column name="print-lines-net" order="130">
+            <column name="print-lines-price" order="130">
+                <widget type="checkbox" fieldname="print_lines_price"/>
+            </column>
+            <column name="print-lines-net" order="140">
                 <widget type="checkbox" fieldname="print_lines_net"/>
             </column>
-            <column name="print-invoice-receipts" order="140">
+            <column name="print-invoice-receipts" order="150">
                 <widget type="checkbox" fieldname="print_invoice_receipts"/>
             </column>
         </group>

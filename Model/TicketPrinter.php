@@ -62,6 +62,9 @@ class TicketPrinter extends ModelClass
     public $print_lines_net;
 
     /** bool */
+    public $print_lines_price;
+
+    /** bool */
     public $print_stored_logo;
 
     public function clear()
@@ -71,6 +74,7 @@ class TicketPrinter extends ModelClass
         $this->linelen = 48;
         $this->print_invoice_receipts = false;
         $this->print_lines_net = false;
+        $this->print_lines_price = false;
         $this->print_stored_logo = false;
     }
 

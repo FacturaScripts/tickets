@@ -296,6 +296,15 @@ class Normal
             $ticket->body .= sprintf("%5s", $line->cantidad) . " "
                 . sprintf("%-" . $width . "s", $description) . " ";
 
+            if ($printer->print_lines_price) {
+                $price = $printer->print_lines_net ?
+                    $line->pvpunitario :
+                    $line->pvpunitario * (100 + $line->iva + $line->recargo) / 100;
+
+                $ticket->body .= "\n" . sprintf("%5s", '') . " "
+                    . sprintf("%-" . $width . "s", $i18n->trans('price') . ': ' . ToolBox::numbers()::format($price)) . " ";
+            }
+
             if ($printer->print_lines_net) {
                 $ticket->body .= sprintf("%10s", ToolBox::numbers()::format($line->pvptotal)) . "\n";
             } else {

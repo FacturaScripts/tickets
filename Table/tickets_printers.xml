@@ -64,6 +64,11 @@
         <default>false</default>
     </column>
     <column>
+        <name>print_lines_price</name>
+        <type>boolean</type>
+        <default>false</default>
+    </column>
+    <column>
         <name>print_stored_logo</name>
         <type>boolean</type>
         <default>false</default>
