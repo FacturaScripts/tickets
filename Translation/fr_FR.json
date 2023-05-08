@@ -11,6 +11,7 @@
     "print-delay": "Tiempo impresión (s)",
     "print-invoice-receipts": "Imprimir recibos en facturas",
     "print-lines-net": "Imprimir importe neto en las líneas",
+    "print-lines-price": "Imprimir precios en las líneas",
     "print-stored-logo": "Imprimir logotipo almacenado en la impresora",
     "print-ticket": "Imprimer le ticket",
     "printer": "Imprimante",
