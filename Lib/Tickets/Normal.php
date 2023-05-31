@@ -6,8 +6,10 @@
 namespace FacturaScripts\Plugins\Tickets\Lib\Tickets;
 
 use FacturaScripts\Core\Base\ToolBox;
+use FacturaScripts\Core\Base\Translator;
 use FacturaScripts\Core\Model\Base\SalesDocument;
 use FacturaScripts\Core\Model\Base\SalesDocumentLine;
+use FacturaScripts\Core\Plugins;
 use FacturaScripts\Dinamic\Model\Agente;
 use FacturaScripts\Dinamic\Model\Base\ModelCore;
 use FacturaScripts\Dinamic\Model\Impuesto;
@@ -50,9 +52,24 @@ class Normal
             . $ticket->title . "\n"
             . $i18n->trans('date') . ': ' . $doc->fecha . ' ' . $doc->hora . "\n"
             . $i18n->trans('customer') . ': ' . $doc->nombrecliente . "\n";
+
         if ($doc->cifnif) {
             $ticket->body .= $i18n->trans('cifnif') . ': ' . $doc->cifnif . "\n";
         }
+
+        if (in_array($doc->modelClassName(), ['FacturaCliente', 'FacturaProveedor'])
+            && Plugins::enable('fsRepublicaDominicana')) {
+            if (property_exists($doc, 'numeroncf') && $doc->numeroncf) {
+                $ticket->body .= $i18n->trans('ncf-number') . ': ' . $doc->numeroncf . "\n";
+            }
+            if (property_exists($doc, 'tipocomprobante') && $doc->tipocomprobante) {
+                $ticket->body .= $i18n->trans('tipo_comprobante') . ': ' . static::getTipoComprobanteRD($i18n, $doc->tipocomprobante) . "\n";
+            }
+            if (property_exists($doc, 'ncffechavencimiento') && $doc->ncffechavencimiento) {
+                $ticket->body .= $i18n->trans('due-date') . ': ' . $doc->ncffechavencimiento . "\n";
+            }
+        }
+
         $ticket->body .= "\n";
 
         if ($printer->head) {
@@ -208,6 +225,36 @@ class Normal
         }
 
         return $subtotals;
+    }
+
+    protected static function getTipoComprobanteRD(Translator $i18n, string $numero): string
+    {
+        switch ($numero) {
+            case '01':
+                return $i18n->trans('desc-ncf-type-01');
+            case '02':
+                return $i18n->trans('desc-ncf-type-02');
+            case '03':
+                return $i18n->trans('desc-ncf-type-03');
+            case '04':
+                return $i18n->trans('desc-ncf-type-04');
+            case '11':
+                return $i18n->trans('desc-ncf-type-11');
+            case '12':
+                return $i18n->trans('desc-ncf-type-12');
+            case '13':
+                return $i18n->trans('desc-ncf-type-13');
+            case '14':
+                return $i18n->trans('desc-ncf-type-14');
+            case '15':
+                return $i18n->trans('desc-ncf-type-15');
+            case '16':
+                return $i18n->trans('desc-ncf-type-16');
+            case '17':
+                return $i18n->trans('desc-ncf-type-17');
+            default:
+                return '';
+        }
     }
 
     protected static function getTrazabilidad(SalesDocumentLine $line, int $width): string
