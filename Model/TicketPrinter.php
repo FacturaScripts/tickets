@@ -12,6 +12,7 @@ use FacturaScripts\Dinamic\Model\ApiKey;
 
 /**
  * @author Carlos Garcia Gomez <carlos@facturascripts.com>
+ * @author Daniel Fernández Giménez <hola@danielfg.es>
  */
 class TicketPrinter extends ModelClass
 {
@@ -28,11 +29,20 @@ class TicketPrinter extends ModelClass
     /** @var string */
     public $cutcommand;
 
+    /** @var int */
+    public $font_size;
+
     /** @var string */
     public $footer;
 
+    /** @var int */
+    public $footer_font_size;
+
     /** @var string */
     public $head;
+
+    /** @var int */
+    public $head_font_size;
 
     /** @var int */
     public $id;
@@ -56,7 +66,19 @@ class TicketPrinter extends ModelClass
     public $opencommand;
 
     /** bool */
+    public $print_comp_shortname;
+
+    /** bool */
+    public $print_comp_tlf;
+
+    /** bool */
     public $print_invoice_receipts;
+
+    /** bool */
+    public $print_lines_description;
+
+    /** bool */
+    public $print_lines_discount;
 
     /** bool */
     public $print_lines_net;
@@ -65,16 +87,39 @@ class TicketPrinter extends ModelClass
     public $print_lines_price;
 
     /** bool */
+    public $print_lines_price_unitary;
+
+    /** bool */
+    public $print_lines_quantity;
+
+    /** bool */
+    public $print_lines_reference;
+
+    /** bool */
+    public $print_lines_total;
+
+    /** bool */
     public $print_stored_logo;
 
     public function clear()
     {
         parent::clear();
         $this->creationdate = date(self::DATE_STYLE);
+        $this->font_size = 1;
+        $this->footer_font_size = 1;
+        $this->head_font_size = 1;
         $this->linelen = 48;
+        $this->print_comp_shortname = false;
+        $this->print_comp_tlf = false;
         $this->print_invoice_receipts = false;
+        $this->print_lines_description = true;
+        $this->print_lines_discount = false;
         $this->print_lines_net = false;
         $this->print_lines_price = false;
+        $this->print_lines_price_unitary = false;
+        $this->print_lines_quantity = true;
+        $this->print_lines_reference = false;
+        $this->print_lines_total = false;
         $this->print_stored_logo = false;
     }
 

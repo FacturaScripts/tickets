@@ -5,69 +5,34 @@
 
 namespace FacturaScripts\Plugins\Tickets\Lib\Tickets;
 
-use FacturaScripts\Core\Base\ToolBox;
-use FacturaScripts\Core\Model\Base\SalesDocument;
-use FacturaScripts\Dinamic\Model\Agente;
-use FacturaScripts\Dinamic\Model\User;
-use FacturaScripts\Plugins\Tickets\Model\Ticket;
-use FacturaScripts\Plugins\Tickets\Model\TicketPrinter;
+use FacturaScripts\Dinamic\Model\Ticket;
+use FacturaScripts\Dinamic\Model\TicketPrinter;
 
 /**
  * @author Carlos Garcia Gomez <carlos@facturascripts.com>
+ * @author Daniel Fernández Giménez <hola@danielfg.es>
  */
 class Gift extends Normal
 {
-    /**
-     * @param SalesDocument $doc
-     * @param TicketPrinter $printer
-     * @param User $user
-     * @param Agente|null $agent
-     * @return bool
-     */
-    public static function print($doc, TicketPrinter $printer, User $user, Agente $agent = null): bool
+    protected static function setBody($doc, TicketPrinter $printer): void
     {
-        $ticket = new Ticket();
-        $ticket->idprinter = $printer->id;
-        $ticket->nick = $user->nick;
-        $ticket->title = ToolBox::i18n()->trans($doc->modelClassName() . '-min') . ' ' . $doc->codigo;
-        if ($agent) {
-            $ticket->codagente = $agent->codagente;
-        }
+        static::$escpos->setTextSize($printer->font_size, $printer->font_size);
 
-        if ($printer->print_stored_logo) {
-            $ticket->body = "\x1Cp\x01\x00\x00";
-        }
+        $width = $printer->linelen - 17;
+        $text = sprintf("%5s", static::$i18n->trans('quantity-abb')) . " "
+            . sprintf("%-" . $width . "s", static::$i18n->trans('description')) . " ";
 
-        $company = $doc->getCompany();
-        $ticket->body .= "\x1B" . "!" . "\x38" . $company->nombre . "\n" . "\x1B" . "!" . "\x00"
-            . $company->direccion . "\nCP: " . $company->codpostal . ', ' . $company->ciudad . "\n"
-            . $company->tipoidfiscal . ': ' . $company->cifnif . "\n\n"
-            . $ticket->title . "\n"
-            . ToolBox::i18n()->trans('date') . ': ' . $doc->fecha . ' ' . $doc->hora . "\n\n";
+        static::$escpos->text(static::sanitize($text) . "\n");
+        static::$escpos->text($printer->getDashLine() . "\n");
 
-        if ($printer->head) {
-            $ticket->body .= $printer->head . "\n\n";
-        }
-
-        $width = $printer->linelen - 6;
-        $ticket->body .= sprintf("%5s", ToolBox::i18n()->trans('quantity-abb')) . " "
-            . sprintf("%-" . $width . "s", ToolBox::i18n()->trans('description')) . "\n";
-        $ticket->body .= $printer->getDashLine() . "\n";
-        $lines = $doc->getLines();
-        foreach ($lines as $line) {
+        foreach ($doc->getLines() as $line) {
             $description = mb_substr($line->descripcion, 0, $width);
-            $ticket->body .= sprintf("%5s", $line->cantidad) . " "
-                . sprintf("%-" . $width . "s", $description) . "\n";
-        }
-        $ticket->body .= $printer->getDashLine();
+            $text = sprintf("%5s", $line->cantidad) . " "
+                . sprintf("%-" . $width . "s", $description) . " ";
 
-        if ($printer->footer) {
-            $ticket->body .= "\n\n" . $printer->footer;
+            static::$escpos->text(static::sanitize($text) . "\n");
         }
 
-        $ticket->body .= "\n\n\n\n\n\n"
-            . $printer->getCommandStr('open') . "\n"
-            . $printer->getCommandStr('cut') . "\n";
-        return $ticket->save();
+        static::$escpos->text($printer->getDashLine() . "\n");
     }
 }

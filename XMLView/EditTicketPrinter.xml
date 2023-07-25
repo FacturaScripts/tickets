@@ -2,10 +2,11 @@
 <!--
  * Copyright (C) 2019-2023 Carlos Garcia Gomez <carlos@facturascripts.com>
  * Author Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Author Daniel Fernández Giménez <hola@danielfg.es>
 -->
 <view>
     <columns>
-        <group name="data" numcolumns="12">
+        <group name="data" numcolumns="12" valign="bottom">
             <column name="code" display="none" order="100">
                 <widget type="text" fieldname="id"/>
             </column>
@@ -35,25 +36,56 @@
             <column name="last-activity" numcolumns="3" order="180">
                 <widget type="datetime" fieldname="lastactivity" readonly="true"/>
             </column>
+            <column name="font-size" numcolumns="3" order="190">
+                <widget type="number" fieldname="font_size" min="1" max="8" step="1" required="true"/>
+            </column>
+            <column name="print-invoice-receipts" order="200">
+                <widget type="checkbox" fieldname="print_invoice_receipts"/>
+            </column>
         </group>
-        <group name="advanced" numcolumns="12">
-            <column name="ticket-head" numcolumns="6" order="100">
+        <group name="header" title="header-ticket" numcolumns="12" valign="bottom">
+            <column name="ticket-head" numcolumns="12" order="100">
                 <widget type="textarea" fieldname="head"/>
             </column>
-            <column name="ticket-footer" numcolumns="6" order="110">
-                <widget type="textarea" fieldname="footer"/>
+            <column name="header-font-size" title="font-size" numcolumns="3" order="110">
+                <widget type="number" fieldname="head_font_size" min="1" max="8" step="1" required="true"/>
             </column>
-            <column name="print-stored-logo" order="120">
-                <widget type="checkbox" fieldname="print_stored_logo"/>
+            <column name="print-comp-shortname" order="120">
+                <widget type="checkbox" fieldname="print_comp_shortname"/>
+            </column>
+            <column name="print-comp-tlf" order="120">
+                <widget type="checkbox" fieldname="print_comp_tlf"/>
+            </column>
+        </group>
+        <group name="lines" title="lines" numcolumns="12" valign="bottom">
+            <column name="print-lines-reference" order="100">
+                <widget type="checkbox" fieldname="print_lines_reference"/>
+            </column>
+            <column name="print-lines-description" order="110">
+                <widget type="checkbox" fieldname="print_lines_description"/>
+            </column>
+            <column name="print-lines-quantity" order="120">
+                <widget type="checkbox" fieldname="print_lines_quantity"/>
             </column>
             <column name="print-lines-price" order="130">
                 <widget type="checkbox" fieldname="print_lines_price"/>
             </column>
-            <column name="print-lines-net" order="140">
+            <column name="print-lines-discount" order="140">
+                <widget type="checkbox" fieldname="print_lines_discount"/>
+            </column>
+            <column name="print-lines-net" order="150">
                 <widget type="checkbox" fieldname="print_lines_net"/>
             </column>
-            <column name="print-invoice-receipts" order="150">
-                <widget type="checkbox" fieldname="print_invoice_receipts"/>
+            <column name="print-lines-total" order="160">
+                <widget type="checkbox" fieldname="print_lines_total"/>
+            </column>
+        </group>
+        <group name="footer" title="footer-ticket" numcolumns="12" valign="bottom">
+            <column name="ticket-footer" numcolumns="12" order="100">
+                <widget type="textarea" fieldname="footer"/>
+            </column>
+            <column name="footer-font-size" title="font-size" numcolumns="3" order="110">
+                <widget type="number" fieldname="footer_font_size" min="1" max="8" step="1" required="true"/>
             </column>
         </group>
     </columns>
