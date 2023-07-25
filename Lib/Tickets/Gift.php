@@ -18,19 +18,49 @@ class Gift extends Normal
     {
         static::$escpos->setTextSize($printer->font_size, $printer->font_size);
 
+        $th = '';
         $width = $printer->linelen - 17;
-        $text = sprintf("%5s", static::$i18n->trans('quantity-abb')) . " "
-            . sprintf("%-" . $width . "s", static::$i18n->trans('description')) . " ";
 
-        static::$escpos->text(static::sanitize($text) . "\n");
+        if ($printer->print_lines_reference) {
+            $th .= sprintf("%-" . $width . "s", static::$i18n->trans('reference-abb'));
+        }
+
+        if ($printer->print_lines_description) {
+            $th .= empty($th) ? '' : ' ';
+            $th .= sprintf("%-" . $width . "s", static::$i18n->trans('description-abb'));
+        }
+
+        if ($printer->print_lines_quantity) {
+            $th .= empty($th) ? '' : ' ';
+            $th .= sprintf("%5s", static::$i18n->trans('quantity-abb'));
+        }
+
+        if (empty($th)) {
+            return;
+        }
+
+        static::$escpos->text(static::sanitize($th) . "\n");
         static::$escpos->text($printer->getDashLine() . "\n");
 
         foreach ($doc->getLines() as $line) {
-            $description = mb_substr($line->descripcion, 0, $width);
-            $text = sprintf("%5s", $line->cantidad) . " "
-                . sprintf("%-" . $width . "s", $description) . " ";
+            $td = '';
 
-            static::$escpos->text(static::sanitize($text) . "\n");
+            if ($printer->print_lines_reference) {
+                $td .= sprintf("%-" . $width . "s", $line->referencia);
+            }
+
+            if ($printer->print_lines_description) {
+                $td .= empty($td) ? '' : ' ';
+                $description = mb_substr($line->descripcion, 0, $width);
+                $td .= sprintf("%-" . $width . "s", $description);
+            }
+
+            if ($printer->print_lines_quantity) {
+                $td .= empty($td) ? '' : ' ';
+                $td .= sprintf("%5s", $line->cantidad);
+            }
+
+            static::$escpos->text(static::sanitize($td) . "\n");
         }
 
         static::$escpos->text($printer->getDashLine() . "\n");
