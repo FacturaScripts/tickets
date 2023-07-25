@@ -1,75 +1,53 @@
 <?php
 /**
- * Copyright (C) 2019-2022 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2019-2023 Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 
 namespace FacturaScripts\Plugins\Tickets\Lib\Tickets;
 
-use FacturaScripts\Core\App\AppSettings;
-use FacturaScripts\Core\Base\ToolBox;
 use FacturaScripts\Dinamic\Model\Agente;
+use FacturaScripts\Dinamic\Model\ServicioAT;
+use FacturaScripts\Dinamic\Model\Ticket;
+use FacturaScripts\Dinamic\Model\TicketPrinter;
 use FacturaScripts\Dinamic\Model\User;
-use FacturaScripts\Plugins\Servicios\Model\ServicioAT;
-use FacturaScripts\Plugins\Tickets\Model\Ticket;
-use FacturaScripts\Plugins\Tickets\Model\TicketPrinter;
 
 /**
  * @author Carlos Garcia Gomez <carlos@facturascripts.com>
+ * @author Daniel Fernández Giménez <hola@danielfg.es>
  */
-class Service extends Normal
+class Service extends BaseTicket
 {
-    /**
-     * @param ServicioAT $doc
-     * @param TicketPrinter $printer
-     * @param User $user
-     * @param Agente|null $agent
-     * @return bool
-     */
-    public static function print($doc, TicketPrinter $printer, User $user, ?Agente $agent = null): bool
+    public static function print(ServicioAT $service, TicketPrinter $printer, User $user, Agente $agent = null): bool
     {
+        static::init();
+
         $ticket = new Ticket();
         $ticket->idprinter = $printer->id;
         $ticket->nick = $user->nick;
-        $ticket->title = ToolBox::i18n()->trans('service') . ' ' . $doc->primaryColumnValue();
+        $ticket->title = static::$i18n->trans('service') . ' ' . $service->primaryColumnValue();
+
+        static::setHeader($service, $printer, $ticket->title);
+        static::setBody($service, $printer);
+        static::setFooter($service, $printer);
+        $ticket->body = static::getBody();
+        $ticket->base64 = true;
+        $ticket->appversion = 1;
 
         if ($agent) {
             $ticket->codagente = $agent->codagente;
         }
 
-        $company = $doc->getCompany();
-        $ticket->body = "\x1B" . "!" . "\x38" . $company->nombre . "\n" . "\x1B" . "!" . "\x00"
-            . $company->direccion . "\nCP: " . $company->codpostal . ', ' . $company->ciudad . "\n"
-            . $company->tipoidfiscal . ': ' . $company->cifnif . "\n\n";
-
-        $customer = $doc->getSubject();
-        $ticket->body .= $ticket->title . "\n"
-            . ToolBox::i18n()->trans('date') . ': ' . $doc->fecha . ' ' . $doc->hora . "\n"
-            . ToolBox::i18n()->trans('customer') . ': ' . $customer->razonsocial . "\n";
-        if ($customer->telefono1) {
-            $ticket->body .= ToolBox::i18n()->trans('phone') . ': ' . $customer->telefono1 . "\n";
-        }
-        if ($customer->telefono2) {
-            $ticket->body .= ToolBox::i18n()->trans('phone') . ': ' . $customer->telefono2 . "\n";
-        }
-
-        if ($printer->head) {
-            $ticket->body .= "\n" . $printer->head . "\n";
-        }
-
-        $ticket->body .= "\n" . ToolBox::i18n()->trans('description') . ': ' . $doc->descripcion . "\n";
-        if ($doc->material) {
-            $ticket->body .= "\n" . ToolBox::i18n()->trans('material') . ': ' . $doc->material . "\n";
-        }
-        $ticket->body .= $printer->getDashLine();
-
-        if ($printer->footer) {
-            $ticket->body .= "\n\n" . $printer->footer . "\n";
-        }
-
-        $ticket->body .= AppSettings::get('servicios', 'footertext', '')
-            . "\n\n\n\n\n\n"
-            . $printer->getCommandStr('open') . "\n"
-            . $printer->getCommandStr('cut') . "\n";
         return $ticket->save();
+    }
+
+    protected static function setBody($service, TicketPrinter $printer): void
+    {
+        static::$escpos->setTextSize($printer->font_size, $printer->font_size);
+
+        static::$escpos->text(static::sanitize(static::$i18n->trans('description') . ': ' . $service->descripcion) . "\n");
+
+        if ($service->material) {
+            static::$escpos->text(static::sanitize(static::$i18n->trans('material') . ': ' . $service->material) . "\n");
+        }
     }
 }

@@ -1,20 +1,20 @@
 <?php
 /**
- * Copyright (C) 2019-2022 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2019-2023 Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 
 namespace FacturaScripts\Plugins\Tickets\Controller;
 
 use FacturaScripts\Core\Base\Controller;
 use FacturaScripts\Core\Model\Base\SalesDocument;
-use FacturaScripts\Core\Model\ReciboCliente;
-use FacturaScripts\Plugins\Servicios\Model\ServicioAT;
+use FacturaScripts\Dinamic\Model\ReciboCliente;
+use FacturaScripts\Dinamic\Model\ServicioAT;
 use FacturaScripts\Dinamic\Lib\Tickets\Gift;
 use FacturaScripts\Dinamic\Lib\Tickets\Normal;
 use FacturaScripts\Dinamic\Lib\Tickets\PaymentReceipt;
 use FacturaScripts\Dinamic\Lib\Tickets\Service;
 use FacturaScripts\Dinamic\Lib\Tickets\TicketBai;
-use FacturaScripts\Plugins\Tickets\Model\TicketPrinter;
+use FacturaScripts\Dinamic\Model\TicketPrinter;
 
 /**
  * @author Carlos Garcia Gomez <carlos@facturascripts.com>
