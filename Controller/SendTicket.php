@@ -6,8 +6,7 @@
 namespace FacturaScripts\Plugins\Tickets\Controller;
 
 use FacturaScripts\Core\Base\Controller;
-use FacturaScripts\Core\Model\Base\SalesDocument;
-use FacturaScripts\Dinamic\Model\ReciboCliente;
+use FacturaScripts\Core\Model\Base\ModelClass;
 use FacturaScripts\Dinamic\Model\ServicioAT;
 use FacturaScripts\Dinamic\Lib\Tickets\Gift;
 use FacturaScripts\Dinamic\Lib\Tickets\Normal;
@@ -21,9 +20,6 @@ use FacturaScripts\Dinamic\Model\TicketPrinter;
  */
 class SendTicket extends Controller
 {
-    /** @var array */
-    public $formats = [];
-
     /** @var string */
     public $modelClassName = '';
 
@@ -32,6 +28,33 @@ class SendTicket extends Controller
 
     /** @var TicketPrinter[] */
     public $printers = [];
+
+    /** @var array */
+    private static $formats = [];
+
+    public static function addFormat(string $className, string $modelName, string $label)
+    {
+        // si ya existe un formato con la misma className, no hacemos nada
+        if (isset(static::$formats[$modelName])) {
+            foreach (static::$formats[$modelName] as $format) {
+                if ($format['className'] === $className) {
+                    return;
+                }
+            }
+        }
+
+        // añadimos el formato
+        static::$formats[$modelName][] = [
+            'className' => $className,
+            'label' => $label,
+            'modelName' => $modelName,
+        ];
+    }
+
+    public function getFormats()
+    {
+        return static::$formats[$this->modelClassName] ?? [];
+    }
 
     public function getPageData(): array
     {
@@ -50,7 +73,6 @@ class SendTicket extends Controller
         $this->modelClassName = $this->request->get('modelClassName');
         $this->modelCode = $this->request->get('modelCode');
         $this->loadPrinters();
-        $this->loadFormats();
 
         $modelClass = '\\FacturaScripts\\Dinamic\\Model\\' . $this->modelClassName;
         if (empty($this->modelClassName) || empty($this->modelCode) || false === class_exists($modelClass)) {
@@ -64,28 +86,9 @@ class SendTicket extends Controller
             return;
         }
 
-        $format = $this->request->request->get('format');
-        $printer = $this->getPrinter((int)$this->request->request->get('printer'));
-        switch ($format) {
-            case 'gift':
-                $this->printGift($model, $printer);
-                break;
-
-            case 'normal':
-                $this->printNormal($model, $printer);
-                break;
-
-            case 'receipt':
-                $this->printPaymentReceipt($model, $printer);
-                break;
-
-            case 'service':
-                $this->printService($model, $printer);
-                break;
-
-            case 'ticketbai':
-                $this->printTicketBai($model, $printer);
-                break;
+        $action = $this->request->request->get('action', '');
+        if ($action === 'print') {
+            $this->printAction($model);
         }
     }
 
@@ -100,69 +103,31 @@ class SendTicket extends Controller
         return new TicketPrinter();
     }
 
-    protected function loadFormats()
-    {
-        switch ($this->modelClassName) {
-            case 'AlbaranCliente':
-            case 'FacturaCliente':
-            case 'PedidoCliente':
-            case 'PresupuestoCliente':
-                $this->formats[] = 'normal';
-                $this->formats[] = 'gift';
-                $this->formats[] = 'ticketbai';
-                break;
-
-            case 'ReciboCliente':
-                $this->formats[] = 'receipt';
-                break;
-
-            case 'ServicioAT':
-                $this->formats[] = 'service';
-                break;
-        }
-    }
-
     protected function loadPrinters()
     {
         $printerModel = new TicketPrinter();
         $this->printers = $printerModel->all([], ['creationdate' => 'DESC'], 0, 0);
     }
 
-    protected function printGift(SalesDocument $model, TicketPrinter $printer)
+    protected function printAction(ModelClass $model)
     {
-        if (Gift::print($model, $printer, $this->user)) {
-            $this->toolBox()->i18nLog()->notice('sending-to-printer');
-            $this->redirect($model->url(), 1);
+        $formatClass = $this->request->request->get('format', '');
+        if (empty($formatClass)) {
+            return;
         }
-    }
 
-    protected function printNormal(SalesDocument $model, TicketPrinter $printer)
-    {
-        if (Normal::print($model, $printer, $this->user)) {
-            $this->toolBox()->i18nLog()->notice('sending-to-printer');
-            $this->redirect($model->url(), 1);
+        $formatClass = '\\' . $formatClass;
+        if (false === class_exists($formatClass)) {
+            return;
         }
-    }
 
-    protected function printPaymentReceipt(ReciboCliente $model, TicketPrinter $printer)
-    {
-        if (PaymentReceipt::print($model, $printer, $this->user)) {
-            $this->toolBox()->i18nLog()->notice('sending-to-printer');
-            $this->redirect($model->url(), 1);
+        $printer = $this->getPrinter((int)$this->request->request->get('printer'));
+        if (false === $printer->exists()) {
+            return;
         }
-    }
 
-    protected function printService(ServicioAT $model, TicketPrinter $printer)
-    {
-        if (Service::print($model, $printer, $this->user)) {
-            $this->toolBox()->i18nLog()->notice('sending-to-printer');
-            $this->redirect($model->url(), 1);
-        }
-    }
-
-    protected function printTicketBai(SalesDocument $model, TicketPrinter $printer)
-    {
-        if (TicketBai::print($model, $printer, $this->user)) {
+        $format = new $formatClass();
+        if ($format::print($model, $printer, $this->user)) {
             $this->toolBox()->i18nLog()->notice('sending-to-printer');
             $this->redirect($model->url(), 1);
         }

@@ -9,9 +9,11 @@ use FacturaScripts\Core\Base\ToolBox;
 use FacturaScripts\Core\Base\Translator;
 use FacturaScripts\Core\Model\Base\ModelClass;
 use FacturaScripts\Core\Plugins;
+use FacturaScripts\Dinamic\Model\Agente;
 use FacturaScripts\Dinamic\Model\Base\ModelCore;
 use FacturaScripts\Dinamic\Model\Impuesto;
 use FacturaScripts\Dinamic\Model\TicketPrinter;
+use FacturaScripts\Dinamic\Model\User;
 use Mike42\Escpos\PrintConnectors\DummyPrintConnector;
 use Mike42\Escpos\Printer;
 
@@ -19,7 +21,7 @@ use Mike42\Escpos\Printer;
  * @author Carlos Garcia Gomez <carlos@facturascripts.com>
  * @author Daniel Fernández Giménez <hola@danielfg.es>
  */
-class BaseTicket
+abstract class BaseTicket
 {
     /** @var DummyPrintConnector */
     protected static $connector;
@@ -29,6 +31,8 @@ class BaseTicket
 
     /** @var Translator */
     protected static $i18n;
+
+    abstract public static function print(ModelClass $model, TicketPrinter $printer, User $user, Agente $agent = null): bool;
 
     protected static function getBody(): string
     {
@@ -51,14 +55,14 @@ class BaseTicket
         return base64_encode($body);
     }
 
-    protected static function getReceipts($doc, TicketPrinter $printer): string
+    protected static function getReceipts(ModelClass $model, TicketPrinter $printer): string
     {
         $paid = 0;
         $total = 0;
         $receipts = '';
         $widthTotal = $printer->linelen - 22;
 
-        foreach ($doc->getReceipts() as $receipt) {
+        foreach ($model->getReceipts() as $receipt) {
             if (false === empty($receipts)) {
                 $receipts .= "\n";
             }
@@ -97,10 +101,10 @@ class BaseTicket
             . sprintf("%" . $widthTotal . "s", ToolBox::numbers()::format($total - $paid)) . "\n\n";
     }
 
-    protected static function getSubtotals($doc, array $lines): array
+    protected static function getSubtotals(ModelClass $model, array $lines): array
     {
         $subtotals = [];
-        $eud = $doc->getEUDiscount();
+        $eud = $model->getEUDiscount();
 
         foreach ($lines as $line) {
             $key = $line->iva . '_' . $line->recargo;
@@ -129,7 +133,7 @@ class BaseTicket
         return $subtotals;
     }
 
-    protected static function getTrazabilidad($line, int $width): string
+    protected static function getTrazabilidad(ModelClass $line, int $width): string
     {
         if (empty($line->referencia) || false === Plugins::isEnabled('Trazabilidad')) {
             return '';
@@ -315,19 +319,19 @@ class BaseTicket
         return preg_replace(array_keys($changes), $changes, $txt);
     }
 
-    protected static function setBody(ModelClass $doc, TicketPrinter $printer): void
+    protected static function setBody(ModelClass $model, TicketPrinter $printer): void
     {
-        if (false === in_array($doc->modelClassName(), ['PresupuestoCliente', 'PedidoCliente', 'AlbaranCliente', 'FacturaCliente'])) {
+        if (false === in_array($model->modelClassName(), ['PresupuestoCliente', 'PedidoCliente', 'AlbaranCliente', 'FacturaCliente'])) {
             return;
         }
 
         static::$escpos->setTextSize($printer->font_size, $printer->font_size);
 
         // añadimos las líneas
-        $lines = $doc->getLines();
+        $lines = $model->getLines();
         static::printLines($printer, $lines);
 
-        foreach (static::getSubtotals($doc, $lines) as $item) {
+        foreach (static::getSubtotals($model, $lines) as $item) {
             $text = sprintf("%" . ($printer->linelen - 11) . "s", static::$i18n->trans('tax-base') . ' ' . $item['taxp']) . " "
                 . sprintf("%10s", ToolBox::numbers()::format($item['taxbase'])) . "\n"
                 . sprintf("%" . ($printer->linelen - 11) . "s", $item['tax']) . " "
@@ -344,21 +348,21 @@ class BaseTicket
 
         // añadimos los totales
         $text = sprintf("%" . ($printer->linelen - 11) . "s", static::$i18n->trans('total')) . " "
-            . sprintf("%10s", ToolBox::numbers()::format($doc->total));
+            . sprintf("%10s", ToolBox::numbers()::format($model->total));
 
-        if (property_exists($doc, 'tpv_efectivo') && $doc->tpv_efectivo > 0) {
+        if (property_exists($model, 'tpv_efectivo') && $model->tpv_efectivo > 0) {
             $text .= sprintf("%" . ($printer->linelen - 11) . "s", static::$i18n->trans('cash')) . " "
-                . sprintf("%10s", ToolBox::numbers()::format($doc->tpv_efectivo)) . "\n";
+                . sprintf("%10s", ToolBox::numbers()::format($model->tpv_efectivo)) . "\n";
         }
-        if (property_exists($doc, 'tpv_cambio') && $doc->tpv_cambio > 0) {
+        if (property_exists($model, 'tpv_cambio') && $model->tpv_cambio > 0) {
             $text .= sprintf("%" . ($printer->linelen - 11) . "s", static::$i18n->trans('money-change')) . " "
-                . sprintf("%10s", ToolBox::numbers()::format($doc->tpv_cambio)) . "\n";
+                . sprintf("%10s", ToolBox::numbers()::format($model->tpv_cambio)) . "\n";
         }
 
         static::$escpos->text(static::sanitize($text) . "\n");
 
-        if ($printer->print_invoice_receipts && $doc->modelClassName() === 'FacturaCliente') {
-            static::$escpos->text(static::sanitize(static::getReceipts($doc, $printer)));
+        if ($printer->print_invoice_receipts && $model->modelClassName() === 'FacturaCliente') {
+            static::$escpos->text(static::sanitize(static::getReceipts($model, $printer)));
         }
     }
 

@@ -11,6 +11,7 @@
         <div class="row">
             <div class="col-12">
                 <form action="{{ fsc.url() }}" method="post">
+                    <input type="hidden" name="action" value="print"/>
                     <input type="hidden" name="modelClassName" value="{{ fsc.modelClassName }}"/>
                     <input type="hidden" name="modelCode" value="{{ fsc.modelCode }}"/>
                     <div class="card shadow mb-4">
@@ -20,8 +21,8 @@
                             </h1>
                             <div class="form-group">
                                 <select name="format" class="form-control" required>
-                                    {% for format in fsc.formats %}
-                                        <option value="{{ format }}">{{ i18n.trans(format) }}</option>
+                                    {% for format in fsc.getFormats() %}
+                                        <option value="{{ format.className }}">{{ i18n.trans(format.label) }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
