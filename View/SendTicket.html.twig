@@ -21,7 +21,7 @@
                             </h1>
                             <div class="form-group">
                                 <select name="format" class="form-control" required>
-                                    {% for format in fsc.getFormats() %}
+                                    {% for format in fsc.getFormats(fsc.modelClassName) %}
                                         <option value="{{ format.className }}">{{ i18n.trans(format.label) }}</option>
                                     {% endfor %}
                                 </select>

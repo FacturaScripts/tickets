@@ -51,9 +51,9 @@ class SendTicket extends Controller
         ];
     }
 
-    public function getFormats()
+    public static function getFormats(string $modelClassName)
     {
-        return static::$formats[$this->modelClassName] ?? [];
+        return static::$formats[$modelClassName] ?? [];
     }
 
     public function getPageData(): array
