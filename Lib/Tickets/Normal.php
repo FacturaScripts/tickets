@@ -5,7 +5,7 @@
 
 namespace FacturaScripts\Plugins\Tickets\Lib\Tickets;
 
-use FacturaScripts\Core\Model\Base\SalesDocument;
+use FacturaScripts\Core\Model\Base\ModelClass;
 use FacturaScripts\Dinamic\Model\Agente;
 use FacturaScripts\Dinamic\Model\Ticket;
 use FacturaScripts\Dinamic\Model\TicketPrinter;
@@ -17,18 +17,18 @@ use FacturaScripts\Dinamic\Model\User;
  */
 class Normal extends BaseTicket
 {
-    public static function print(SalesDocument $doc, TicketPrinter $printer, User $user, Agente $agent = null): bool
+    public static function print(ModelClass $model, TicketPrinter $printer, User $user, Agente $agent = null): bool
     {
         static::init();
 
         $ticket = new Ticket();
         $ticket->idprinter = $printer->id;
         $ticket->nick = $user->nick;
-        $ticket->title = self::$i18n->trans($doc->modelClassName() . '-min') . ' ' . $doc->codigo;
+        $ticket->title = self::$i18n->trans($model->modelClassName() . '-min') . ' ' . $model->codigo;
 
-        static::setHeader($doc, $printer, $ticket->title);
-        static::setBody($doc, $printer);
-        static::setFooter($doc, $printer);
+        static::setHeader($model, $printer, $ticket->title);
+        static::setBody($model, $printer);
+        static::setFooter($model, $printer);
         $ticket->body = static::getBody();
         $ticket->base64 = true;
         $ticket->appversion = 1;

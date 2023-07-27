@@ -5,8 +5,8 @@
 
 namespace FacturaScripts\Plugins\Tickets\Lib\Tickets;
 
+use FacturaScripts\Core\Model\Base\ModelClass;
 use FacturaScripts\Dinamic\Model\Agente;
-use FacturaScripts\Dinamic\Model\ServicioAT;
 use FacturaScripts\Dinamic\Model\Ticket;
 use FacturaScripts\Dinamic\Model\TicketPrinter;
 use FacturaScripts\Dinamic\Model\User;
@@ -17,18 +17,18 @@ use FacturaScripts\Dinamic\Model\User;
  */
 class Service extends BaseTicket
 {
-    public static function print(ServicioAT $service, TicketPrinter $printer, User $user, Agente $agent = null): bool
+    public static function print(ModelClass $model, TicketPrinter $printer, User $user, Agente $agent = null): bool
     {
         static::init();
 
         $ticket = new Ticket();
         $ticket->idprinter = $printer->id;
         $ticket->nick = $user->nick;
-        $ticket->title = static::$i18n->trans('service') . ' ' . $service->primaryColumnValue();
+        $ticket->title = static::$i18n->trans('service') . ' ' . $model->primaryColumnValue();
 
-        static::setHeader($service, $printer, $ticket->title);
-        static::setBody($service, $printer);
-        static::setFooter($service, $printer);
+        static::setHeader($model, $printer, $ticket->title);
+        static::setBody($model, $printer);
+        static::setFooter($model, $printer);
         $ticket->body = static::getBody();
         $ticket->base64 = true;
         $ticket->appversion = 1;
@@ -40,14 +40,14 @@ class Service extends BaseTicket
         return $ticket->save();
     }
 
-    protected static function setBody($service, TicketPrinter $printer): void
+    protected static function setBody(ModelClass $model, TicketPrinter $printer): void
     {
         static::$escpos->setTextSize($printer->font_size, $printer->font_size);
 
-        static::$escpos->text(static::sanitize(static::$i18n->trans('description') . ': ' . $service->descripcion) . "\n");
+        static::$escpos->text(static::sanitize(static::$i18n->trans('description') . ': ' . $model->descripcion) . "\n");
 
-        if ($service->material) {
-            static::$escpos->text(static::sanitize(static::$i18n->trans('material') . ': ' . $service->material) . "\n");
+        if ($model->material) {
+            static::$escpos->text(static::sanitize(static::$i18n->trans('material') . ': ' . $model->material) . "\n");
         }
     }
 }
