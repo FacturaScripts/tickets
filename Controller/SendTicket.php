@@ -32,7 +32,7 @@ class SendTicket extends Controller
     /** @var array */
     private static $formats = [];
 
-    public static function addFormat(string $className, string $modelName, string $label)
+    public static function addFormat(string $className, string $modelName, string $label): void
     {
         // si ya existe un formato con la misma className, no hacemos nada
         if (isset(static::$formats[$modelName])) {
@@ -51,7 +51,7 @@ class SendTicket extends Controller
         ];
     }
 
-    public static function getFormats(string $modelClassName)
+    public static function getFormats(string $modelClassName): array
     {
         return static::$formats[$modelClassName] ?? [];
     }
