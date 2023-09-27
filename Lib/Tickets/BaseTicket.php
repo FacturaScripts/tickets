@@ -212,7 +212,7 @@ abstract class BaseTicket
         $width = $printer->linelen - 17;
 
         if ($printer->print_lines_reference) {
-          $th .= sprintf("%-" . $width . "s", static::$i18n->trans('reference-abb'));
+            $th .= sprintf("%-" . $width . "s", static::$i18n->trans('reference-abb'));
         }
 
         if ($printer->print_lines_description) {
@@ -378,7 +378,7 @@ abstract class BaseTicket
         }
     }
 
-    protected static function setHeader(ModelClass $model, TicketPrinter $printer, string $title):void
+    protected static function setHeader(ModelClass $model, TicketPrinter $printer, string $title): void
     {
         static::$escpos->setTextSize($printer->head_font_size, $printer->head_font_size);
 
@@ -394,7 +394,9 @@ abstract class BaseTicket
 
         // imprimimos el nombre corto de la empresa
         if ($printer->print_comp_shortname) {
-            static::$escpos->setTextSize($printer->head_font_size + 1, $printer->head_font_size + 1);
+            if ($printer->head_font_size < 8) {
+                static::$escpos->setTextSize($printer->head_font_size + 1, $printer->head_font_size + 1);
+            }
             static::$escpos->text(static::sanitize($company->nombrecorto) . "\n");
             static::$escpos->setTextSize($printer->head_font_size, $printer->head_font_size);
         }
