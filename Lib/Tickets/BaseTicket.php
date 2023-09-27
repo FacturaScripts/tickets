@@ -18,7 +18,7 @@ use Mike42\Escpos\PrintConnectors\DummyPrintConnector;
 use Mike42\Escpos\Printer;
 
 /**
- * @author Carlos Garcia Gomez <carlos@facturascripts.com>
+ * @author Carlos Garcia Gomez      <carlos@facturascripts.com>
  * @author Daniel Fernández Giménez <hola@danielfg.es>
  */
 abstract class BaseTicket
@@ -209,42 +209,28 @@ abstract class BaseTicket
     protected static function printLines(TicketPrinter $printer, array $lines): void
     {
         $th = '';
-        $width = $printer->linelen - 17;
+        $width = $printer->linelen;
+
+        if ($printer->print_lines_quantity) {
+            $th .= sprintf("%5s", static::$i18n->trans('quantity-abb')) . ' ';
+            $width -= 6;
+        }
+
+        if ($printer->print_lines_net || $printer->print_lines_total) {
+            $width -= 11;
+        }
 
         if ($printer->print_lines_reference) {
             $th .= sprintf("%-" . $width . "s", static::$i18n->trans('reference-abb'));
-        }
-
-        if ($printer->print_lines_description) {
-            $th .= empty($th) ? '' : ' ';
+        } elseif ($printer->print_lines_description) {
             $th .= sprintf("%-" . $width . "s", static::$i18n->trans('description-abb'));
         }
 
-        if ($printer->print_lines_quantity) {
-            $th .= empty($th) ? '' : ' ';
-            $th .= sprintf("%5s", static::$i18n->trans('quantity-abb'));
-        }
-
-        if ($printer->print_lines_price) {
-            $th .= empty($th) ? '' : ' ';
-            $th .= sprintf("%-" . $width . "s", static::$i18n->trans('price-abb'));
-        }
-
-        if ($printer->print_lines_discount) {
-            $th .= empty($th) ? '' : ' ';
-            $th .= sprintf("%5s", static::$i18n->trans('discount-abb'));
-        }
-
         if ($printer->print_lines_net) {
-            $th .= empty($th) ? '' : ' ';
-            $th .= sprintf("%-" . $width . "s", static::$i18n->trans('net-abb'));
+            $th .= sprintf("%11s", static::$i18n->trans('net-abb'));
+        } elseif ($printer->print_lines_total) {
+            $th .= sprintf("%11s", static::$i18n->trans('total-abb'));
         }
-
-        if ($printer->print_lines_total) {
-            $th .= empty($th) ? '' : ' ';
-            $th .= sprintf("%-" . $width . "s", static::$i18n->trans('total-abb'));
-        }
-
         if (empty($th)) {
             return;
         }
@@ -254,42 +240,48 @@ abstract class BaseTicket
 
         foreach ($lines as $line) {
             $td = '';
+            if ($printer->print_lines_quantity) {
+                $td .= sprintf("%5s", $line->cantidad) . ' ';
+            }
 
             if ($printer->print_lines_reference) {
                 $td .= sprintf("%-" . $width . "s", $line->referencia);
-            }
-
-            if ($printer->print_lines_description) {
-                $td .= empty($td) ? '' : ' ';
-                $description = mb_substr($line->descripcion, 0, $width);
-                $td .= sprintf("%-" . $width . "s", $description);
-            }
-
-            if ($printer->print_lines_quantity) {
-                $td .= empty($td) ? '' : ' ';
-                $td .= sprintf("%5s", $line->cantidad);
-            }
-
-            if ($printer->print_lines_price) {
-                $td .= empty($td) ? '' : ' ';
-                $td .= sprintf("%-" . $width . "s", ToolBox::numbers()::format($line->pvpunitario));
-            }
-
-            if ($printer->print_lines_discount) {
-                $td .= empty($td) ? '' : ' ';
-                $dto = round($line->dtopor + $line->dtopor2, FS_NF0);
-                $td .= sprintf("%5s", $dto . '%');
+            } elseif ($printer->print_lines_description) {
+                $td .= sprintf("%-" . $width . "s", substr($line->descripcion, 0, $width));
             }
 
             if ($printer->print_lines_net) {
-                $td .= empty($td) ? '' : ' ';
-                $td .= sprintf("%-" . $width . "s", ToolBox::numbers()::format($line->pvptotal));
+                $td .= sprintf("%11s", ToolBox::numbers()::format($line->pvptotal));
+            } elseif ($printer->print_lines_total) {
+                $total = $line->pvptotal * (100 + $line->iva + $line->recargo) / 100;
+                $td .= sprintf("%11s", ToolBox::numbers()::format($total));
             }
 
-            if ($printer->print_lines_total) {
-                $td .= empty($td) ? '' : ' ';
-                $total = $line->pvptotal * (100 + $line->iva + $line->recargo) / 100;
-                $td .= sprintf("%-" . $width . "s", ToolBox::numbers()::format($total));
+            $jump = false;
+            if ($printer->print_lines_reference && $printer->print_lines_description) {
+                $td .= "\n" . sprintf("%-" . $printer->linelen . "s", substr($line->descripcion, 0, $printer->linelen));
+                $jump = true;
+            }
+
+            if ($printer->print_lines_price) {
+                $td .= "\n" . sprintf("%11s", ToolBox::i18n()->trans('price-abb') . ': ' . ToolBox::numbers()::format($line->pvpunitario));
+                $jump = true;
+            }
+
+            if ($printer->print_lines_discount && $line->dtopor > 0) {
+                $td .= $printer->print_lines_price ? ' ' : "\n";
+                $td .= sprintf("%11s", ToolBox::i18n()->trans('discount-abb') . ': ' . $line->dtopor . '%');
+                $jump = true;
+            }
+
+            if ($printer->print_lines_net && $printer->print_lines_total) {
+                $td .= $printer->print_lines_price ? ' ' : "\n";
+                $td .= sprintf("%11s", ToolBox::i18n()->trans('net-abb') . ': ' . ToolBox::numbers()::format($line->pvptotal));
+                $jump = true;
+            }
+
+            if ($jump) {
+                $td .= "\n";
             }
 
             static::$escpos->text(static::sanitize($td) . "\n");
@@ -325,6 +317,7 @@ abstract class BaseTicket
             return;
         }
 
+        // establecemos el tamaño de la fuente
         static::$escpos->setTextSize($printer->font_size, $printer->font_size);
 
         // añadimos las líneas

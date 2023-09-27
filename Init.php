@@ -38,7 +38,7 @@ class Init extends InitClass
         $this->renameTicketsTable('tickets', 'tickets_docs');
     }
 
-    private function loadFormatTickets()
+    private function loadFormatTickets(): void
     {
         $models = ['PresupuestoCliente', 'PedidoCliente', 'AlbaranCliente', 'FacturaCliente'];
         foreach ($models as $model) {
@@ -51,7 +51,7 @@ class Init extends InitClass
         SendTicket::addFormat(Service::class, 'ServicioAT', 'service');
     }
 
-    private function renameTicketsTable(string $oldTable, string $newTable)
+    private function renameTicketsTable(string $oldTable, string $newTable): void
     {
         $dataBase = new DataBase();
         if (false === $dataBase->tableExists($oldTable)) {
@@ -65,7 +65,7 @@ class Init extends InitClass
         }
     }
 
-    private function setAPI()
+    private function setAPI(): void
     {
         // si hay clave de API en el config, no hacemos nada
         if (defined('FS_API_KEY')) {
