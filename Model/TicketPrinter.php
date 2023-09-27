@@ -11,7 +11,7 @@ use FacturaScripts\Dinamic\Model\ApiAccess;
 use FacturaScripts\Dinamic\Model\ApiKey;
 
 /**
- * @author Carlos Garcia Gomez <carlos@facturascripts.com>
+ * @author Carlos Garcia Gomez      <carlos@facturascripts.com>
  * @author Daniel Fernández Giménez <hola@danielfg.es>
  */
 class TicketPrinter extends ModelClass
@@ -119,7 +119,7 @@ class TicketPrinter extends ModelClass
         $this->print_lines_price_unitary = false;
         $this->print_lines_quantity = true;
         $this->print_lines_reference = false;
-        $this->print_lines_total = false;
+        $this->print_lines_total = true;
         $this->print_stored_logo = false;
     }
 
