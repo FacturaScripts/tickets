@@ -418,6 +418,8 @@ abstract class BaseTicket
             }
         }
 
+        static::setHeaderTPV($model, $printer);
+
         // imprimimos el título del documento
         static::$escpos->text(static::sanitize($title) . "\n");
 
@@ -434,5 +436,16 @@ abstract class BaseTicket
             static::$escpos->text(static::sanitize($printer->head) . "\n\n");
             static::$escpos->setJustification();
         }
+    }
+
+    protected static function setHeaderTPV(ModelClass $model, TicketPrinter $printer)
+    {
+        if (false === Plugins::isEnabled('TPVneo') || false === $printer->print_name_terminal
+            || false === isset($model->idtpv) || empty($model->idtpv)) {
+            return;
+        }
+
+        $tpv = $model->getTerminal();
+        static::$escpos->text(static::sanitize(static::$i18n->trans('tpv') . ': ' . $tpv->name) . "\n");
     }
 }
