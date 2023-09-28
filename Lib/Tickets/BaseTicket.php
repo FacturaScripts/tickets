@@ -32,7 +32,15 @@ abstract class BaseTicket
     /** @var Translator */
     protected static $i18n;
 
+    /** @var array */
+    protected static $lines;
+
     abstract public static function print(ModelClass $model, TicketPrinter $printer, User $user, Agente $agent = null): bool;
+
+    public static function setLines(?array $lines = null): void
+    {
+        static::$lines = $lines;
+    }
 
     protected static function getBody(): string
     {
@@ -55,9 +63,9 @@ abstract class BaseTicket
         return base64_encode($body);
     }
 
-    protected static function getLines(ModelClass $model)
+    protected static function getLines(ModelClass $model): array
     {
-        return $model->lines ?? $model->getLines();
+        return self::$lines ?? $model->getLines();
     }
 
     protected static function getReceipts(ModelClass $model, TicketPrinter $printer): string
@@ -201,7 +209,7 @@ abstract class BaseTicket
             . sprintf("%10s", '') . "\n";
     }
 
-    protected static function init()
+    protected static function init(): void
     {
         static::$i18n = new Translator();
 
@@ -438,14 +446,18 @@ abstract class BaseTicket
         }
     }
 
-    protected static function setHeaderTPV(ModelClass $model, TicketPrinter $printer)
+    protected static function setHeaderTPV(ModelClass $model, TicketPrinter $printer): void
     {
-        if (false === Plugins::isEnabled('TPVneo') || false === $printer->print_name_terminal
-            || false === isset($model->idtpv) || empty($model->idtpv)) {
+        if (false === Plugins::isEnabled('TPVneo') ||
+            false === isset($printer->print_name_terminal) ||
+            false === $printer->print_name_terminal ||
+            false === isset($model->idtpv) ||
+            empty($model->idtpv)) {
             return;
         }
 
-        $tpv = $model->getTerminal();
-        static::$escpos->text(static::sanitize(static::$i18n->trans('tpv') . ': ' . $tpv->name) . "\n");
+        static::$escpos->text(
+            static::sanitize(static::$i18n->trans('pos-terminal') . ': ' . $model->getTerminal()->name) . "\n"
+        );
     }
 }
