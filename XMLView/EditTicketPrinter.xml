@@ -38,28 +38,35 @@
             </column>
         </group>
         <group name="design" title="design" icon="fa-solid fa-palette" numcolumns="12" valign="bottom">
-            <column name="font-size" numcolumns="3" order="100">
+            <column name="font-size" numcolumns="2" order="100">
                 <widget type="number" fieldname="font_size" min="1" max="8" step="1" required="true"/>
             </column>
-            <column name="print-invoice-receipts" order="110">
-                <widget type="checkbox" fieldname="print_invoice_receipts"/>
+            <column name="title-font-size" numcolumns="2" order="105">
+                <widget type="number" fieldname="title_font_size" min="1" max="8" step="1" required="true"/>
             </column>
-            <column name="ticket-head" numcolumns="12" order="120">
-                <widget type="textarea" fieldname="head"/>
-            </column>
-            <column name="header-font-size" title="font-size" numcolumns="3" order="130">
-                <widget type="number" fieldname="head_font_size" min="1" max="8" step="1" required="true"/>
-            </column>
-            <column name="print-comp-shortname" order="140">
+            <column name="print-comp-shortname" order="110">
                 <widget type="checkbox" fieldname="print_comp_shortname"/>
             </column>
-            <column name="print-comp-tlf" order="150">
+            <column name="print-comp-tlf" order="120">
                 <widget type="checkbox" fieldname="print_comp_tlf"/>
             </column>
-            <column name="ticket-footer" numcolumns="12" order="160">
+            <column name="print-invoice-receipts" order="130">
+                <widget type="checkbox" fieldname="print_invoice_receipts"/>
+            </column>
+        </group>
+        <group name="header" title="header" icon="fa-solid fa-arrows-up-to-line" numcolumns="6">
+            <column name="ticket-head" numcolumns="12" order="100">
+                <widget type="textarea" fieldname="head"/>
+            </column>
+            <column name="header-font-size" title="font-size" order="110">
+                <widget type="number" fieldname="head_font_size" min="1" max="8" step="1" required="true"/>
+            </column>
+        </group>
+        <group name="footer" title="footer" icon="fa-solid fa-arrows-down-to-line" numcolumns="6">
+            <column name="ticket-footer" numcolumns="12" order="100">
                 <widget type="textarea" fieldname="footer"/>
             </column>
-            <column name="footer-font-size" title="font-size" numcolumns="3" order="170">
+            <column name="footer-font-size" title="font-size" order="110">
                 <widget type="number" fieldname="footer_font_size" min="1" max="8" step="1" required="true"/>
             </column>
         </group>

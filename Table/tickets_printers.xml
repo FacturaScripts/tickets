@@ -124,6 +124,11 @@
         <type>boolean</type>
         <default>false</default>
     </column>
+    <column>
+        <name>title_font_size</name>
+        <type>integer</type>
+        <default>2</default>
+    </column>
     <constraint>
         <name>tickets_printers_pkey</name>
         <type>PRIMARY KEY (id)</type>

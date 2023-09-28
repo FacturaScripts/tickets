@@ -65,41 +65,44 @@ class TicketPrinter extends ModelClass
     /** @var string */
     public $opencommand;
 
-    /** bool */
+    /** @var bool */
     public $print_comp_shortname;
 
-    /** bool */
+    /** @var bool */
     public $print_comp_tlf;
 
-    /** bool */
+    /** @var bool */
     public $print_invoice_receipts;
 
-    /** bool */
+    /** @var bool */
     public $print_lines_description;
 
-    /** bool */
+    /** @var bool */
     public $print_lines_discount;
 
-    /** bool */
+    /** @var bool */
     public $print_lines_net;
 
-    /** bool */
+    /** @var bool */
     public $print_lines_price;
 
-    /** bool */
+    /** @var bool */
     public $print_lines_price_unitary;
 
-    /** bool */
+    /** @var bool */
     public $print_lines_quantity;
 
-    /** bool */
+    /** @var bool */
     public $print_lines_reference;
 
-    /** bool */
+    /** @var bool */
     public $print_lines_total;
 
-    /** bool */
+    /** @var bool */
     public $print_stored_logo;
+
+    /** @var int */
+    public $title_font_size;
 
     public function clear()
     {
@@ -121,6 +124,7 @@ class TicketPrinter extends ModelClass
         $this->print_lines_reference = false;
         $this->print_lines_total = true;
         $this->print_stored_logo = false;
+        $this->title_font_size = 2;
     }
 
     public function delete(): bool

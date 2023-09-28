@@ -386,8 +386,6 @@ abstract class BaseTicket
 
     protected static function setHeader(ModelClass $model, TicketPrinter $printer, string $title): void
     {
-        static::$escpos->setTextSize($printer->head_font_size, $printer->head_font_size);
-
         if ($printer->print_stored_logo) {
             static::$escpos->setJustification(Printer::JUSTIFY_CENTER);
             // imprimimos el logotipo almacenado en la impresora
@@ -399,9 +397,7 @@ abstract class BaseTicket
         $company = $model->getCompany();
 
         // establecemos el tamaño de la fuente
-        if ($printer->head_font_size < 8) {
-            static::$escpos->setTextSize($printer->head_font_size + 1, $printer->head_font_size + 1);
-        }
+        static::$escpos->setTextSize($printer->title_font_size, $printer->title_font_size);
 
         // imprimimos el nombre corto de la empresa
         if ($printer->print_comp_shortname) {
