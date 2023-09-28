@@ -398,17 +398,24 @@ abstract class BaseTicket
         // obtenemos los datos de la empresa
         $company = $model->getCompany();
 
+        // establecemos el tamaño de la fuente
+        if ($printer->head_font_size < 8) {
+            static::$escpos->setTextSize($printer->head_font_size + 1, $printer->head_font_size + 1);
+        }
+
         // imprimimos el nombre corto de la empresa
         if ($printer->print_comp_shortname) {
-            if ($printer->head_font_size < 8) {
-                static::$escpos->setTextSize($printer->head_font_size + 1, $printer->head_font_size + 1);
-            }
             static::$escpos->text(static::sanitize($company->nombrecorto) . "\n");
+            static::$escpos->setTextSize($printer->head_font_size, $printer->head_font_size);
+
+            // imprimimos el nombre de la empresa
+            static::$escpos->text(static::sanitize($company->nombre) . "\n");
+        } else {
+            // imprimimos el nombre de la empresa
+            static::$escpos->text(static::sanitize($company->nombre) . "\n");
             static::$escpos->setTextSize($printer->head_font_size, $printer->head_font_size);
         }
 
-        // imprimimos el nombre de la empresa
-        static::$escpos->text(static::sanitize($company->nombre) . "\n");
         static::$escpos->setJustification();
 
         // imprimimos la dirección de la empresa
@@ -426,10 +433,10 @@ abstract class BaseTicket
             }
         }
 
-        static::setHeaderTPV($model, $printer);
-
         // imprimimos el título del documento
         static::$escpos->text(static::sanitize($title) . "\n");
+
+        static::setHeaderTPV($model, $printer);
 
         // si es un documento de venta
         // imprimimos la fecha y el cliente
