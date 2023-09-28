@@ -39,7 +39,7 @@ class Gift extends Normal
         static::$escpos->text(static::sanitize($th) . "\n");
         static::$escpos->text($printer->getDashLine() . "\n");
 
-        foreach ($model->getLines() as $line) {
+        foreach (self::getLines($model) as $line) {
             $td = '';
             if ($printer->print_lines_quantity) {
                 $td .= sprintf("%5s", $line->cantidad) . ' ';
