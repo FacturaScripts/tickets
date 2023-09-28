@@ -55,6 +55,11 @@ abstract class BaseTicket
         return base64_encode($body);
     }
 
+    protected static function getLines(ModelClass $model)
+    {
+        return $model->lines ?? $model->getLines();
+    }
+
     protected static function getReceipts(ModelClass $model, TicketPrinter $printer): string
     {
         $paid = 0;
@@ -321,7 +326,7 @@ abstract class BaseTicket
         static::$escpos->setTextSize($printer->font_size, $printer->font_size);
 
         // añadimos las líneas
-        $lines = $model->getLines();
+        $lines = self::getLines($model);
         static::printLines($printer, $lines);
 
         foreach (static::getSubtotals($model, $lines) as $item) {
