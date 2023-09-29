@@ -12,7 +12,7 @@ use FacturaScripts\Dinamic\Model\TicketPrinter;
 use FacturaScripts\Dinamic\Model\User;
 
 /**
- * @author Carlos Garcia Gomez <carlos@facturascripts.com>
+ * @author Carlos Garcia Gomez      <carlos@facturascripts.com>
  * @author Daniel Fernández Giménez <hola@danielfg.es>
  */
 class Normal extends BaseTicket

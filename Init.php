@@ -15,13 +15,14 @@ use FacturaScripts\Dinamic\Lib\ExportManager;
 use FacturaScripts\Dinamic\Lib\Tickets\Gift;
 use FacturaScripts\Dinamic\Lib\Tickets\Normal;
 use FacturaScripts\Dinamic\Lib\Tickets\PaymentReceipt;
+use FacturaScripts\Dinamic\Lib\Tickets\RepDominicana;
 use FacturaScripts\Dinamic\Lib\Tickets\Service;
 use FacturaScripts\Dinamic\Lib\Tickets\TicketBai;
 
 /**
  * @author Carlos Garcia Gomez <carlos@facturascripts.com>
  */
-class Init extends InitClass
+final class Init extends InitClass
 {
     public function init()
     {
@@ -47,6 +48,7 @@ class Init extends InitClass
         }
 
         SendTicket::addFormat(TicketBai::class, 'FacturaCliente', 'ticketbai');
+        SendTicket::addFormat(RepDominicana::class, 'FacturaCliente', 'dominicana');
         SendTicket::addFormat(PaymentReceipt::class, 'ReciboCliente', 'receipt');
         SendTicket::addFormat(Service::class, 'ServicioAT', 'service');
     }
