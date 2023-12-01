@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2019-2022 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2019-2023 Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 
 namespace FacturaScripts\Plugins\Tickets\Controller;
@@ -43,12 +43,21 @@ class EditTicketPrinter extends EditController
     protected function createViews()
     {
         parent::createViews();
+
+        // desactivamos el botón de opciones
+        $this->setSettings($this->getMainViewName(), 'btnOptions', false);
+
         $this->setTabsPosition('bottom');
-        $this->addHtmlView('app', 'Tab/DownloadPrinterApp', 'TicketPrinter', 'app', 'fas fa-desktop');
+        $this->createViewsDownloadApp();
         $this->createViewsTicket();
     }
 
-    protected function createViewsTicket(string $viewName = "ListTicket")
+    protected function createViewsDownloadApp(string $viewName = "app"): void
+    {
+        $this->addHtmlView($viewName, 'Tab/DownloadPrinterApp', 'TicketPrinter', 'app', 'fas fa-desktop');
+    }
+
+    protected function createViewsTicket(string $viewName = "ListTicket"): void
     {
         $this->addListView($viewName, "Ticket", "tickets", "fas fa-receipt");
         $this->views[$viewName]->addOrderBy(["id"], "id");
