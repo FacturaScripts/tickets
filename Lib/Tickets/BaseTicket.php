@@ -5,12 +5,11 @@
 
 namespace FacturaScripts\Plugins\Tickets\Lib\Tickets;
 
-use FacturaScripts\Core\Base\ToolBox;
-use FacturaScripts\Core\Base\Translator;
 use FacturaScripts\Core\Model\Base\ModelClass;
 use FacturaScripts\Core\Plugins;
+use FacturaScripts\Core\Tools;
+use FacturaScripts\Core\Translator;
 use FacturaScripts\Dinamic\Model\Agente;
-use FacturaScripts\Dinamic\Model\Base\ModelCore;
 use FacturaScripts\Dinamic\Model\Impuesto;
 use FacturaScripts\Dinamic\Model\TicketPrinter;
 use FacturaScripts\Dinamic\Model\User;
@@ -86,12 +85,12 @@ abstract class BaseTicket
                 $datePaid = '';
             } else {
                 $paid += $receipt->importe;
-                $datePaid = date(ModelCore::DATE_STYLE, strtotime($receipt->fechapago));
+                $datePaid = Tools::date($receipt->fechapago);
             }
 
-            $receipts .= sprintf("%10s", date(ModelCore::DATE_STYLE, strtotime($receipt->vencimiento))) . " "
+            $receipts .= sprintf("%10s", Tools::date($receipt->vencimiento)) . " "
                 . sprintf("%10s", $datePaid)
-                . sprintf("%" . $widthTotal . "s", ToolBox::numbers()::format($receipt->importe));
+                . sprintf("%" . $widthTotal . "s", Tools::number($receipt->importe));
         }
 
         if (empty($receipts)) {
@@ -107,11 +106,11 @@ abstract class BaseTicket
             . $receipts . "\n"
             . $printer->getDashLine() . "\n"
             . sprintf("%" . ($printer->linelen - $widthTotal - 1) . "s", static::$i18n->trans('total')) . " "
-            . sprintf("%" . $widthTotal . "s", ToolBox::numbers()::format($total)) . "\n"
+            . sprintf("%" . $widthTotal . "s", Tools::number($total)) . "\n"
             . sprintf("%" . ($printer->linelen - $widthTotal - 1) . "s", static::$i18n->trans('paid')) . " "
-            . sprintf("%" . $widthTotal . "s", ToolBox::numbers()::format($paid)) . "\n"
+            . sprintf("%" . $widthTotal . "s", Tools::number($paid)) . "\n"
             . sprintf("%" . ($printer->linelen - $widthTotal - 1) . "s", static::$i18n->trans('pending')) . " "
-            . sprintf("%" . $widthTotal . "s", ToolBox::numbers()::format($total - $paid)) . "\n\n";
+            . sprintf("%" . $widthTotal . "s", Tools::number($total - $paid)) . "\n\n";
     }
 
     protected static function getSubtotals(ModelClass $model, array $lines): array
@@ -264,10 +263,10 @@ abstract class BaseTicket
             }
 
             if ($printer->print_lines_net) {
-                $td .= sprintf("%11s", ToolBox::numbers()::format($line->pvptotal));
+                $td .= sprintf("%11s", Tools::number($line->pvptotal));
             } elseif ($printer->print_lines_total) {
                 $total = $line->pvptotal * (100 + $line->iva + $line->recargo) / 100;
-                $td .= sprintf("%11s", ToolBox::numbers()::format($total));
+                $td .= sprintf("%11s", Tools::number($total));
             }
 
             $jump = false;
@@ -277,19 +276,19 @@ abstract class BaseTicket
             }
 
             if ($printer->print_lines_price) {
-                $td .= "\n" . sprintf("%11s", ToolBox::i18n()->trans('price-abb') . ': ' . ToolBox::numbers()::format($line->pvpunitario));
+                $td .= "\n" . sprintf("%11s", Tools::lang()->trans('price-abb') . ': ' . Tools::number($line->pvpunitario));
                 $jump = true;
             }
 
             if ($printer->print_lines_discount && $line->dtopor > 0) {
                 $td .= $printer->print_lines_price ? ' ' : "\n";
-                $td .= sprintf("%11s", ToolBox::i18n()->trans('discount-abb') . ': ' . $line->dtopor . '%');
+                $td .= sprintf("%11s", Tools::lang()->trans('discount-abb') . ': ' . $line->dtopor . '%');
                 $jump = true;
             }
 
             if ($printer->print_lines_net && $printer->print_lines_total) {
                 $td .= $printer->print_lines_price ? ' ' : "\n";
-                $td .= sprintf("%11s", ToolBox::i18n()->trans('net-abb') . ': ' . ToolBox::numbers()::format($line->pvptotal));
+                $td .= sprintf("%11s", Tools::lang()->trans('net-abb') . ': ' . Tools::number($line->pvptotal));
                 $jump = true;
             }
 
@@ -339,14 +338,14 @@ abstract class BaseTicket
 
         foreach (static::getSubtotals($model, $lines) as $item) {
             $text = sprintf("%" . ($printer->linelen - 11) . "s", static::$i18n->trans('tax-base') . ' ' . $item['taxp']) . " "
-                . sprintf("%10s", ToolBox::numbers()::format($item['taxbase'])) . "\n"
+                . sprintf("%10s", Tools::number($item['taxbase'])) . "\n"
                 . sprintf("%" . ($printer->linelen - 11) . "s", $item['tax']) . " "
-                . sprintf("%10s", ToolBox::numbers()::format($item['taxamount']));
+                . sprintf("%10s", Tools::number($item['taxamount']));
             static::$escpos->text(static::sanitize($text) . "\n");
 
             if ($item['taxsurcharge']) {
                 $text = sprintf("%" . ($printer->linelen - 11) . "s", "RE " . $item['taxsurchargep']) . " "
-                    . sprintf("%10s", ToolBox::numbers()::format($item['taxsurcharge']));
+                    . sprintf("%10s", Tools::number($item['taxsurcharge']));
                 static::$escpos->text(static::sanitize($text) . "\n");
             }
         }
@@ -354,15 +353,15 @@ abstract class BaseTicket
 
         // añadimos los totales
         $text = sprintf("%" . ($printer->linelen - 11) . "s", static::$i18n->trans('total')) . " "
-            . sprintf("%10s", ToolBox::numbers()::format($model->total));
+            . sprintf("%10s", Tools::number($model->total));
 
         if (property_exists($model, 'tpv_efectivo') && $model->tpv_efectivo > 0) {
             $text .= sprintf("%" . ($printer->linelen - 11) . "s", static::$i18n->trans('cash')) . " "
-                . sprintf("%10s", ToolBox::numbers()::format($model->tpv_efectivo)) . "\n";
+                . sprintf("%10s", Tools::number($model->tpv_efectivo)) . "\n";
         }
         if (property_exists($model, 'tpv_cambio') && $model->tpv_cambio > 0) {
             $text .= sprintf("%" . ($printer->linelen - 11) . "s", static::$i18n->trans('money-change')) . " "
-                . sprintf("%10s", ToolBox::numbers()::format($model->tpv_cambio)) . "\n";
+                . sprintf("%10s", Tools::number($model->tpv_cambio)) . "\n";
         }
 
         static::$escpos->text(static::sanitize($text) . "\n");

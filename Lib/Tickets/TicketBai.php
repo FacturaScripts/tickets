@@ -11,7 +11,7 @@ use FacturaScripts\Dinamic\Model\TicketPrinter;
 use Mike42\Escpos\Printer;
 
 /**
- * @author Carlos Garcia Gomez <carlos@facturascripts.com>
+ * @author Carlos Garcia Gomez      <carlos@facturascripts.com>
  * @author Daniel Fernández Giménez <hola@danielfg.es>
  */
 class TicketBai extends Normal

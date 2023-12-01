@@ -7,6 +7,7 @@ namespace FacturaScripts\Plugins\Tickets\Controller;
 
 use FacturaScripts\Core\Base\Controller;
 use FacturaScripts\Core\Model\Base\ModelClass;
+use FacturaScripts\Core\Tools;
 use FacturaScripts\Dinamic\Lib\Tickets\Gift;
 use FacturaScripts\Dinamic\Lib\Tickets\Normal;
 use FacturaScripts\Dinamic\Lib\Tickets\PaymentReceipt;
@@ -35,8 +36,8 @@ class SendTicket extends Controller
     public static function addFormat(string $className, string $modelName, string $label): void
     {
         // si ya existe un formato con la misma className, no hacemos nada
-        if (isset(static::$formats[$modelName])) {
-            foreach (static::$formats[$modelName] as $format) {
+        if (isset(self::$formats[$modelName])) {
+            foreach (self::$formats[$modelName] as $format) {
                 if ($format['className'] === $className) {
                     return;
                 }
@@ -44,7 +45,7 @@ class SendTicket extends Controller
         }
 
         // añadimos el formato
-        static::$formats[$modelName][] = [
+        self::$formats[$modelName][] = [
             'className' => $className,
             'label' => $label,
             'modelName' => $modelName,
@@ -53,7 +54,7 @@ class SendTicket extends Controller
 
     public static function getFormats(string $modelClassName): array
     {
-        return static::$formats[$modelClassName] ?? [];
+        return self::$formats[$modelClassName] ?? [];
     }
 
     public function getPageData(): array
@@ -103,13 +104,13 @@ class SendTicket extends Controller
         return new TicketPrinter();
     }
 
-    protected function loadPrinters()
+    protected function loadPrinters(): void
     {
         $printerModel = new TicketPrinter();
         $this->printers = $printerModel->all([], ['creationdate' => 'DESC'], 0, 0);
     }
 
-    protected function printAction(ModelClass $model)
+    protected function printAction(ModelClass $model): void
     {
         $formatClass = $this->request->request->get('format', '');
         if (empty($formatClass)) {
@@ -128,7 +129,7 @@ class SendTicket extends Controller
 
         $format = new $formatClass();
         if ($format::print($model, $printer, $this->user)) {
-            $this->toolBox()->i18nLog()->notice('sending-to-printer');
+            Tools::log()->notice('sending-to-printer');
             $this->redirect($model->url(), 1);
         }
     }

@@ -1,12 +1,13 @@
 <?php
 /**
- * Copyright (C) 2019-2022 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2019-2023 Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 
 namespace FacturaScripts\Plugins\Tickets\Model;
 
 use FacturaScripts\Core\Model\Base\ModelClass;
 use FacturaScripts\Core\Model\Base\ModelTrait;
+use FacturaScripts\Core\Tools;
 use FacturaScripts\Dinamic\Model\Agente;
 
 /**
@@ -76,7 +77,7 @@ class Ticket extends ModelClass
         parent::clear();
         $this->appversion = 0.0;
         $this->base64 = false;
-        $this->creationdate = date(self::DATETIME_STYLE);
+        $this->creationdate = Tools::dateTime();
         $this->printed = false;
     }
 
@@ -104,7 +105,7 @@ class Ticket extends ModelClass
     public function save(): bool
     {
         $this->body = $this->base64 ? $this->body : $this->sanitize($this->body);
-        $this->title = $this->toolBox()->utils()->noHtml($this->title);
+        $this->title = Tools::noHtml($this->title);
 
         if ($this->printed && empty($this->printdelay)) {
             // calculamos cuantos segundos ha tardado en imprimir
@@ -141,7 +142,7 @@ class Ticket extends ModelClass
             '/Ý/' => 'Y', '/Ÿ/' => 'Y'
         ];
 
-        $txtNoHtml = $this->toolBox()->utils()->noHtml($txt) ?? '';
+        $txtNoHtml = Tools::noHtml($txt) ?? '';
         return preg_replace(array_keys($changes), $changes, $txtNoHtml);
     }
 }

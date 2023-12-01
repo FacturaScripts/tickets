@@ -12,7 +12,7 @@ use FacturaScripts\Dinamic\Model\TicketPrinter;
 use FacturaScripts\Dinamic\Model\User;
 
 /**
- * @author Carlos Garcia Gomez <carlos@facturascripts.com>
+ * @author Carlos Garcia Gomez      <carlos@facturascripts.com>
  * @author Daniel Fernández Giménez <hola@danielfg.es>
  */
 class Service extends BaseTicket
@@ -43,6 +43,17 @@ class Service extends BaseTicket
     protected static function setBody(ModelClass $model, TicketPrinter $printer): void
     {
         static::$escpos->setTextSize($printer->font_size, $printer->font_size);
+
+        static::$escpos->text(static::sanitize(static::$i18n->trans('date') . ': ' . $model->fecha . ' ' . $model->hora) . "\n");
+
+        $customer = $model->getCustomer();
+        static::$escpos->text(static::sanitize(static::$i18n->trans('customer') . ': ' . $customer->razonsocial) . "\n");
+        if ($customer->telefono1) {
+            static::$escpos->text(static::sanitize(static::$i18n->trans('phone') . ': ' . $customer->telefono1) . "\n\n");
+        }
+        if ($customer->telefono2) {
+            static::$escpos->text(static::sanitize(static::$i18n->trans('phone') . ': ' . $customer->telefono2) . "\n\n");
+        }
 
         static::$escpos->text(static::sanitize(static::$i18n->trans('description') . ': ' . $model->descripcion) . "\n");
 

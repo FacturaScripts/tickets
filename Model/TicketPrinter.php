@@ -7,6 +7,7 @@ namespace FacturaScripts\Plugins\Tickets\Model;
 
 use FacturaScripts\Core\Model\Base\ModelClass;
 use FacturaScripts\Core\Model\Base\ModelTrait;
+use FacturaScripts\Core\Tools;
 use FacturaScripts\Dinamic\Model\ApiAccess;
 use FacturaScripts\Dinamic\Model\ApiKey;
 
@@ -107,7 +108,7 @@ class TicketPrinter extends ModelClass
     public function clear()
     {
         parent::clear();
-        $this->creationdate = date(self::DATE_STYLE);
+        $this->creationdate = Tools::date();
         $this->font_size = 1;
         $this->footer_font_size = 1;
         $this->head_font_size = 1;
@@ -196,9 +197,9 @@ class TicketPrinter extends ModelClass
         }
 
         $this->apikey = $this->getApiKey()->apikey;
-        $this->cutcommand = $this->toolBox()->utils()->noHtml($this->cutcommand);
-        $this->name = $this->toolBox()->utils()->noHtml($this->name);
-        $this->opencommand = $this->toolBox()->utils()->noHtml($this->opencommand);
+        $this->cutcommand = Tools::noHtml($this->cutcommand);
+        $this->name = Tools::noHtml($this->name);
+        $this->opencommand = Tools::noHtml($this->opencommand);
 
         return parent::save();
     }

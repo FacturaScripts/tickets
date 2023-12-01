@@ -9,7 +9,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 use FacturaScripts\Core\Base\DataBase;
 use FacturaScripts\Core\Base\InitClass;
-use FacturaScripts\Core\Base\ToolBox;
+use FacturaScripts\Core\Tools;
 use FacturaScripts\Dinamic\Controller\SendTicket;
 use FacturaScripts\Dinamic\Lib\ExportManager;
 use FacturaScripts\Dinamic\Lib\Tickets\Gift;
@@ -75,8 +75,7 @@ final class Init extends InitClass
         }
 
         // activamos la API
-        $appSettings = ToolBox::appSettings();
-        $appSettings->set('default', 'enable_api', true);
-        $appSettings->save();
+        Tools::settingsSet('default', 'enable_api', true);
+        Tools::settingsSave();
     }
 }
