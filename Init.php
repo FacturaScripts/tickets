@@ -15,7 +15,6 @@ use FacturaScripts\Dinamic\Lib\ExportManager;
 use FacturaScripts\Dinamic\Lib\Tickets\Gift;
 use FacturaScripts\Dinamic\Lib\Tickets\Normal;
 use FacturaScripts\Dinamic\Lib\Tickets\PaymentReceipt;
-use FacturaScripts\Dinamic\Lib\Tickets\TicketBai;
 
 /**
  * @author Carlos Garcia Gomez <carlos@facturascripts.com>
@@ -45,7 +44,6 @@ final class Init extends InitClass
             SendTicket::addFormat(Gift::class, $model, 'gift');
         }
 
-        SendTicket::addFormat(TicketBai::class, 'FacturaCliente', 'ticketbai');
         SendTicket::addFormat(PaymentReceipt::class, 'ReciboCliente', 'receipt');
     }
 
