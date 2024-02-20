@@ -15,7 +15,6 @@ use FacturaScripts\Dinamic\Lib\ExportManager;
 use FacturaScripts\Dinamic\Lib\Tickets\Gift;
 use FacturaScripts\Dinamic\Lib\Tickets\Normal;
 use FacturaScripts\Dinamic\Lib\Tickets\PaymentReceipt;
-use FacturaScripts\Dinamic\Lib\Tickets\Service;
 use FacturaScripts\Dinamic\Lib\Tickets\TicketBai;
 
 /**
@@ -48,7 +47,6 @@ final class Init extends InitClass
 
         SendTicket::addFormat(TicketBai::class, 'FacturaCliente', 'ticketbai');
         SendTicket::addFormat(PaymentReceipt::class, 'ReciboCliente', 'receipt');
-        SendTicket::addFormat(Service::class, 'ServicioAT', 'service');
     }
 
     private function renameTicketsTable(string $oldTable, string $newTable): void
