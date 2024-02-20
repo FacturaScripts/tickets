@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2019-2023 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2019-2024 Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 
 namespace FacturaScripts\Plugins\Tickets;
@@ -15,7 +15,6 @@ use FacturaScripts\Dinamic\Lib\ExportManager;
 use FacturaScripts\Dinamic\Lib\Tickets\Gift;
 use FacturaScripts\Dinamic\Lib\Tickets\Normal;
 use FacturaScripts\Dinamic\Lib\Tickets\PaymentReceipt;
-use FacturaScripts\Dinamic\Lib\Tickets\RepDominicana;
 use FacturaScripts\Dinamic\Lib\Tickets\Service;
 use FacturaScripts\Dinamic\Lib\Tickets\TicketBai;
 
@@ -48,7 +47,6 @@ final class Init extends InitClass
         }
 
         SendTicket::addFormat(TicketBai::class, 'FacturaCliente', 'ticketbai');
-        SendTicket::addFormat(RepDominicana::class, 'FacturaCliente', 'dominicana');
         SendTicket::addFormat(PaymentReceipt::class, 'ReciboCliente', 'receipt');
         SendTicket::addFormat(Service::class, 'ServicioAT', 'service');
     }
