@@ -1,16 +1,19 @@
 <?php
 /**
- * Copyright (C) 2023 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2023-2024 Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 
 namespace FacturaScripts\Plugins\Tickets\Lib\Tickets;
 
+use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Model\Base\ModelClass;
 use FacturaScripts\Core\Plugins;
 use FacturaScripts\Core\Tools;
 use FacturaScripts\Core\Translator;
 use FacturaScripts\Dinamic\Model\Agente;
+use FacturaScripts\Dinamic\Model\FormaPago;
 use FacturaScripts\Dinamic\Model\Impuesto;
+use FacturaScripts\Dinamic\Model\PrePago;
 use FacturaScripts\Dinamic\Model\TicketPrinter;
 use FacturaScripts\Dinamic\Model\User;
 use Mike42\Escpos\PrintConnectors\DummyPrintConnector;
@@ -67,6 +70,78 @@ abstract class BaseTicket
         return self::$lines ?? $model->getLines();
     }
 
+    protected static function getPaymentMethods(ModelClass $model, TicketPrinter $printer): string
+    {
+        $paymentMethods = [];
+
+        // si es una factura, obtenemos sus recibos
+        if ($model->modelClassName() === 'FacturaCliente') {
+            $receipts = $model->getReceipts();
+            foreach ($receipts as $receipt) {
+                if (isset($paymentMethods[$receipt->codpago])) {
+                    $paymentMethods[$receipt->codpago] += $receipt->importe;
+                    continue;
+                }
+
+                $paymentMethods[$receipt->codpago] = $receipt->importe;
+            }
+        } elseif (Plugins::isEnabled('PrePagos')) {
+            // si no es una factura buscamos si tiene anticipos
+            $prepagoModel = new PrePago();
+            $where = [
+                new DataBaseWhere('modelid', $model->primaryColumnValue()),
+                new DataBaseWhere('modelname', $model->modelClassName()),
+            ];
+            foreach ($prepagoModel->all($where, [], 0, 0) as $prepago) {
+                if (isset($paymentMethods[$prepago->codpago])) {
+                    $paymentMethods[$prepago->codpago] += $prepago->amount;
+                    continue;
+                }
+
+                $paymentMethods[$prepago->codpago] = $prepago->amount;
+            }
+        }
+
+        // si no hay formas de pago, salimos
+        if (empty($paymentMethods)) {
+            return '';
+        }
+
+        $txt = '';
+        $cont = 0;
+        $widthTotal = $printer->linelen - 22;
+
+        // pintamos las formas de pago
+        foreach ($paymentMethods as $codpago => $total) {
+            $payment = new FormaPago();
+            if (false === $payment->loadFromCode($codpago)) {
+                continue;
+            }
+
+            if (false === empty($txt)) {
+                $txt .= "\n";
+            }
+
+            $cont ++;
+            $width = $cont === 1
+                ? $printer->linelen - $widthTotal
+                : $printer->linelen - $widthTotal - 1;
+
+            $txt .= sprintf("%-" . $width . "s", $payment->descripcion) . " "
+                . sprintf("%" . $widthTotal . "s", Tools::number($total));
+        }
+
+        // si no hay texto de las formas de pago, salimos
+        if (empty($txt)) {
+            return '';
+        }
+
+        return sprintf("%" . $printer->linelen . "s", static::$i18n->trans('payment-methods')) . "\n"
+            . $printer->getDashLine() . "\n"
+            . $txt
+            . "\n\n";
+    }
+
     protected static function getReceipts(ModelClass $model, TicketPrinter $printer): string
     {
         $paid = 0;
@@ -89,7 +164,7 @@ abstract class BaseTicket
             }
 
             $receipts .= sprintf("%10s", Tools::date($receipt->vencimiento)) . " "
-                . sprintf("%10s", $datePaid)
+                . sprintf("%10s", $datePaid) . " "
                 . sprintf("%" . $widthTotal . "s", Tools::number($receipt->importe));
         }
 
@@ -97,11 +172,10 @@ abstract class BaseTicket
             return '';
         }
 
-        return "\n\n"
-            . sprintf("%" . $printer->linelen . "s", static::$i18n->trans('receipts')) . "\n"
+        return sprintf("%" . $printer->linelen . "s", static::$i18n->trans('receipts')) . "\n"
             . sprintf("%10s", static::$i18n->trans('expiration-abb')) . " "
             . sprintf("%10s", static::$i18n->trans('paid')) . " "
-            . sprintf("%" . $widthTotal . "s", static::$i18n->trans('total')) . "\n"
+            . sprintf("%" . ($widthTotal - 1) . "s", static::$i18n->trans('total')) . "\n"
             . $printer->getDashLine() . "\n"
             . $receipts . "\n"
             . $printer->getDashLine() . "\n"
@@ -364,8 +438,14 @@ abstract class BaseTicket
                 . sprintf("%10s", Tools::number($model->tpv_cambio)) . "\n";
         }
 
-        static::$escpos->text(static::sanitize($text) . "\n");
+        static::$escpos->text(static::sanitize($text) . "\n\n");
 
+        // añadimos las formas de pago
+        if ($printer->print_payment_methods) {
+            static::$escpos->text(static::sanitize(static::getPaymentMethods($model, $printer)));
+        }
+
+        // añadimos los recibos
         if ($printer->print_invoice_receipts && $model->modelClassName() === 'FacturaCliente') {
             static::$escpos->text(static::sanitize(static::getReceipts($model, $printer)));
         }
