@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- * Copyright (C) 2019-2023 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2019-2024 Carlos Garcia Gomez <carlos@facturascripts.com>
  * Author Carlos Garcia Gomez <carlos@facturascripts.com>
  * Author Daniel Fernández Giménez <hola@danielfg.es>
 -->
@@ -116,6 +116,11 @@
     </column>
     <column>
         <name>print_lines_total</name>
+        <type>boolean</type>
+        <default>false</default>
+    </column>
+    <column>
+        <name>print_payment_methods</name>
         <type>boolean</type>
         <default>false</default>
     </column>

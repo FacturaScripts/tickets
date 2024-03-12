@@ -53,6 +53,9 @@
             <column name="print-invoice-receipts" order="130">
                 <widget type="checkbox" fieldname="print_invoice_receipts"/>
             </column>
+            <column name="print-payment-methods" order="140">
+                <widget type="checkbox" fieldname="print_payment_methods"/>
+            </column>
         </group>
         <group name="header" title="header" icon="fa-solid fa-arrows-up-to-line" numcolumns="6">
             <column name="ticket-head" numcolumns="12" order="100">
