@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2019-2023 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2019-2024 Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 
 namespace FacturaScripts\Plugins\Tickets\Model;
@@ -100,6 +100,9 @@ class TicketPrinter extends ModelClass
     public $print_lines_total;
 
     /** @var bool */
+    public $print_payment_methods;
+
+    /** @var bool */
     public $print_stored_logo;
 
     /** @var int */
@@ -124,6 +127,7 @@ class TicketPrinter extends ModelClass
         $this->print_lines_quantity = true;
         $this->print_lines_reference = false;
         $this->print_lines_total = true;
+        $this->print_payment_methods = false;
         $this->print_stored_logo = false;
         $this->title_font_size = 2;
     }
