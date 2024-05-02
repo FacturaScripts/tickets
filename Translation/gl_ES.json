@@ -5,7 +5,7 @@
     "description-abb": "Desc.",
     "discount-abb": "Dto.",
     "download-app": "Descargar App",
-    "expiration-abb": "Caducidade",
+    "expiration-abb": "Vcto.",
     "gift": "Agasallo",
     "line-length": "Caracteres por liña",
     "net-abb": "Neto",
@@ -23,6 +23,8 @@
     "print-lines-quantity": "Imprimir cantidades",
     "print-lines-reference": "Imprimir referencias",
     "print-lines-total": "Imprimir totais",
+    "print-logo": "Imprimir logo",
+    "print-payment-methods": "Imprimir formas de pagamento",
     "print-preticket": "Pre-imprimir tickets",
     "print-stored-logo": "Imprimir logotipo almacenado na impresora",
     "print-ticket": "Imprimir ticket",
@@ -32,6 +34,5 @@
     "sending-to-printer": "Enviando á impresora",
     "ticket-footer": "Pe de páxina",
     "ticket-head": "Cabeceira",
-    "tickets": "Tickets",
     "total-abb": "Total"
 }

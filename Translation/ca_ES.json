@@ -5,7 +5,7 @@
     "description-abb": "Desc.",
     "discount-abb": "Dto.",
     "download-app": "Descarregar App",
-    "expiration-abb": "Venciment",
+    "expiration-abb": "Vcto.",
     "gift": "Regal",
     "line-length": "Caràcters per línia",
     "net-abb": "Net",
@@ -23,6 +23,8 @@
     "print-lines-quantity": "Imprimir descripcions",
     "print-lines-reference": "Imprimir referencies",
     "print-lines-total": "Imprimir totals",
+    "print-logo": "Imprimir logo",
+    "print-payment-methods": "Imprimir formes de pagament",
     "print-preticket": "Pre-imprimir tiquets",
     "print-stored-logo": "Imprimir logotip emmagatzemat a la impressora",
     "print-ticket": "Imprimir tiquet",
@@ -32,6 +34,5 @@
     "sending-to-printer": "Enviant el document a la impressora",
     "ticket-footer": "Peu de pàgina",
     "ticket-head": "Capçalera",
-    "tickets": "Tiquets",
     "total-abb": "Total"
 }
