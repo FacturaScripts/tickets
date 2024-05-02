@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2019-2022 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2019-2024 Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 
 namespace FacturaScripts\Plugins\Tickets\Controller;
@@ -29,21 +29,19 @@ class ListTicketPrinter extends ListController
 
     protected function createViewsTicket(string $viewName = "ListTicket")
     {
-        $this->addView($viewName, "Ticket", "tickets", "fas fa-receipt");
-        $this->addOrderBy($viewName, ["id"], "id");
-        $this->addOrderBy($viewName, ["title"], "title");
-        $this->addOrderBy($viewName, ["creationdate"], "date", 2);
-        $this->addSearchFields($viewName, ["title"]);
-
-        // disable new button
-        $this->setSettings($viewName, 'btnNew', false);
+        $this->addView($viewName, "Ticket", "tickets", "fas fa-receipt")
+            ->addOrderBy(["id"], "id")
+            ->addOrderBy(["title"], "title")
+            ->addOrderBy(["creationdate"], "date", 2)
+            ->addSearchFields(["title"])
+            ->setSettings('btnNew', false);
     }
 
     protected function createViewsTicketPrinter(string $viewName = "ListTicketPrinter")
     {
-        $this->addView($viewName, "TicketPrinter", "printers", "fas fa-print");
-        $this->addOrderBy($viewName, ["id"], "id");
-        $this->addOrderBy($viewName, ["name"], "name", 1);
-        $this->addSearchFields($viewName, ["id", "name"]);
+        $this->addView($viewName, "TicketPrinter", "printers", "fas fa-print")
+            ->addOrderBy(["id"], "id")
+            ->addOrderBy(["name"], "name", 1)
+            ->addSearchFields(["id", "name"]);
     }
 }

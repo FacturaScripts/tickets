@@ -22,7 +22,7 @@
                             <div class="form-group">
                                 <select name="format" class="form-control" required>
                                     {% for format in fsc.getFormats(fsc.modelClassName) %}
-                                        <option value="{{ format.className }}">{{ i18n.trans(format.label) }}</option>
+                                        <option value="{{ format.className }}">{{ trans(format.label) }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -38,12 +38,12 @@
                                         <i class="fas fa-print"></i>&nbsp; {{ printer.name }}
                                     </button>
                                     <p class="text-muted">
-                                        {{ i18n.trans('last-activity') }}: {{ printer.lastactivity }}
+                                        {{ trans('last-activity') }}: {{ printer.lastactivity }}
                                     </p>
                                 {% endif %}
                             {% else %}
                                 <div class="alert alert-warning mb-0">
-                                    {{ i18n.trans('no-printer-connected') }}
+                                    {{ trans('no-printer-connected') }}
                                 </div>
                             {% endfor %}
                         </div>
@@ -51,11 +51,11 @@
                     <div class="card shadow mb-5">
                         <div class="card-body">
                             <h2 class="h3">
-                                <i class="fas fa-print"></i> {{ i18n.trans('connect-a-printer') }}
+                                <i class="fas fa-print"></i> {{ trans('connect-a-printer') }}
                             </h2>
-                            <p>{{ i18n.trans('connect-a-printer-p') }}</p>
+                            <p>{{ trans('connect-a-printer-p') }}</p>
                             <a href="ListTicketPrinter" class="btn btn-secondary">
-                                {{ i18n.trans('printers') }}
+                                {{ trans('printers') }}
                             </a>
                         </div>
                     </div>

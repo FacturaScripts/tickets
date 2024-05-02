@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2019-2023 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2019-2024 Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 
 namespace FacturaScripts\Plugins\Tickets\Controller;
@@ -59,17 +59,13 @@ class EditTicketPrinter extends EditController
 
     protected function createViewsTicket(string $viewName = "ListTicket"): void
     {
-        $this->addListView($viewName, "Ticket", "tickets", "fas fa-receipt");
-        $this->views[$viewName]->addOrderBy(["id"], "id");
-        $this->views[$viewName]->addOrderBy(["title"], "title");
-        $this->views[$viewName]->addOrderBy(["creationdate"], "date", 2);
-        $this->views[$viewName]->addSearchFields(["title"]);
-
-        // disable printer column
-        $this->views[$viewName]->disableColumn('printer');
-
-        // disable buttons
-        $this->setSettings($viewName, 'btnNew', false);
+        $this->addListView($viewName, "Ticket", "tickets", "fas fa-receipt")
+            ->addOrderBy(["id"], "id")
+            ->addOrderBy(["title"], "title")
+            ->addOrderBy(["creationdate"], "date", 2)
+            ->addSearchFields(["title"])
+            ->disableColumn('printer')
+            ->setSettings($viewName, 'btnNew', false);
     }
 
     /**
