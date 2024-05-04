@@ -23,6 +23,8 @@
     "print-lines-quantity": "Imprimir descripciones",
     "print-lines-reference": "Imprimir referencias",
     "print-lines-total": "Imprimir totales",
+    "print-logo": "Imprimir logo",
+    "print-payment-methods": "Imprimir formas de pago",
     "print-preticket": "Pre-imprimir tickets",
     "print-stored-logo": "Imprimir logotipo almacenado en la impresora",
     "print-ticket": "Imprimir ticket",
@@ -32,6 +34,5 @@
     "sending-to-printer": "Enviando a la impresora",
     "ticket-footer": "Pié de página",
     "ticket-head": "Cabecera",
-    "tickets": "Tickets",
     "total-abb": "Total"
 }
