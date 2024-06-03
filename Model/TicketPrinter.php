@@ -202,6 +202,8 @@ class TicketPrinter extends ModelClass
 
         $this->apikey = $this->getApiKey()->apikey;
         $this->cutcommand = Tools::noHtml($this->cutcommand);
+        $this->footer = Tools::noHtml($this->footer);
+        $this->head = Tools::noHtml($this->head);
         $this->name = Tools::noHtml($this->name);
         $this->opencommand = Tools::noHtml($this->opencommand);
 
