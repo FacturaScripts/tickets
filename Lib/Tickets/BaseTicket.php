@@ -37,11 +37,18 @@ abstract class BaseTicket
     /** @var array */
     protected static $lines;
 
+    private static $openDrawer = true;
+
     abstract public static function print(ModelClass $model, TicketPrinter $printer, User $user, Agente $agent = null): bool;
 
     public static function setLines(?array $lines = null): void
     {
         static::$lines = $lines;
+    }
+
+    protected static function setOpenDrawer(bool $openDrawer): void
+    {
+        static::$openDrawer = $openDrawer;
     }
 
     protected static function getBody(): string
@@ -50,7 +57,9 @@ abstract class BaseTicket
         static::$escpos->feed(4);
 
         // abrimos el cajón
-        static::$escpos->pulse();
+        if (static::$openDrawer) {
+            static::$escpos->pulse();
+        }
 
         // cortamos el papel
         static::$escpos->cut();
