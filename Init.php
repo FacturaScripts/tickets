@@ -8,7 +8,7 @@ namespace FacturaScripts\Plugins\Tickets;
 require_once __DIR__ . '/vendor/autoload.php';
 
 use FacturaScripts\Core\Base\DataBase;
-use FacturaScripts\Core\Base\InitClass;
+use FacturaScripts\Core\Template\InitClass;
 use FacturaScripts\Core\Tools;
 use FacturaScripts\Dinamic\Controller\SendTicket;
 use FacturaScripts\Dinamic\Lib\ExportManager;
@@ -21,13 +21,17 @@ use FacturaScripts\Dinamic\Lib\Tickets\PaymentReceipt;
  */
 final class Init extends InitClass
 {
-    public function init()
+    public function init(): void
     {
         ExportManager::addOption('Ticket', 'ticket', 'fas fa-receipt');
         $this->loadFormatTickets();
     }
 
-    public function update()
+    public function uninstall(): void
+    {
+    }
+
+    public function update(): void
     {
         // activamos la API
         $this->setAPI();
