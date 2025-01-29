@@ -23,7 +23,7 @@ final class Init extends InitClass
 {
     public function init(): void
     {
-        ExportManager::addOption('Ticket', 'ticket', 'fas fa-receipt');
+        ExportManager::addOption('Ticket', 'ticket', 'fa-solid fa-receipt');
         $this->loadFormatTickets();
     }
 

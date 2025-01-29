@@ -13,12 +13,12 @@
                 <widget type="text" fieldname="title" required="" readonly="dinamic"/>
             </column>
             <column name="printer" titleurl="ListTicketPrinter" order="120">
-                <widget type="select" fieldname="idprinter" icon="fas fa-print" readonly="dinamic" required="true">
+                <widget type="select" fieldname="idprinter" icon="fa-solid fa-print" readonly="dinamic" required="true">
                     <values source="tickets_printers" fieldcode="id" fieldtitle="name"/>
                 </widget>
             </column>
             <column name="user" titleurl="ListUser" order="130">
-                <widget type="select" fieldname="nick" icon="fas fa-user-circle" onclick="EditUser" readonly="true"
+                <widget type="select" fieldname="nick" icon="fa-solid fa-user-circle" onclick="EditUser" readonly="true"
                         required="true">
                     <values source="users" fieldcode="nick" fieldtitle="nick"/>
                 </widget>

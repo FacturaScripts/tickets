@@ -18,7 +18,7 @@
             <widget type="datetime" fieldname="lastactivity"/>
         </column>
         <column name="creation-date" display="right" order="140">
-            <widget type="datetime" fieldname="creationdate"/>
+            <widget type="date" fieldname="creationdate"/>
         </column>
     </columns>
 </view>

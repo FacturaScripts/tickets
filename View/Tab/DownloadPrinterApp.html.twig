@@ -1,5 +1,5 @@
 {#
-* Copyright (C) 2019-2023 Carlos Garcia Gomez <carlos@facturascripts.com>
+* Copyright (C) 2019-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
 * Author Carlos Garcia Gomez <carlos@facturascripts.com>
 #}
 
@@ -10,30 +10,27 @@
                 <p>{{ trans('connect-a-printer-p') }}</p>
                 <div class="dropdown d-inline-block mr-1">
                     <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown"
-                            aria-expanded="false"><i class="fas fa-download mr-1"></i> {{ trans('download-app') }}
+                            aria-expanded="false"><i class="fa-solid fa-download mr-1"></i> {{ trans('download-app') }}
                     </button>
                     <div class="dropdown-menu">
                         <a class="dropdown-item"
                            href="https://megacity20.fra1.digitaloceanspaces.com/software/mc20printer/mc20printer-1.0.0%20Setup.exe">
-                            <i class="fab fa-windows fa-fw mr-1"></i> Windows 10/11
+                            <i class="fa-brands fa-windows fa-fw mr-1"></i> Windows 10/11 (64 bits)
                         </a>
                         <a class="dropdown-item"
                            href="https://megacity20.fra1.digitaloceanspaces.com/software/mc20printer/mc20printer-darwin-x64-1.1.0.zip">
-                            <i class="fab fa-apple fa-fw mr-1"></i> Mac
+                            <i class="fa-brands fa-apple fa-fw mr-1"></i> Mac
                         </a>
                         <a class="dropdown-item"
                            href="https://megacity20.fra1.digitaloceanspaces.com/software%2Fmc20printer%2Fmc20printer_1.1.0_amd64.deb">
-                            <i class="fab fa-linux fa-fw mr-1"></i> Linux (.deb)
+                            <i class="fa-brands fa-linux fa-fw mr-1"></i> Linux (.deb)
                         </a>
                         <a class="dropdown-item"
                            href="https://megacity20.fra1.digitaloceanspaces.com/software/mc20printer/mc20printer-1.0-1.x86_64.rpm">
-                            <i class="fab fa-linux fa-fw mr-1"></i> Linux (.rpm)
+                            <i class="fa-brands fa-linux fa-fw mr-1"></i> Linux (.rpm)
                         </a>
                     </div>
                 </div>
-                <a href="https://megacity20.com/support/59" target="_blank" class="btn btn-secondary">
-                    <i class="fas fa-question-circle"></i>
-                </a>
                 <h1 class="h4 mt-5 mb-1">URL:</h1>
                 <code>{{ fsc.getAppUrl() }}</code>
                 <h2 class="h4 mt-4 mb-1">{{ trans('api-key') }}:</h2>

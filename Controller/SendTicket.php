@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2019-2023 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2019-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 
 namespace FacturaScripts\Plugins\Tickets\Controller;
@@ -62,7 +62,7 @@ class SendTicket extends Controller
         $data = parent::getPageData();
         $data['menu'] = 'sales';
         $data['title'] = 'print-ticket';
-        $data['icon'] = 'fas fa-receipt';
+        $data['icon'] = 'fa-solid fa-receipt';
         $data['showonmenu'] = false;
         return $data;
     }

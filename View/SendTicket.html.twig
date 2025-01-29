@@ -30,12 +30,12 @@
                                 {% if printer.isActive() %}
                                     <button type="submit" name="printer" value="{{ printer.id }}"
                                             class="btn btn-block btn-lg btn-success mt-3">
-                                        <i class="fas fa-print"></i>&nbsp; {{ printer.name }}
+                                        <i class="fa-solid fa-print"></i>&nbsp; {{ printer.name }}
                                     </button>
                                 {% else %}
                                     <button type="submit" name="printer" value="{{ printer.id }}"
                                             class="btn btn-block btn-lg btn-warning">
-                                        <i class="fas fa-print"></i>&nbsp; {{ printer.name }}
+                                        <i class="fa-solid fa-print"></i>&nbsp; {{ printer.name }}
                                     </button>
                                     <p class="text-muted">
                                         {{ trans('last-activity') }}: {{ printer.lastactivity }}
@@ -51,7 +51,7 @@
                     <div class="card shadow mb-5">
                         <div class="card-body">
                             <h2 class="h3">
-                                <i class="fas fa-print"></i> {{ trans('connect-a-printer') }}
+                                <i class="fa-solid fa-print"></i> {{ trans('connect-a-printer') }}
                             </h2>
                             <p>{{ trans('connect-a-printer-p') }}</p>
                             <a href="ListTicketPrinter" class="btn btn-secondary">

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2019-2024 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2019-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 
 namespace FacturaScripts\Plugins\Tickets\Controller;
@@ -15,9 +15,9 @@ class ListTicketPrinter extends ListController
     public function getPageData(): array
     {
         $pageData = parent::getPageData();
-        $pageData["title"] = "tickets";
-        $pageData["menu"] = "admin";
-        $pageData["icon"] = "fas fa-print";
+        $pageData['title'] = 'tickets';
+        $pageData['menu'] = 'admin';
+        $pageData['icon'] = 'fa-solid fa-print';
         return $pageData;
     }
 
@@ -27,21 +27,22 @@ class ListTicketPrinter extends ListController
         $this->createViewsTicket();
     }
 
-    protected function createViewsTicket(string $viewName = "ListTicket")
+    protected function createViewsTicket(string $viewName = 'ListTicket'): void
     {
-        $this->addView($viewName, "Ticket", "tickets", "fas fa-receipt")
-            ->addOrderBy(["id"], "id")
-            ->addOrderBy(["title"], "title")
-            ->addOrderBy(["creationdate"], "date", 2)
-            ->addSearchFields(["title"])
+        $this->addView($viewName, 'Ticket', 'tickets', 'fa-solid fa-receipt')
+            ->addOrderBy(['creationdate'], 'creation-date', 2)
+            ->addOrderBy(['id'], 'id')
+            ->addOrderBy(['title'], 'title')
+            ->addSearchFields(['title'])
             ->setSettings('btnNew', false);
     }
 
-    protected function createViewsTicketPrinter(string $viewName = "ListTicketPrinter")
+    protected function createViewsTicketPrinter(string $viewName = 'ListTicketPrinter'): void
     {
-        $this->addView($viewName, "TicketPrinter", "printers", "fas fa-print")
-            ->addOrderBy(["id"], "id")
-            ->addOrderBy(["name"], "name", 1)
-            ->addSearchFields(["id", "name"]);
+        $this->addView($viewName, 'TicketPrinter', 'printers', 'fa-solid fa-print')
+            ->addOrderBy(['creationdate'], 'creation-date')
+            ->addOrderBy(['id'], 'id')
+            ->addOrderBy(['name'], 'name', 1)
+            ->addSearchFields(['id', 'name']);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2019-2024 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2019-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 
 namespace FacturaScripts\Plugins\Tickets\Controller;
@@ -28,15 +28,15 @@ class EditTicketPrinter extends EditController
 
     public function getModelClassName(): string
     {
-        return "TicketPrinter";
+        return 'TicketPrinter';
     }
 
     public function getPageData(): array
     {
         $pageData = parent::getPageData();
-        $pageData["menu"] = "admin";
-        $pageData["title"] = "printer";
-        $pageData["icon"] = "fas fa-print";
+        $pageData['menu'] = 'admin';
+        $pageData['title'] = 'printer';
+        $pageData['icon'] = 'fa-solid fa-print';
         return $pageData;
     }
 
@@ -52,20 +52,20 @@ class EditTicketPrinter extends EditController
         $this->createViewsTicket();
     }
 
-    protected function createViewsDownloadApp(string $viewName = "app"): void
+    protected function createViewsDownloadApp(string $viewName = 'app'): void
     {
-        $this->addHtmlView($viewName, 'Tab/DownloadPrinterApp', 'TicketPrinter', 'app', 'fas fa-desktop');
+        $this->addHtmlView($viewName, 'Tab/DownloadPrinterApp', 'TicketPrinter', 'app', 'fa-solid fa-desktop');
     }
 
-    protected function createViewsTicket(string $viewName = "ListTicket"): void
+    protected function createViewsTicket(string $viewName = 'ListTicket'): void
     {
-        $this->addListView($viewName, "Ticket", "tickets", "fas fa-receipt")
-            ->addOrderBy(["id"], "id")
-            ->addOrderBy(["title"], "title")
-            ->addOrderBy(["creationdate"], "date", 2)
-            ->addSearchFields(["title"])
+        $this->addListView($viewName, 'Ticket', 'tickets', 'fa-solid fa-receipt')
+            ->addOrderBy(['id'], 'id')
+            ->addOrderBy(['title'], 'title')
+            ->addOrderBy(['creationdate'], 'date', 2)
+            ->addSearchFields(['title'])
             ->disableColumn('printer')
-            ->setSettings($viewName, 'btnNew', false);
+            ->setSettings('btnNew', false);
     }
 
     /**
@@ -85,9 +85,9 @@ class EditTicketPrinter extends EditController
                 }
                 break;
 
-            case "ListTicket":
-                $idprinter = $this->views[$mvn]->model->primaryColumnValue();
-                $where = [new DataBaseWhere('idprinter', $idprinter)];
+            case 'ListTicket':
+                $id = $this->views[$mvn]->model->primaryColumnValue();
+                $where = [new DataBaseWhere('idprinter', $id)];
                 $view->loadData('', $where);
                 break;
         }
