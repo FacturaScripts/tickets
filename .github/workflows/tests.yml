@@ -20,7 +20,7 @@ jobs:
         database: ['mysql', 'postgresql']
 
     env:
-      NOMBRE_PLUGIN: "Informes"
+      NOMBRE_PLUGIN: "Tickets"
 
     services:
       mysql:
