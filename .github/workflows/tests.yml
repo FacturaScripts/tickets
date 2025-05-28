@@ -143,6 +143,9 @@ jobs:
         run: php Test/install-plugins.php
 
       - name: Ejecutar tests en ${{ matrix.database }}
+        run: vendor/bin/phpunit --verbose
+
+      - name: Ejecutar tests en ${{ matrix.database }}
         run: vendor/bin/phpunit -c phpunit-plugins.xml --verbose
 
       - name: Mostrar logs en caso de fallo
