@@ -7,6 +7,8 @@ on:
   pull_request:
     branches:
       - main
+      # testear github actions
+      - addGithubActions
 
 jobs:
   tests:
