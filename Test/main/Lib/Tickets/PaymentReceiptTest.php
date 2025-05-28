@@ -37,7 +37,7 @@ final class PaymentReceiptTest extends TestCase
         $this->assertTrue($customer->save(), 'customer-cant-save');
 
         $invoice = new FacturaCliente();
-        $invoice->setSubject($customer);
+        $this->assertTrue($invoice->setSubject($customer), 'invoice-cant-set-subject');
         if ($invoice->save()) {
             $line = $invoice->getNewLine();
             $line->cantidad = 1;
@@ -45,7 +45,7 @@ final class PaymentReceiptTest extends TestCase
             $line->save();
 
             $lines = $invoice->getLines();
-            Calculator::calculate($invoice, $lines, true);
+            $this->assertTrue(Calculator::calculate($invoice, $lines, true), 'invoice-cant-update');
         }
         $this->assertTrue($invoice->save(), 'invoice-cant-save');
         $receipts = $invoice->getReceipts();

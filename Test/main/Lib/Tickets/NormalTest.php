@@ -38,7 +38,7 @@ final class NormalTest extends TestCase
 
         // creamos la factura
         $invoice = new FacturaCliente();
-        $invoice->setSubject($customer);
+        $this->assertTrue($invoice->setSubject($customer), 'invoice-cant-set-subject');
         $this->assertTrue($invoice->save(), 'cant-create-invoice');
 
         // añadimos una línea
