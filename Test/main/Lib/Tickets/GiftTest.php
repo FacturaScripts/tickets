@@ -38,15 +38,15 @@ final class GiftTest extends TestCase
 
         $invoice = new FacturaCliente();
         $this->assertTrue($invoice->setSubject($customer), 'invoice-cant-set-subject');
-        if ($invoice->save()) {
-            $line = $invoice->getNewLine();
-            $line->cantidad = 1;
-            $line->pvpunitario = mt_rand(100, 9999);
-            $line->save();
+        
+        $this->assertTrue($invoice->save(), 'invoice-cant-save');
+        $line = $invoice->getNewLine();
+        $line->cantidad = 1;
+        $line->pvpunitario = mt_rand(100, 9999);
+        $line->save();
 
-            $lines = $invoice->getLines();
-            $this->assertTrue(Calculator::calculate($invoice, $lines, true), 'invoice-cant-update');
-        }
+        $lines = $invoice->getLines();
+        $this->assertTrue(Calculator::calculate($invoice, $lines, true), 'invoice-cant-update');
         $this->assertTrue($invoice->save(), 'invoice-cant-save');
 
         // imprimir ticket regalo
