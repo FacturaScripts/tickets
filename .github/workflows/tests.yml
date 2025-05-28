@@ -89,6 +89,12 @@ jobs:
           touch MyFiles/plugins.json
           composer install --prefer-dist --no-interaction --no-progress --optimize-autoloader
 
+      - name: Instalar dependencias del plugin
+        run: |
+          cd Plugins/${{ env.NOMBRE_PLUGIN }}
+          composer install --prefer-dist --no-interaction --no-progress --optimize-autoloader
+          cd ../..
+
       - name: Crear archivo de configuración
         run: |
           cat > config.php << 'EOF'
