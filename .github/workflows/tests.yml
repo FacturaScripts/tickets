@@ -44,6 +44,9 @@ jobs:
           mysql-version: "8.0"
           root-password: "toor"
 
+      - name: Crear base de datos
+        run: 'mysql -u root -proot -e "CREATE DATABASE facturascripts CHARACTER SET utf8 COLLATE utf8_bin;"'
+
       - name: Clonar FacturaScripts
         uses: actions/checkout@v4
         with:
@@ -94,7 +97,7 @@ jobs:
           define(''FS_DB_PORT'', ''3306'');
           define(''FS_DB_USER'', ''root'');
           
-          define('FS_DB_NAME', 'facturascripts_tests');
+          define('FS_DB_NAME', 'facturascripts');
           define('FS_DB_PASS', 'toor');
           define('FS_DB_FOREIGN_KEYS', true);
           define('FS_DB_TYPE_CHECK', true);
