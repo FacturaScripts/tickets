@@ -42,7 +42,7 @@ jobs:
         with:
           distribution: "mysql"
           mysql-version: "8.0"
-          root-password: "toor"
+          root-password: "root"
 
       - name: Crear base de datos
         run: 'mysql -u root -proot -e "CREATE DATABASE facturascripts CHARACTER SET utf8 COLLATE utf8_bin;"'
@@ -98,7 +98,7 @@ jobs:
           define(''FS_DB_USER'', ''root'');
           
           define('FS_DB_NAME', 'facturascripts');
-          define('FS_DB_PASS', 'toor');
+          define('FS_DB_PASS', 'root');
           define('FS_DB_FOREIGN_KEYS', true);
           define('FS_DB_TYPE_CHECK', true);
           define('FS_MYSQL_CHARSET', 'utf8');
