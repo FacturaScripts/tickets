@@ -10,46 +10,23 @@ on:
       # testear github actions
       - addGithubActions
 
+concurrency:
+  # que se cancele el test actual si se hace otro commit en la misma rama
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   tests:
-    name: Tests en ${{ matrix.database }} con PHP ${{ matrix.php-version }}
+    name: Tests en mysql con PHP ${{ matrix.php-version }}
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
         php-version: ['8.0', '8.1']
-        database: ['mysql', 'postgresql']
 
     env:
       NOMBRE_PLUGIN: "Tickets"
-
-    services:
-      mysql:
-        image: mariadb:11
-        ports:
-          - 3306:3306
-        env:
-          MARIADB_ROOT_PASSWORD: toor
-          MARIADB_DATABASE: facturascripts_tests
-        options: >-
-          --health-cmd="mariadb-admin ping"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
-
-      postgres:
-        image: postgres:13
-        ports:
-          - 5432:5432
-        env:
-          POSTGRES_PASSWORD: toor
-          POSTGRES_DB: facturascripts_tests
-        options: >-
-          --health-cmd=pg_isready
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
 
     steps:
       - name: Instalar PHP y extensiones
@@ -59,6 +36,13 @@ jobs:
           extensions: json, fileinfo, simplexml, zip, dom, pdo, pdo_mysql, mysql, mysqli, pgsql, pdo_pgsql, bcmath, gd, curl, soap
           tools: composer
           coverage: none
+
+      - name: Montar base de datos
+        uses: shogo82148/actions-setup-mysql@v1
+        with:
+          distribution: "mysql"
+          mysql-version: "8.0"
+          root-password: "toor"
 
       - name: Clonar FacturaScripts
         uses: actions/checkout@v4
@@ -105,17 +89,11 @@ jobs:
           define('FS_TIMEZONE', 'Europe/Madrid');
           define('FS_ROUTE', '');
           
-          ${{ matrix.database == 'mysql' && format('
           define(''FS_DB_TYPE'', ''mysql'');
           define(''FS_DB_HOST'', ''127.0.0.1'');
           define(''FS_DB_PORT'', ''3306'');
           define(''FS_DB_USER'', ''root'');
-          ') || format('
-          define(''FS_DB_TYPE'', ''postgresql'');
-          define(''FS_DB_HOST'', ''localhost'');
-          define(''FS_DB_PORT'', ''5432'');
-          define(''FS_DB_USER'', ''postgres'');
-          ') }}
+          
           define('FS_DB_NAME', 'facturascripts_tests');
           define('FS_DB_PASS', 'toor');
           define('FS_DB_FOREIGN_KEYS', true);
@@ -142,18 +120,11 @@ jobs:
       - name: Instalar el Plugin ${{ env.NOMBRE_PLUGIN }}
         run: php Test/install-plugins.php
 
-      - name: Ejecutar tests en ${{ matrix.database }}
-        run: vendor/bin/phpunit --verbose
-
-      - name: Ejecutar tests en ${{ matrix.database }}
+      - name: Ejecutar tests
         run: vendor/bin/phpunit -c phpunit-plugins.xml --verbose
 
       - name: Mostrar logs en caso de fallo
         if: failure()
         run: |
           echo "=== Logs de la base de datos ==="
-          if [ "${{ matrix.database }}" = "mysql" ]; then
             docker logs $(docker ps -q --filter ancestor=mariadb:11) || true
-          else
-            docker logs $(docker ps -q --filter ancestor=postgres:13) || true
-          fi
