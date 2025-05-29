@@ -122,8 +122,20 @@ jobs:
           define('FS_NF0', 2);
           EOF
 
-      - name: Inicializar base de datos
-        run: php Test/bootstrap.php
+      # - name: Initialize Tickets Plugin Database
+      #   run: |
+      #     php -r "
+      #     require_once 'config.php';
+      #     require_once 'vendor/autoload.php';
+      #     FacturaScripts\Core\FacturaScripts::init();
+      #     $pluginInit = new FacturaScripts\Plugins\Tickets\Init();
+      #     $pluginInit->update(); echo \"Tickets plugin Init::update() called.\\n\";
+      #     $dbTool = new FacturaScripts\Core\Base\DataBase\DataBaseTool();
+      #     $dbTool->initPlugin('Tickets');
+      #     echo \"Tickets plugin DataBaseTool::initPlugin(''Tickets'') called.\\n\";
+      #     echo \"Tickets plugin database initialization complete.\\n\";
+      #     "
+      #   working-directory: ${{ github.workspace }}
 
       - name: Copiar archivos de tests del Plugin
         run: |
@@ -136,6 +148,9 @@ jobs:
 
       - name: Instalar el Plugin ${{ env.NOMBRE_PLUGIN }}
         run: php Test/install-plugins.php
+
+      - name: Inicializar base de datos del plugin
+        run: php Test/test-plugins.php
 
       - name: Ejecutar tests en ${{ matrix.database }}
         run: vendor/bin/phpunit -c phpunit-plugins.xml --verbose
