@@ -112,9 +112,6 @@ jobs:
             exit 1
           fi
 
-      - name: Instalar el Plugin ${{ env.NOMBRE_PLUGIN }}
-        run: php Test/install-plugins.php
-
       - name: Ejecutar tests
         run: vendor/bin/phpunit -c phpunit-plugins.xml --verbose
 
