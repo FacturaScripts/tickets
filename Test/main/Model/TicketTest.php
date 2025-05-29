@@ -1,4 +1,7 @@
 <?php
+/**
+ * Copyright (C) 2025 Carlos Garcia Gomez <carlos@facturascripts.com>
+ */
 
 namespace FacturaScripts\Test\Plugins\Tickets\Model;
 

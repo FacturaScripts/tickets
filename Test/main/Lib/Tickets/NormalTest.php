@@ -1,26 +1,38 @@
 <?php
+/**
+ * Copyright (C) 2025 Carlos Garcia Gomez <carlos@facturascripts.com>
+ */
 
 namespace FacturaScripts\Test\Plugins\Tickets\Lib\Tickets;
 
+use FacturaScripts\Core\Base\Calculator;
 use FacturaScripts\Dinamic\Lib\Tickets\Normal;
+use FacturaScripts\Dinamic\Model\FacturaCliente;
 use FacturaScripts\Dinamic\Model\Ticket;
-use FacturaScripts\Dinamic\Model\User;
 use FacturaScripts\Dinamic\Model\TicketPrinter;
+use FacturaScripts\Dinamic\Model\User;
+use FacturaScripts\Test\Traits\DefaultSettingsTrait;
 use FacturaScripts\Test\Traits\LogErrorsTrait;
 use FacturaScripts\Test\Traits\RandomDataTrait;
 use PHPUnit\Framework\TestCase;
-use FacturaScripts\Core\Base\Calculator;
-use FacturaScripts\Dinamic\Model\FacturaCliente;
 
 final class NormalTest extends TestCase
 {
+    use DefaultSettingsTrait;
     use LogErrorsTrait;
     use RandomDataTrait;
 
     const PRODUCT1_PRICE = 66.1;
     const PRODUCT1_QUANTITY = 3;
 
-    public function testPrintSuccessfull(): void
+    public static function setUpBeforeClass(): void
+    {
+        self::setDefaultSettings();
+        self::installAccountingPlan();
+        self::removeTaxRegularization();
+    }
+
+    public function testPrintSuccessful(): void
     {
         // crear usuario
         $user = $this->getRandomUser();

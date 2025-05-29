@@ -1,4 +1,8 @@
 <?php
+/**
+ * Copyright (C) 2025 Carlos Garcia Gomez <carlos@facturascripts.com>
+ */
+
 namespace FacturaScripts\Test\Plugins\Tickets\Lib\Tickets;
 
 use FacturaScripts\Core\Base\Calculator;
@@ -7,10 +11,22 @@ use FacturaScripts\Dinamic\Model\Cliente;
 use FacturaScripts\Dinamic\Model\FacturaCliente;
 use FacturaScripts\Dinamic\Model\TicketPrinter;
 use FacturaScripts\Dinamic\Model\User;
+use FacturaScripts\Test\Traits\DefaultSettingsTrait;
+use FacturaScripts\Test\Traits\LogErrorsTrait;
 use PHPUnit\Framework\TestCase;
 
 final class GiftTest extends TestCase
-{   
+{
+    use DefaultSettingsTrait;
+    use LogErrorsTrait;
+
+    public static function setUpBeforeClass(): void
+    {
+        self::setDefaultSettings();
+        self::installAccountingPlan();
+        self::removeTaxRegularization();
+    }
+
     // probar que se puede imprimir un ticket
     public function testPrintTicket(): void
     {
@@ -38,7 +54,7 @@ final class GiftTest extends TestCase
 
         $invoice = new FacturaCliente();
         $this->assertTrue($invoice->setSubject($customer), 'invoice-cant-set-subject');
-        
+
         $this->assertTrue($invoice->save(), 'invoice-cant-save');
         $line = $invoice->getNewLine();
         $line->cantidad = 1;
@@ -57,5 +73,10 @@ final class GiftTest extends TestCase
         $this->assertTrue($printer->delete(), 'printer-cant-delete');
         $this->assertTrue($invoice->delete(), 'invoice-cant-delete');
         $this->assertTrue($customer->delete(), 'customer-cant-delete');
+    }
+
+    protected function tearDown(): void
+    {
+        $this->logErrors();
     }
 }

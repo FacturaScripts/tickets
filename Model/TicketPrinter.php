@@ -184,6 +184,14 @@ class TicketPrinter extends ModelClass
         return $line;
     }
 
+    public function install(): string
+    {
+        // dependencias
+        new ApiKey();
+
+        return parent::install();
+    }
+
     public function isActive(): bool
     {
         return time() - strtotime($this->lastactivity) < self::MAX_INACTIVITY;
