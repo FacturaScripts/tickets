@@ -117,9 +117,10 @@ jobs:
 
       - name: Ejecutar tests
         run: |
+          ls
+          echo '-------------------'
           cd Plugins/${{ env.NOMBRE_PLUGIN }}
           ls ../../fsmaker
-          ls ../../
           php ../../fsmaker/fsmaker.php run-tests ../../
           cd ../..
 
