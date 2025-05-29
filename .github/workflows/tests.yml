@@ -61,6 +61,12 @@ jobs:
           fetch-depth: 0
           path: Plugins/${{ env.NOMBRE_PLUGIN }}
 
+      - name: Clonar fsmaker
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          path: fsmaker
+
       - name: Cache de dependencias de Composer
         uses: actions/cache@v3
         with:
@@ -81,6 +87,12 @@ jobs:
           cd Plugins/${{ env.NOMBRE_PLUGIN }}
           composer install --prefer-dist --no-interaction --no-progress --optimize-autoloader
           cd ../..
+
+      - name: Instalar dependencias de fsmaker
+        run: |
+          cd fsmaker
+          composer install --prefer-dist --no-interaction --no-progress --optimize-autoloader
+          cd ..
 
       - name: Crear archivo de configuración
         run: echo "<?php
@@ -103,17 +115,11 @@ jobs:
           define('FS_DISABLE_ADD_PLUGINS', false);
           define('FS_DISABLE_RM_PLUGINS', false);" > config.php
 
-      - name: Copiar archivos de tests del Plugin
-        run: |
-          if [ -d "Plugins/${{ env.NOMBRE_PLUGIN }}/Test/main" ]; then
-            cp -r Plugins/${{ env.NOMBRE_PLUGIN }}/Test/main Test/Plugins
-          else
-            echo "No se encontraron tests para el plugin"
-            exit 1
-          fi
-
       - name: Ejecutar tests
-        run: vendor/bin/phpunit -c phpunit-plugins.xml --verbose
+        run: |
+          cd Plugins/${{ env.NOMBRE_PLUGIN }}
+          php ../../fsmaker/fsmaker.php run-tests ../../
+          cd ../..
 
       - name: Mostrar logs en caso de fallo
         if: failure()
