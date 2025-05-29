@@ -2,11 +2,9 @@ name: Tests del Plugin FacturaScripts
 
 on:
   push:
-    branches:
-      - main
+    branches: [ master, main ]
   pull_request:
-    branches:
-      - main
+    branches: [ master, main ]
 
 jobs:
   tests:
@@ -61,8 +59,6 @@ jobs:
       - name: Clonar FacturaScripts
         uses: actions/checkout@v4
         with:
-          # rama concreta de fs
-          ref: 2024.92
           fetch-depth: 0
           repository: 'NeoRazorX/facturascripts'
 
@@ -91,12 +87,12 @@ jobs:
         run: |
           cat > config.php << 'EOF'
           <?php
-          
+
           define('FS_COOKIES_EXPIRE', 604800);
           define('FS_LANG', 'es_ES');
           define('FS_TIMEZONE', 'Europe/Madrid');
           define('FS_ROUTE', '');
-          
+
           ${{ matrix.database == 'mysql' && format('
           define(''FS_DB_TYPE'', ''mysql'');
           define(''FS_DB_HOST'', ''127.0.0.1'');
@@ -114,7 +110,7 @@ jobs:
           define('FS_DB_TYPE_CHECK', true);
           define('FS_MYSQL_CHARSET', 'utf8');
           define('FS_MYSQL_COLLATE', 'utf8_bin');
-          
+
           define('FS_HIDDEN_PLUGINS', '');
           define('FS_DEBUG', false);
           define('FS_DISABLE_ADD_PLUGINS', false);
@@ -129,6 +125,15 @@ jobs:
           else
             echo "No se encontraron tests para el plugin"
             exit 1
+          fi
+
+      - name: Instalar dependencias del Plugin ${{ env.NOMBRE_PLUGIN }}
+        run: |
+          if [ -f "Plugins/${{ env.NOMBRE_PLUGIN }}/composer.json" ]; then
+            cd Plugins/${{ env.NOMBRE_PLUGIN }}
+            composer install --prefer-dist --no-interaction --no-progress --optimize-autoloader
+          else
+            echo "El plugin no tiene dependencias de Composer"
           fi
 
       - name: Instalar el Plugin ${{ env.NOMBRE_PLUGIN }}
