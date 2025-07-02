@@ -20,6 +20,7 @@
     "print-lines-discount": "Print discounts",
     "print-lines-net": "Print net amount on lines",
     "print-lines-price": "Print prices on the lines",
+    "print-lines-price-tax": "Print prices with VAT on the lines",
     "print-lines-quantity": "Print quantities",
     "print-lines-reference": "Print references",
     "print-lines-total": "Print total",

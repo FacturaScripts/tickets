@@ -89,13 +89,16 @@
             <column name="print-lines-price" order="130">
                 <widget type="checkbox" fieldname="print_lines_price"/>
             </column>
-            <column name="print-lines-discount" order="140">
+            <column name="print-lines-price-tax" order="140">
+                <widget type="checkbox" fieldname="print-lines-price-tax"/>
+            </column>
+            <column name="print-lines-discount" order="150">
                 <widget type="checkbox" fieldname="print_lines_discount"/>
             </column>
-            <column name="print-lines-net" order="150">
+            <column name="print-lines-net" order="160">
                 <widget type="checkbox" fieldname="print_lines_net"/>
             </column>
-            <column name="print-lines-total" order="160">
+            <column name="print-lines-total" order="170">
                 <widget type="checkbox" fieldname="print_lines_total"/>
             </column>
         </group>
