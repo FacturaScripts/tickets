@@ -20,6 +20,7 @@
     "print-lines-discount": "Imprimir descuentos",
     "print-lines-net": "Imprimir importe neto en las líneas",
     "print-lines-price": "Imprimir precios en las líneas",
+    "print-lines-price-tax": "Imprimir precios con IVA en las líneas",
     "print-lines-quantity": "Imprimir cantidades",
     "print-lines-reference": "Imprimir referencias",
     "print-lines-total": "Imprimir totales",

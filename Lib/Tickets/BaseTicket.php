@@ -363,6 +363,12 @@ abstract class BaseTicket
                 $jump = true;
             }
 
+            if ($printer->print_lines_price_tax) {
+                $priceVat = $line->pvpunitario * (100 + $line->iva + $line->recargo) / 100;
+                $td .= "\n" . sprintf("%11s", Tools::lang()->trans('price-abb') . ': ' . Tools::number($priceVat));
+                $jump = true;
+            }
+
             if ($printer->print_lines_discount && $line->dtopor > 0) {
                 $td .= $printer->print_lines_price ? ' ' : "\n";
                 $td .= sprintf("%11s", Tools::lang()->trans('discount-abb') . ': ' . $line->dtopor . '%');
