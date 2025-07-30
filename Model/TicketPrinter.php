@@ -111,6 +111,9 @@ class TicketPrinter extends ModelClass
     /** @var int */
     public $title_font_size;
 
+    /** @var string */
+    public $type;
+
     public function clear()
     {
         parent::clear();
@@ -134,6 +137,7 @@ class TicketPrinter extends ModelClass
         $this->print_payment_methods = false;
         $this->print_stored_logo = false;
         $this->title_font_size = 2;
+        $this->type = 'legacy';
     }
 
     public function delete(): bool

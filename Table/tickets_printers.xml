@@ -139,6 +139,11 @@
         <type>integer</type>
         <default>2</default>
     </column>
+    <column>
+        <name>type</name>
+        <type>character varying(20)</type>
+        <default>'legacy'</default>
+    </column>
     <constraint>
         <name>tickets_printers_pkey</name>
         <type>PRIMARY KEY (id)</type>
