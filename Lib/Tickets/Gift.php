@@ -6,6 +6,8 @@
 namespace FacturaScripts\Plugins\Tickets\Lib\Tickets;
 
 use FacturaScripts\Core\Model\Base\ModelClass;
+use FacturaScripts\Dinamic\Model\Ticket;
+use FacturaScripts\Dinamic\Model\TicketPrinter;
 
 /**
  * @author Carlos Garcia Gomez      <carlos@facturascripts.com>
@@ -13,7 +15,7 @@ use FacturaScripts\Core\Model\Base\ModelClass;
  */
 class Gift extends Normal
 {
-    protected static function setBody(ModelClass $model, object $printer): void
+    protected static function setBody(ModelClass $model, TicketPrinter $printer): void
     {
         static::$escpos->setTextSize($printer->font_size, $printer->font_size);
 
@@ -35,7 +37,7 @@ class Gift extends Normal
         }
 
         static::$escpos->text(static::sanitize($th) . "\n");
-        static::$escpos->text(self::getDashLine($printer->linelen) . "\n");
+        static::$escpos->text($printer->getDashLine() . "\n");
 
         foreach (self::getLines($model) as $line) {
             $td = '';
@@ -52,6 +54,6 @@ class Gift extends Normal
             static::$escpos->text(static::sanitize($td) . "\n");
         }
 
-        static::$escpos->text(self::getDashLine($printer->linelen) . "\n");
+        static::$escpos->text($printer->getDashLine() . "\n");
     }
 }

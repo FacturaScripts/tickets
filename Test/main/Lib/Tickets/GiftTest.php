@@ -9,6 +9,7 @@ use FacturaScripts\Core\Base\Calculator;
 use FacturaScripts\Dinamic\Lib\Tickets\Gift;
 use FacturaScripts\Dinamic\Model\Cliente;
 use FacturaScripts\Dinamic\Model\FacturaCliente;
+use FacturaScripts\Dinamic\Model\TicketPrinter;
 use FacturaScripts\Dinamic\Model\User;
 use FacturaScripts\Test\Traits\DefaultSettingsTrait;
 use FacturaScripts\Test\Traits\LogErrorsTrait;
@@ -38,28 +39,10 @@ final class GiftTest extends TestCase
         $this->assertTrue($user->save(), 'user-cant-save');
 
         // crear impresora
-        $printer = new \stdClass();
-        $printer->linelen = 48;
-        $printer->font_size = 1;
-        $printer->footer_font_size = 1;
-        $printer->head_font_size = 1;
-        $printer->title_font_size = 2;
-        $printer->print_comp_shortname = false;
-        $printer->print_comp_tlf = false;
-        $printer->print_invoice_receipts = false;
-        $printer->print_lines_description = true;
-        $printer->print_lines_discount = false;
-        $printer->print_lines_net = false;
-        $printer->print_lines_price = false;
-        $printer->print_lines_price_unitary = false;
-        $printer->print_lines_price_tax = false;
-        $printer->print_lines_quantity = true;
-        $printer->print_lines_reference = false;
-        $printer->print_lines_total = true;
-        $printer->print_payment_methods = false;
-        $printer->print_stored_logo = false;
-        $printer->footer = '';
-        $printer->head = '';
+        $printer = new TicketPrinter();
+        $printer->name = 'test printer';
+        $printer->nick = $user->nick;
+        $this->assertTrue($printer->save(), 'printer-cant-save');
 
         // crear factura
         $customer = new Cliente();
@@ -87,6 +70,7 @@ final class GiftTest extends TestCase
 
         // borrar usuario, impresora y factura
         $this->assertTrue($user->delete(), 'user-cant-delete');
+        $this->assertTrue($printer->delete(), 'printer-cant-delete');
         $this->assertTrue($invoice->delete(), 'invoice-cant-delete');
         $this->assertTrue($customer->delete(), 'customer-cant-delete');
     }

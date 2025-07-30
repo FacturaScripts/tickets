@@ -8,6 +8,7 @@ namespace FacturaScripts\Plugins\Tickets\Lib\Tickets;
 use FacturaScripts\Core\Model\Base\ModelClass;
 use FacturaScripts\Dinamic\Model\Agente;
 use FacturaScripts\Dinamic\Model\Ticket;
+use FacturaScripts\Dinamic\Model\TicketPrinter;
 use FacturaScripts\Dinamic\Model\User;
 
 /**
@@ -16,11 +17,12 @@ use FacturaScripts\Dinamic\Model\User;
  */
 class PaymentReceipt extends BaseTicket
 {
-    public static function print(ModelClass $model, object $printer, User $user, Agente $agent = null): bool
+    public static function print(ModelClass $model, TicketPrinter $printer, User $user, Agente $agent = null): bool
     {
         static::init();
 
         $ticket = new Ticket();
+        $ticket->idprinter = $printer->id;
         $ticket->nick = $user->nick;
         $ticket->title = static::$i18n->trans('receipt') . ' ' . $model->codigofactura;
 
@@ -34,7 +36,7 @@ class PaymentReceipt extends BaseTicket
         return $ticket->save();
     }
 
-    protected static function setBody(ModelClass $model, object $printer): void
+    protected static function setBody(ModelClass $model, TicketPrinter $printer): void
     {
         static::$escpos->setTextSize($printer->font_size, $printer->font_size);
 

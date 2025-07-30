@@ -30,6 +30,10 @@
         <type>serial</type>
     </column>
     <column>
+        <name>idprinter</name>
+        <type>int</type>
+    </column>
+    <column>
         <name>nick</name>
         <type>character varying(50)</type>
     </column>
@@ -48,6 +52,10 @@
     <constraint>
         <name>tickets_pkey</name>
         <type>PRIMARY KEY (id)</type>
+    </constraint>
+    <constraint>
+        <name>ca_tickets_docs_tickets_printers</name>
+        <type>FOREIGN KEY (idprinter) REFERENCES tickets_printers (id) ON DELETE CASCADE ON UPDATE CASCADE</type>
     </constraint>
     <constraint>
         <name>ca_tickets_docs_agentes</name>
