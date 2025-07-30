@@ -8,11 +8,6 @@
         <column name="user" order="100">
             <widget type="text" fieldname="nick"/>
         </column>
-        <column name="printer" order="110">
-            <widget type="select" fieldname="idprinter">
-                <values source="tickets_printers" fieldcode="id" fieldtitle="name"/>
-            </widget>
-        </column>
         <column name="title" order="120">
             <widget type="text" fieldname="title"/>
         </column>

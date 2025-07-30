@@ -8,7 +8,6 @@ namespace FacturaScripts\Plugins\Tickets\Lib\Tickets;
 use FacturaScripts\Core\Model\Base\ModelClass;
 use FacturaScripts\Dinamic\Model\Agente;
 use FacturaScripts\Dinamic\Model\Ticket;
-use FacturaScripts\Dinamic\Model\TicketPrinter;
 use FacturaScripts\Dinamic\Model\User;
 
 /**
@@ -17,12 +16,11 @@ use FacturaScripts\Dinamic\Model\User;
  */
 class Normal extends BaseTicket
 {
-    public static function print(ModelClass $model, TicketPrinter $printer, User $user, Agente $agent = null): bool
+    public static function print(ModelClass $model, object $printer, User $user, Agente $agent = null, bool $save = true): string|bool
     {
         static::init();
 
         $ticket = new Ticket();
-        $ticket->idprinter = $printer->id;
         $ticket->nick = $user->nick;
         $ticket->title = self::$i18n->trans($model->modelClassName() . '-min') . ' ' . $model->codigo;
 
@@ -35,6 +33,10 @@ class Normal extends BaseTicket
 
         if ($agent) {
             $ticket->codagente = $agent->codagente;
+        }
+
+        if (false === $save) {
+            return $ticket->body;
         }
 
         return $ticket->save();

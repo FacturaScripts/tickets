@@ -14,7 +14,6 @@ use FacturaScripts\Dinamic\Model\Agente;
 use FacturaScripts\Dinamic\Model\FormaPago;
 use FacturaScripts\Dinamic\Model\Impuesto;
 use FacturaScripts\Dinamic\Model\PrePago;
-use FacturaScripts\Dinamic\Model\TicketPrinter;
 use FacturaScripts\Dinamic\Model\User;
 use Mike42\Escpos\PrintConnectors\DummyPrintConnector;
 use Mike42\Escpos\Printer;
@@ -39,7 +38,7 @@ abstract class BaseTicket
 
     private static $openDrawer = true;
 
-    abstract public static function print(ModelClass $model, TicketPrinter $printer, User $user, Agente $agent = null): bool;
+    abstract public static function print(ModelClass $model, object $printer, User $user, Agente $agent = null): string|bool;
 
     public static function setLines(?array $lines = null): void
     {
@@ -79,7 +78,7 @@ abstract class BaseTicket
         return self::$lines ?? $model->getLines();
     }
 
-    protected static function getPaymentMethods(ModelClass $model, TicketPrinter $printer): string
+    protected static function getPaymentMethods(ModelClass $model, object $printer): string
     {
         $paymentMethods = [];
 
@@ -146,12 +145,12 @@ abstract class BaseTicket
         }
 
         return sprintf("%" . $printer->linelen . "s", static::$i18n->trans('payment-methods')) . "\n"
-            . $printer->getDashLine() . "\n"
+            . self::getDashLine($printer->linelen) . "\n"
             . $txt
             . "\n\n";
     }
 
-    protected static function getReceipts(ModelClass $model, TicketPrinter $printer): string
+    protected static function getReceipts(ModelClass $model, object $printer): string
     {
         $paid = 0;
         $total = 0;
@@ -181,13 +180,14 @@ abstract class BaseTicket
             return '';
         }
 
+        $dashLine = self::getDashLine($printer->linelen);
         return sprintf("%" . $printer->linelen . "s", static::$i18n->trans('receipts')) . "\n"
             . sprintf("%10s", static::$i18n->trans('expiration-abb')) . " "
             . sprintf("%10s", static::$i18n->trans('paid')) . " "
             . sprintf("%" . ($widthTotal - 1) . "s", static::$i18n->trans('total')) . "\n"
-            . $printer->getDashLine() . "\n"
+            . $dashLine . "\n"
             . $receipts . "\n"
-            . $printer->getDashLine() . "\n"
+            . $dashLine . "\n"
             . sprintf("%" . ($printer->linelen - $widthTotal - 1) . "s", static::$i18n->trans('total')) . " "
             . sprintf("%" . $widthTotal . "s", Tools::number($total)) . "\n"
             . sprintf("%" . ($printer->linelen - $widthTotal - 1) . "s", static::$i18n->trans('paid')) . " "
@@ -301,7 +301,7 @@ abstract class BaseTicket
         static::$escpos->initialize();
     }
 
-    protected static function printLines(TicketPrinter $printer, array $lines): void
+    protected static function printLines(object $printer, array $lines): void
     {
         $th = '';
         $width = $printer->linelen;
@@ -331,7 +331,7 @@ abstract class BaseTicket
         }
 
         static::$escpos->text(static::sanitize($th) . "\n");
-        static::$escpos->text($printer->getDashLine() . "\n");
+        static::$escpos->text(self::getDashLine($printer->linelen) . "\n");
 
         foreach ($lines as $line) {
             $td = '';
@@ -389,7 +389,7 @@ abstract class BaseTicket
             static::$escpos->text(static::getTrazabilidad($line, $width));
         }
 
-        static::$escpos->text($printer->getDashLine() . "\n");
+        static::$escpos->text(self::getDashLine($printer->linelen) . "\n");
     }
 
     protected static function sanitize(?string $txt): string
@@ -400,7 +400,7 @@ abstract class BaseTicket
             '/ñ/' => 'n', '/ò/' => 'o', '/ó/' => 'o', '/ô/' => 'o', '/õ/' => 'o', '/ö/' => 'o',
             '/ő/' => 'o', '/ø/' => 'o', '/ù/' => 'u', '/ú/' => 'u', '/û/' => 'u', '/ü/' => 'u',
             '/ű/' => 'u', '/ý/' => 'y', '/þ/' => 'th', '/ÿ/' => 'y',
-            '/&quot;/' => '-', '/´/' => '/\'/', '/€/' => 'EUR', '/º/' => '.',
+            '/&quot;/' => '-', '/´/' => '/\'/','/€/' => 'EUR', '/º/' => '.',
             '/À/' => 'A', '/Á/' => 'A', '/Â/' => 'A', '/Ä/' => 'A',
             '/Ç/' => 'C', '/È/' => 'E', '/É/' => 'E', '/Ê/' => 'E',
             '/Ë/' => 'E', '/Ì/' => 'I', '/Í/' => 'I', '/Î/' => 'I', '/Ï/' => 'I',
@@ -412,7 +412,7 @@ abstract class BaseTicket
         return preg_replace(array_keys($changes), $changes, $txt);
     }
 
-    protected static function setBody(ModelClass $model, TicketPrinter $printer): void
+    protected static function setBody(ModelClass $model, object $printer): void
     {
         if (false === in_array($model->modelClassName(), ['PresupuestoCliente', 'PedidoCliente', 'AlbaranCliente', 'FacturaCliente'])) {
             return;
@@ -438,7 +438,7 @@ abstract class BaseTicket
                 static::$escpos->text(static::sanitize($text) . "\n");
             }
         }
-        static::$escpos->text($printer->getDashLine() . "\n");
+        static::$escpos->text(self::getDashLine($printer->linelen) . "\n");
 
         // añadimos los totales
         $text = sprintf("%" . ($printer->linelen - 11) . "s", static::$i18n->trans('total')) . " "
@@ -466,7 +466,7 @@ abstract class BaseTicket
         }
     }
 
-    protected static function setFooter(ModelClass $model, TicketPrinter $printer): void
+    protected static function setFooter(ModelClass $model, object $printer): void
     {
         static::$escpos->setTextSize($printer->footer_font_size, $printer->footer_font_size);
 
@@ -478,7 +478,7 @@ abstract class BaseTicket
         }
     }
 
-    protected static function setHeader(ModelClass $model, TicketPrinter $printer, string $title): void
+    protected static function setHeader(ModelClass $model, object $printer, string $title): void
     {
         if ($printer->print_stored_logo) {
             static::$escpos->setJustification(Printer::JUSTIFY_CENTER);
@@ -543,7 +543,7 @@ abstract class BaseTicket
         }
     }
 
-    protected static function setHeaderTPV(ModelClass $model, TicketPrinter $printer): void
+    protected static function setHeaderTPV(ModelClass $model, object $printer): void
     {
         if (false === Plugins::isEnabled('TPVneo') ||
             false === isset($printer->print_name_terminal) ||
@@ -556,5 +556,15 @@ abstract class BaseTicket
         static::$escpos->text(
             static::sanitize(static::$i18n->trans('pos-terminal') . ': ' . $model->getTerminal()->name) . "\n"
         );
+    }
+
+    private static function getDashLine(int $linelen): string
+    {
+        $line = '';
+        while (strlen($line) < $linelen) {
+            $line .= '-';
+        }
+
+        return $line;
     }
 }

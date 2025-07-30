@@ -1,68 +1,655 @@
-{% extends "Master/MenuBghTemplate.html.twig" %}
-
-{% block bodyHeaderOptions %}
-    <br/>
-    <br/>
-    <br/>
-{% endblock %}
+{% extends 'Master/MenuTemplate.html.twig' %}
 
 {% block body %}
-    <div class="container" style="margin-top: -60px;">
+    <div class="container-fluid">
         <div class="row">
             <div class="col-12">
-                <form action="{{ fsc.url() }}" method="post">
-                    <input type="hidden" name="action" value="print"/>
-                    <input type="hidden" name="modelClassName" value="{{ fsc.modelClassName }}"/>
-                    <input type="hidden" name="modelCode" value="{{ fsc.modelCode }}"/>
-                    <div class="card shadow mb-4">
-                        <div class="card-body">
-                            <h1 class="h2 mb-3">
-                                <i class="{{ fsc.getPageData().icon }}"></i> {{ fsc.title }}
-                            </h1>
-                            <div class="form-group">
-                                <select name="format" class="form-control" required>
-                                    {% for format in fsc.getFormats(fsc.modelClassName) %}
-                                        <option value="{{ format.className }}">{{ trans(format.label) }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            {% for printer in fsc.printers %}
-                                {% if printer.isActive() %}
-                                    <button type="submit" name="printer" value="{{ printer.id }}"
-                                            class="btn btn-block btn-lg btn-success mt-3">
-                                        <i class="fa-solid fa-print"></i>&nbsp; {{ printer.name }}
-                                    </button>
-                                {% else %}
-                                    <button type="submit" name="printer" value="{{ printer.id }}"
-                                            class="btn btn-block btn-lg btn-warning">
-                                        <i class="fa-solid fa-print"></i>&nbsp; {{ printer.name }}
-                                    </button>
-                                    <p class="text-muted">
-                                        {{ trans('last-activity') }}: {{ printer.lastactivity }}
-                                    </p>
-                                {% endif %}
-                            {% else %}
-                                <div class="alert alert-warning mb-0">
-                                    {{ trans('no-printer-connected') }}
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    <div class="card shadow mb-5">
-                        <div class="card-body">
-                            <h2 class="h3">
-                                <i class="fa-solid fa-print"></i> {{ trans('connect-a-printer') }}
-                            </h2>
-                            <p>{{ trans('connect-a-printer-p') }}</p>
-                            <a href="ListTicketPrinter" class="btn btn-secondary">
-                                {{ trans('printers') }}
-                            </a>
-                        </div>
-                    </div>
-                </form>
+                <div class="btn-group mb-3">
+                    <a href="#" class="btn btn-secondary active" id="btn-qz-tray">{{ trans('qz-tray-printing') }}</a>
+                    <a href="#" class="btn btn-secondary" id="btn-legacy-printer">{{ trans('legacy-printing') }}</a>
+                </div>
             </div>
         </div>
     </div>
 
-    <img src="http://localhost:8089/" alt="remote-printer" class="d-none"/>
+    <div id="qz-tray-view">
+        <div class="container" style="margin-top: -60px;">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card shadow mb-4">
+                        <div class="card-body">
+                            <h1 class="h2 mb-3">
+                                <i class="{{ fsc.getPageData().icon }}"></i> {{ fsc.title }}
+                                <small id="qzStatusIndicator" class="ml-3 badge badge-warning">{{ trans('qz-tray-disconnected') }}</small>
+                            </h1>
+
+                            <div id="mainAlert" class="alert alert-dismissible fade show d-none mb-3" role="alert">
+                                <span id="mainAlertMessage"></span>
+                                <button type="button" class="close" aria-label="Close" onclick="hideModalAlert('mainAlert')">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+
+                            <div class="mb-3 text-right">
+                                <button class="btn btn-info mr-2" onclick="connectQZTray()">
+                                    <i class="fa-solid fa-plug"></i> {{ trans('connect-to-qz-tray') }}
+                                </button>
+                                <button class="btn btn-outline-secondary mr-2" data-toggle="modal" data-target="#ticketOptionsModal">
+                                    <i class="fa-solid fa-sliders"></i> {{ trans('ticket-options') }}
+                                </button>
+                                <button class="btn btn-outline-secondary" data-toggle="modal" data-target="#printerConfigModal">
+                                    <i class="fa fa-cog"></i> {{ trans('configure-printer') }}
+                                </button>
+                            </div>
+
+                            <div class="form-row mb-4">
+                                <div class="form-group col-md-6">
+                                    <label for="receiptFormatSelect">{{ trans('paper-size') }}</label>
+                                    <select class="form-control" id="receiptFormatSelect">
+                                        <option value="80mm">{{ trans('80mm-thermal-paper') }}</option>
+                                        <option value="58mm">{{ trans('58mm-thermal-paper') }}</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="ticketFormatSelect">{{ trans('ticket-format') }}</label>
+                                    <select class="form-control" id="ticketFormatSelect">
+                                        {% for format in fsc.getViewModel().get('formats', []) %}
+                                            <option value="{{ format.className }}">{{ trans(format.label) }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <h5 class="mb-3">{{ trans('receipt-preview-html') }}</h5>
+                            <div id="receiptPreviewContainer" class="border p-3 mb-4" style="min-height: 200px; max-height: 40vh; overflow-y: auto; background-color: #f8f9fa; font-family: monospace; white-space: pre;">
+                                <div class="d-flex justify-content-center align-items-center w-100" style="min-height: inherit;">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="sr-only">{{ trans('loading') }}</span>
+                                    </div>
+                                    <p class="ml-2 mb-0">{{ trans('loading-receipt-preview') }}</p>
+                                </div>
+                            </div>
+
+                            <div class="text-right">
+                                <button id="printReceiptButton" class="btn btn-success" disabled>
+                                    <i class="fa fa-print"></i> {{ trans('print-receipt') }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="legacy-printer-view" class="d-none">
+        <div class="container" style="margin-top: -60px;">
+            <div class="row">
+                <div class="col-12">
+                    <form action="{{ fsc.url() }}" method="post">
+                        <input type="hidden" name="action" value="print"/>
+                        <input type="hidden" name="modelClassName" value="{{ fsc.modelClassName }}"/>
+                        <input type="hidden" name="modelCode" value="{{ fsc.modelCode }}"/>
+                        <div class="card shadow mb-4">
+                            <div class="card-body">
+                                <h1 class="h2 mb-3">
+                                    <i class="{{ fsc.getPageData().icon }}"></i> {{ fsc.title }}
+                                </h1>
+                                <div class="form-group">
+                                    <select name="format" class="form-control" required>
+                                        {% for format in fsc.getFormats(fsc.modelClassName) %}
+                                            <option value="{{ format.className }}">{{ trans(format.label) }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                {% for printer in fsc.printers %}
+                                    {% if printer.isActive() %}
+                                        <button type="submit" name="printer" value="{{ printer.id }}"
+                                                class="btn btn-block btn-lg btn-success mt-3">
+                                            <i class="fa-solid fa-print"></i>&nbsp; {{ printer.name }}
+                                        </button>
+                                    {% else %}
+                                        <button type="submit" name="printer" value="{{ printer.id }}"
+                                                class="btn btn-block btn-lg btn-warning">
+                                            <i class="fa-solid fa-print"></i>&nbsp; {{ printer.name }}
+                                        </button>
+                                        <p class="text-muted">
+                                            {{ trans('last-activity') }}: {{ printer.lastactivity }}
+                                        </p>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="alert alert-warning mb-0">
+                                        {{ trans('no-printer-connected') }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="card shadow mb-5">
+                            <div class="card-body">
+                                <h2 class="h3">
+                                    <i class="fa-solid fa-print"></i> {{ trans('connect-a-printer') }}
+                                </h2>
+                                <p>{{ trans('connect-a-printer-p') }}</p>
+                                <a href="ListTicketPrinter" class="btn btn-secondary">
+                                    {{ trans('printers') }}
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Ticket options modal #}
+    <div class="modal fade" id="ticketOptionsModal" tabindex="-1" aria-hidden="true" style="z-index: 1051;">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fa-solid fa-sliders me-2"></i>{{ trans('ticket-options') }}
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                            <label for="title_font_size">{{ trans('title-font-size') }}</label>
+                            <input type="number" class="form-control" id="title_font_size" min="1" max="8" value="2">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="head_font_size">{{ trans('head-font-size') }}</label>
+                            <input type="number" class="form-control" id="head_font_size" min="1" max="8" value="1">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="font_size">{{ trans('body-font-size') }}</label>
+                            <input type="number" class="form-control" id="font_size" min="1" max="8" value="1">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="footer_font_size">{{ trans('footer-font-size') }}</label>
+                            <input type="number" class="form-control" id="footer_font_size" min="1" max="8" value="1">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="print_comp_shortname">
+                                <label class="form-check-label" for="print_comp_shortname">{{ trans('print-comp-shortname') }}</label>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="print_comp_tlf">
+                                <label class="form-check-label" for="print_comp_tlf">{{ trans('print-comp-tlf') }}</label>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="print_invoice_receipts">
+                                <label class="form-check-label" for="print_invoice_receipts">{{ trans('print-invoice-receipts') }}</label>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="print_lines_description" checked>
+                                <label class="form-check-label" for="print_lines_description">{{ trans('print-lines-description') }}</label>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="print_lines_discount">
+                                <label class="form-check-label" for="print_lines_discount">{{ trans('print-lines-discount') }}</label>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="print_lines_net">
+                                <label class="form-check-label" for="print_lines_net">{{ trans('print-lines-net') }}</label>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="print_lines_price">
+                                <label class="form-check-label" for="print_lines_price">{{ trans('print-lines-price') }}</label>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="print_lines_price_tax">
+                                <label class="form-check-label" for="print_lines_price_tax">{{ trans('print-lines-price-tax') }}</label>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="print_lines_quantity" checked>
+                                <label class="form-check-label" for="print_lines_quantity">{{ trans('print-lines-quantity') }}</label>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="print_lines_reference">
+                                <label class="form-check-label" for="print_lines_reference">{{ trans('print-lines-reference') }}</label>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="print_lines_total" checked>
+                                <label class="form-check-label" for="print_lines_total">{{ trans('print-lines-total') }}</label>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="print_payment_methods">
+                                <label class="form-check-label" for="print_payment_methods">{{ trans('print-payment-methods') }}</label>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="print_stored_logo">
+                                <label class="form-check-label" for="print_stored_logo">{{ trans('print-stored-logo') }}</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="head">{{ trans('head') }}</label>
+                        <textarea class="form-control" id="head" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="footer">{{ trans('footer') }}</label>
+                        <textarea class="form-control" id="footer" rows="2"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Printer configuration modal, adapted from Etiquetas #}
+    <div class="modal fade" id="printerConfigModal" tabindex="-1" aria-hidden="true" style="z-index: 1051;">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fa-solid fa-print me-2"></i>{{ trans('configure-printer') }}
+                        <small id="qzStatusIndicatorConfig" class="ml-3 badge badge-warning">{{ trans('qz-tray-disconnected') }}</small>
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="configModalAlert" class="alert alert-dismissible fade show d-none mb-3" role="alert">
+                        <span id="configModalAlertMessage"></span>
+                        <button type="button" class="close" aria-label="Close" onclick="hideModalAlert('configModalAlert')">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="mb-3 text-right">
+                        <button class="btn btn-outline-secondary" onclick="scanUsbDevices()">
+                            <i class="fa fa-usb"></i> {{ trans('scan-usb-devices') }}
+                        </button>
+                    </div>
+
+                    <div id="deviceList" class="mb-4">
+                        <h5>{{ trans('detected-usb-devices') }}</h5>
+                        <ul id="deviceListCompact" class="list-group list-group-flush" style="max-height: 210px; overflow-y: auto;">
+                            <li class="list-group-item text-muted">{{ trans('no-devices-detected-scan-usb') }}</li>
+                        </ul>
+                    </div>
+
+                    <h5 class="mb-3">{{ trans('manual-configuration') }}</h5>
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                            <label for="usbVendorId">{{ trans('vendor-id') }}</label>
+                            <input type="text" class="form-control" id="usbVendorId" placeholder="0x0A5F">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="usbProductId">{{ trans('product-id') }}</label>
+                            <input type="text" class="form-control" id="usbProductId" placeholder="0x0080">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="usbInterface">{{ trans('interface') }}</label>
+                            <input type="text" class="form-control" id="usbInterface" placeholder="0x00">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="usbEndpoint">{{ trans('endpoint') }}</label>
+                            <input type="text" class="form-control" id="usbEndpoint" placeholder="0x01">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('Plugins/Etiquetas/node_modules/qz-tray/qz-tray.js') }}"></script>
+    <script type="text/javascript">
+        let escposData = null;
+        const ticketOptions = [
+            'title_font_size', 'head_font_size', 'font_size', 'footer_font_size',
+            'print_comp_shortname', 'print_comp_tlf', 'print_invoice_receipts',
+            'print_lines_description', 'print_lines_discount', 'print_lines_net',
+            'print_lines_price', 'print_lines_price_tax', 'print_lines_quantity',
+            'print_lines_reference', 'print_lines_total', 'print_payment_methods',
+            'print_stored_logo', 'head', 'footer'
+        ];
+
+        function updateQZStatusIndicator(isConnected) {
+            const ids = ['qzStatusIndicator', 'qzStatusIndicatorConfig'];
+            ids.forEach(id => {
+                const indicator = document.getElementById(id);
+                if (indicator) {
+                    if (isConnected) {
+                        indicator.textContent = '{{ trans('qz-tray-connected') }}';
+                        indicator.classList.remove('badge-warning', 'badge-danger');
+                        indicator.classList.add('badge-success');
+                    } else {
+                        indicator.textContent = '{{ trans('qz-tray-disconnected') }}';
+                        indicator.classList.remove('badge-success');
+                        indicator.classList.add('badge-warning');
+                    }
+                }
+            });
+        }
+
+        function showModalAlert(message, type = 'info', duration = 5000, alertId = 'mainAlert', messageId = 'mainAlertMessage') {
+            const alertDiv = document.getElementById(alertId);
+            const alertMessageSpan = document.getElementById(messageId);
+            alertDiv.className = 'alert alert-dismissible fade show mb-3 alert-' + type;
+            alertMessageSpan.textContent = message;
+            alertDiv.classList.remove('d-none');
+        }
+
+        function hideModalAlert(alertId = 'mainAlert') {
+            const alertDiv = document.getElementById(alertId);
+            if (alertDiv) {
+                alertDiv.classList.add('d-none');
+            }
+        }
+
+        function showGlobalAlert(message, type = 'info', duration = 5000) {
+            showModalAlert(message, type, duration, 'mainAlert', 'mainAlertMessage');
+            showModalAlert(message, type, duration, 'configModalAlert', 'configModalAlertMessage');
+        }
+
+        function initQZ() {
+            qz.websocket.connect().then(() => {
+                updateQZStatusIndicator(true);
+                showGlobalAlert('{{ trans('qz-tray-connected-successfully') }}', 'success');
+                loadFromLocalStorage();
+                loadTicketOptionsFromLocalStorage();
+                getESCPOSData();
+            }).catch(err => {
+                updateQZStatusIndicator(false);
+                showGlobalAlert('{{ trans('qz-tray-connection-error') }}', 'danger');
+                console.error(err);
+            });
+
+            qz.websocket.setClosedCallbacks(function(evt) {
+                updateQZStatusIndicator(false);
+                showGlobalAlert('{{ trans('qz-tray-disconnected-reload') }}', 'warning');
+            });
+
+            qz.websocket.setErrorCallbacks(function(evt) {
+                updateQZStatusIndicator(false);
+                showGlobalAlert('{{ trans('qz-tray-connection-error') }}', 'danger');
+                console.error(evt);
+            });
+        }
+
+        function connectQZTray() {
+            if (!qz.websocket.isActive()) {
+                initQZ();
+            }
+        }
+
+        const knownZebraPrinters = {
+            '0x0A5F:0x0080': 'Zebra GK420d',
+            '0x0A5F:0x0081': 'Zebra GK420t',
+            '0x0A5F:0x0084': 'Zebra GX420d',
+            '0x0A5F:0x0050': 'Zebra ZD420',
+            '0x0A5F:0x0051': 'Zebra ZD500',
+            '0x0A5F:0x008C': 'Zebra ZP450',
+            '0x0A5F:0x00D1': 'Zebra GC420d',
+            '0x0A5F:0x0110': 'Zebra ZD500',
+            '0x0A5F:0x011C': 'Zebra ZD410',
+            '0x0A5F:0x0141': 'Zebra ZD620',
+            '0x0A5F:0x0172': 'Zebra ZT411'
+        };
+
+        function scanUsbDevices() {
+            if (!qz.websocket.isActive()) {
+                showModalAlert('{{ trans('qz-tray-not-connected-before-scan') }}', 'warning', 5000, 'configModalAlert', 'configModalAlertMessage');
+                return;
+            }
+            qz.usb.listDevices(true).then(devices => {
+                const container = document.getElementById('deviceListCompact');
+                container.innerHTML = '';
+
+                if (devices.length === 0) {
+                    container.innerHTML = '<li class="list-group-item text-muted">{{ trans('no-usb-devices-found') }}</li>';
+                    showModalAlert("{{ trans('no-usb-devices-found') }}", 'warning', 5000, 'configModalAlert', 'configModalAlertMessage');
+                    return;
+                }
+
+                let defaultDeviceSet = false;
+                devices.forEach(dev => {
+                    const uid = `0x${dev.vendorId.toString(16).toUpperCase()}:0x${dev.productId.toString(16).toUpperCase()}`;
+                    const isKnown = knownZebraPrinters.hasOwnProperty(uid);
+                    const name = isKnown ? knownZebraPrinters[uid] : (dev.deviceName || 'Unknown Device');
+                    const btnClass = isKnown ? 'btn-primary' : 'btn-secondary';
+
+                    const listItem = document.createElement('li');
+                    listItem.className = 'list-group-item d-flex justify-content-between align-items-center py-2';
+                    listItem.innerHTML = `
+                    <span>${name} <small class="text-muted">(${uid})</small></span>
+                    <button class="btn btn-sm ${btnClass}"
+                        onclick="populateManualInputs('0x${dev.vendorId.toString(16).toUpperCase()}', '0x${dev.productId.toString(16).toUpperCase()}', '0x${(dev.interface || 0).toString(16).toUpperCase()}', '0x${(dev.endpoint || 1).toString(16).toUpperCase()}')">
+                        {{ trans('select') }}
+                    </button>
+                `;
+                    container.appendChild(listItem);
+
+                    if (!defaultDeviceSet && isKnown) {
+                        populateManualInputs(`0x${dev.vendorId.toString(16).toUpperCase()}`, `0x${dev.productId.toString(16).toUpperCase()}`, `0x${(dev.interface || 0).toString(16).toUpperCase()}`, `0x${(dev.endpoint || 1).toString(16).toUpperCase()}`);
+                        defaultDeviceSet = true;
+                    }
+                });
+                showModalAlert(`{{ trans('num-usb-devices-detected') }}`.replace(/%num%/g, devices.length), 'info', 5000, 'configModalAlert', 'configModalAlertMessage');
+            }).catch(err => {
+                console.error("Error al listar dispositivos USB:", err);
+                const container = document.getElementById('deviceListCompact');
+                container.innerHTML = '<li class="list-group-item text-danger">{{ trans('error-scanning-devices') }} ' + err.message + '</li>';
+                showModalAlert("{{ trans('error-scanning-usb-devices') }}" + err.message, 'danger', 0, 'configModalAlert', 'configModalAlertMessage');
+            });
+        }
+
+        function populateManualInputs(vendorIdHex, productIdHex, interfaceHex, endpointHex) {
+            document.getElementById('usbVendorId').value = vendorIdHex;
+            document.getElementById('usbProductId').value = productIdHex;
+            document.getElementById('usbInterface').value = interfaceHex;
+            document.getElementById('usbEndpoint').value = endpointHex;
+            saveToLocalStorage();
+            showModalAlert('{{ trans('manual-config-updated-for-user') }}', 'success', 5000, 'configModalAlert', 'configModalAlertMessage');
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('usbVendorId', document.getElementById('usbVendorId').value);
+            localStorage.setItem('usbProductId', document.getElementById('usbProductId').value);
+            localStorage.setItem('usbInterface', document.getElementById('usbInterface').value);
+            localStorage.setItem('usbEndpoint', document.getElementById('usbEndpoint').value);
+        }
+
+        function loadFromLocalStorage() {
+            document.getElementById('usbVendorId').value = localStorage.getItem('usbVendorId') || '';
+            document.getElementById('usbProductId').value = localStorage.getItem('usbProductId') || '';
+            document.getElementById('usbInterface').value = localStorage.getItem('usbInterface') || '0x00';
+            document.getElementById('usbEndpoint').value = localStorage.getItem('usbEndpoint') || '0x01';
+        }
+
+        function saveTicketOptionsToLocalStorage() {
+            ticketOptions.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    const value = element.type === 'checkbox' ? element.checked : element.value;
+                    localStorage.setItem(id, value);
+                }
+            });
+            getESCPOSData();
+        }
+
+        function loadTicketOptionsFromLocalStorage() {
+            ticketOptions.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    const value = localStorage.getItem(id);
+                    if (value !== null) {
+                        if (element.type === 'checkbox') {
+                            element.checked = value === 'true';
+                        } else {
+                            element.value = value;
+                        }
+                    }
+                }
+            });
+        }
+
+        function getESCPOSData() {
+            const format = document.getElementById('receiptFormatSelect').value;
+            const formatClass = document.getElementById('ticketFormatSelect').value;
+            $('#printReceiptButton').prop('disabled', true);
+            $('#receiptPreviewContainer').html('<div class="d-flex justify-content-center align-items-center w-100" style="min-height: inherit;"><div class="spinner-border text-primary" role="status"><span class="sr-only">{{ trans('loading') }}</span></div></div>');
+
+            const data = {
+                action: 'getESCPOS',
+                modelClassName: '{{ fsc.modelClassName }}',
+                modelCode: '{{ fsc.modelCode }}',
+                format: format,
+                formatClass: formatClass
+            };
+
+            ticketOptions.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    data[id] = element.type === 'checkbox' ? element.checked : element.value;
+                }
+            });
+
+            $.ajax({
+                url: '{{ fsc.url() }}',
+                type: 'POST',
+                data: data,
+                success: function(response) {
+                    if (response && response.escpos_data) {
+                        escposData = response.escpos_data;
+                        try {
+                            $('#receiptPreviewContainer').text(atob(escposData));
+                        } catch (e) {
+                            $('#receiptPreviewContainer').text('{{ trans('error-previewing-data') }}');
+                        }
+                        $('#printReceiptButton').prop('disabled', false);
+                        showGlobalAlert('{{ trans('receipt-data-loaded') }}', 'success');
+                    } else {
+                        $('#receiptPreviewContainer').text('{{ trans('no-valid-receipt-data-received') }}');
+                        showGlobalAlert('{{ trans('no-valid-receipt-data-received') }}', 'danger');
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    $('#receiptPreviewContainer').text('{{ trans('error-loading-preview-try-again') }}');
+                    showGlobalAlert('{{ trans('error-ajax-preview') }} ' + (errorThrown || textStatus), 'danger');
+                    console.error('Error en la petición AJAX:', textStatus, errorThrown);
+                }
+            });
+        }
+
+        function sendDataToUSB() {
+            if (!qz.websocket.isActive()) {
+                showGlobalAlert('{{ trans('qz-tray-not-connected-before-print') }}', 'danger');
+                return;
+            }
+            if (!escposData) {
+                showGlobalAlert('{{ trans('no-receipt-data-to-print') }}', 'warning');
+                return;
+            }
+
+            const vendorId = document.getElementById('usbVendorId').value;
+            const productId = document.getElementById('usbProductId').value;
+            const iface = document.getElementById('usbInterface').value;
+            const endpoint = document.getElementById('usbEndpoint').value;
+
+            if (!vendorId || !productId) {
+                showGlobalAlert('{{ trans('vendor-product-id-required-to-print') }}', 'danger');
+                $('#printerConfigModal').modal('show');
+                return;
+            }
+
+            const deviceInfo = {
+                vendorId: vendorId,
+                productId: productId,
+                interface: iface
+            };
+
+            const rawEscposData = atob(escposData);
+
+            showGlobalAlert("{{ trans('preparing-to-send-data') }}", 'info');
+
+            qz.usb.isClaimed(deviceInfo).then(claimed => {
+                const claimPromise = claimed ? Promise.resolve() : qz.usb.claimDevice(deviceInfo);
+                return claimPromise;
+            }).then(() => {
+                showGlobalAlert("{{ trans('sending-data-to-printer') }}", 'info');
+                return qz.usb.sendData(vendorId, productId, endpoint, rawEscposData);
+            }).then(() => {
+                showGlobalAlert("{{ trans('data-sent-to-usb-successfully') }}", 'success');
+                return qz.usb.releaseDevice(deviceInfo);
+            }).catch(err => {
+                console.error("Error al enviar datos o liberar el dispositivo:", err);
+                showGlobalAlert("{{ trans('error-printing') }}" + (err.message || "{{ trans('check-connection-and-parameters') }}"), 'danger');
+            });
+        }
+
+        $(document).ready(function() {
+            initQZ();
+
+            $('#receiptFormatSelect').change(getESCPOSData);
+            $('#ticketFormatSelect').change(getESCPOSData);
+            $('#printReceiptButton').click(sendDataToUSB);
+
+            const inputsToSave = ['usbVendorId', 'usbProductId', 'usbInterface', 'usbEndpoint'];
+            inputsToSave.forEach(id => {
+                const inputElement = document.getElementById(id);
+                if (inputElement) {
+                    inputElement.addEventListener('change', saveToLocalStorage);
+                }
+            });
+
+            ticketOptions.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('change', saveTicketOptionsToLocalStorage);
+                }
+            });
+
+            $('#btn-qz-tray').on('click', function(e) {
+                e.preventDefault();
+                $('#qz-tray-view').removeClass('d-none');
+                $('#legacy-printer-view').addClass('d-none');
+                $(this).addClass('active');
+                $('#btn-legacy-printer').removeClass('active');
+            });
+
+            $('#btn-legacy-printer').on('click', function(e) {
+                e.preventDefault();
+                $('#legacy-printer-view').removeClass('d-none');
+                $('#qz-tray-view').addClass('d-none');
+                $(this).addClass('active');
+                $('#btn-qz-tray').removeClass('active');
+            });
+        });
+    </script>
+{% endblock %}
+
