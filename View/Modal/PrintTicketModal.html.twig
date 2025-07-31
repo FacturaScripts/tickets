@@ -1,0 +1,605 @@
+{#
+En este fichero se especifican los modales relacionados con la impresora térmica de tickets.
+Son invocados desde ../../XMLView/EditTicket.xml
+
+Los campos son guardados en local storage para evitar reintroducirlos de nuevo.
+
+Hace uso del paquete QZ Tray para conectar con qz localmente y usar la impresora
+    - Primero se intenta conectar a QZ Tray
+    - Después se coloca el UID, etc de la impresora
+    - Se reclama la impresora, se imprime y se libera
+    - Todos estos pasos se realizan pidiendo permiso a qz tray vía websockets a localhost
+#}
+
+<script type="text/javascript" src="{{ asset('Plugins/Tickets/node_modules/qz-tray/qz-tray.js') }}"></script>
+
+{#
+Este primer modal contiene la configuración y el test de la impresora térmica
+    - Aquí se puede ver que dispositivos usb hay disponibles
+    - La aplicación intentará deducir la impresora dado el UID(buscado en internet)
+      - Existe alguna posibilidad mínima de que tenga un UID diferente y no detecte(mostrar el nombre)
+    - Siempre funcionará pero puede haber una excepción
+      - En ese caso el usuario debe de investigar que UID tiene su impresora y todos esos detalles
+    - Finalmente imprime una etiqueta de "test" para comprobar que funciona
+#}
+<div class="modal fade" id="ticketPrintModal" tabindex="-1" aria-hidden="true" style="z-index: 1051;">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fa-solid fa-print me-2"></i>{{ trans('print-with-ticket-printer') }}
+                    <small id="qzStatusIndicator" class="ml-3 badge badge-warning">{{ trans('qz-tray-disconnected') }}</small>
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="modalAlert" class="alert alert-dismissible fade show d-none mb-3" role="alert">
+                    <span id="modalAlertMessage"></span>
+                    <button type="button" class="close" aria-label="Close" onclick="hideModalAlert()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="mb-3 text-right">
+                    <button class="btn btn-info mr-2" onclick="connectQZTray()">
+                        <i class="fa-solid fa-plug"></i> {{ trans('connect-to-qz-tray') }}
+                    </button>
+                    <button class="btn btn-outline-secondary" onclick="scanUsbDevices()">
+                        <i class="fa fa-usb"></i> {{ trans('scan-usb-devices') }}
+                    </button>
+                </div>
+
+                <div id="deviceList" class="mb-4">
+                    <h5>{{ trans('detected-usb-devices') }}</h5>
+                    <ul id="deviceListCompact" class="list-group list-group-flush" style="max-height: 210px; overflow-y: auto;">
+                        <li class="list-group-item text-muted">{{ trans('no-devices-detected-scan-usb') }}</li>
+                    </ul>
+                </div>
+
+                <h5 class="mb-3">{{ trans('manual-configuration') }}</h5>
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label for="usbVendorId">{{ trans('vendor-id') }}</label>
+                        <input type="text" class="form-control" id="usbVendorId" placeholder="0x0A5F">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="usbProductId">{{ trans('product-id') }}</label>
+                        <input type="text" class="form-control" id="usbProductId" placeholder="0x0080">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="usbInterface">{{ trans('interface') }}</label>
+                        <input type="text" class="form-control" id="usbInterface" placeholder="0x00">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="usbEndpoint">{{ trans('endpoint') }}</label>
+                        <input type="text" class="form-control" id="usbEndpoint" placeholder="0x01">
+                    </div>
+                </div>
+
+                <div class="alert alert-warning mt-4" role="alert">
+                    <i class="fa fa-exclamation-triangle mr-2"></i>
+                    {{ trans('ensure-correct-settings-before-print') }}
+                </div>
+
+                <div class="text-right">
+                    <button class="btn btn-success" onclick="sendDataToUSB(generateTestESCPOS(), 'modalAlert', 'modalAlertMessage')">
+                        <i class="fa fa-print"></i> {{ trans('print-test-ticket') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        const knownZebraPrinters = {
+            '0x0A5F:0x0080': 'Zebra GK420d',
+            '0x0A5F:0x0081': 'Zebra GK420t',
+            '0x0A5F:0x0084': 'Zebra GX420d',
+            '0x0A5F:0x0050': 'Zebra ZD420',
+            '0x0A5F:0x0051': 'Zebra ZD500',
+            '0x0A5F:0x008C': 'Zebra ZP450',
+            '0x0A5F:0x00D1': 'Zebra GC420d',
+            '0x0A5F:0x0110': 'Zebra ZD500',
+            '0x0A5F:0x011C': 'Zebra ZD410',
+            '0x0A5F:0x0141': 'Zebra ZD620',
+            '0x0A5F:0x0172': 'Zebra ZT411'
+        };
+
+        let alertTimeoutId;
+
+        function updateQZStatusIndicator(isConnected, indicatorId = 'qzStatusIndicator') {
+            const indicator = document.getElementById(indicatorId);
+            if (indicator) {
+                if (isConnected) {
+                    indicator.textContent = '{{ trans('qz-tray-connected') }}';
+                    indicator.classList.remove('badge-warning', 'badge-danger');
+                    indicator.classList.add('badge-success');
+                } else {
+                    indicator.textContent = '{{ trans('qz-tray-disconnected') }}';
+                    indicator.classList.remove('badge-success');
+                    indicator.classList.add('badge-warning');
+                }
+            }
+        }
+
+        function showModalAlert(message, type = 'info', duration = 5000, alertId = 'modalAlert', messageId = 'modalAlertMessage') {
+            const alertDiv = document.getElementById(alertId);
+            const alertMessageSpan = document.getElementById(messageId);
+
+            if (alertDiv.dataset.timeoutId) {
+                clearTimeout(parseInt(alertDiv.dataset.timeoutId));
+            }
+
+            alertDiv.className = 'alert alert-dismissible fade show mb-3';
+            alertDiv.classList.add(`alert-${type}`);
+
+            alertMessageSpan.textContent = message;
+            alertDiv.classList.remove('d-none');
+
+            if (duration > 0) {
+                const newTimeoutId = setTimeout(() => {
+                    hideModalAlert(alertId);
+                }, duration);
+                alertDiv.dataset.timeoutId = newTimeoutId.toString();
+            }
+        }
+
+        function hideModalAlert(alertId = 'modalAlert') {
+            const alertDiv = document.getElementById(alertId);
+            if (alertDiv) {
+                alertDiv.classList.remove('show');
+                setTimeout(() => {
+                    alertDiv.classList.add('d-none');
+                }, 150);
+                if (alertDiv.dataset.timeoutId) {
+                    clearTimeout(parseInt(alertDiv.dataset.timeoutId));
+                    delete alertDiv.dataset.timeoutId;
+                }
+            }
+        }
+
+        function showGlobalAlert(message, type = 'info', duration = 5000) {
+            showModalAlert(message, type, duration, 'modalAlert', 'modalAlertMessage');
+            showModalAlert(message, type, duration, 'modalPrintAlert', 'modalPrintAlertMessage');
+        }
+
+        function initQZListeners() {
+            const oldStatusDiv = document.getElementById('status');
+            if (oldStatusDiv) {
+                oldStatusDiv.parentNode.removeChild(oldStatusDiv);
+            }
+
+            // Listeners de QZ Tray para ambos modales
+            qz.websocket.connectionError = function(err) {
+                console.error("QZ Tray connection error:", err);
+                updateQZStatusIndicator(false, 'qzStatusIndicator');
+                updateQZStatusIndicator(false, 'qzStatusIndicatorPrint');
+                showGlobalAlert('{{ trans('qz-tray-connection-error') }}', 'danger', 0);
+            };
+
+            qz.websocket.disconnected = function() {
+                console.warn("QZ Tray disconnected.");
+                updateQZStatusIndicator(false, 'qzStatusIndicator');
+                updateQZStatusIndicator(false, 'qzStatusIndicatorPrint');
+                showGlobalAlert('{{ trans('qz-tray-disconnected-reload') }}', 'warning', 0);
+            };
+
+            qz.websocket.connected = function() {
+                updateQZStatusIndicator(true, 'qzStatusIndicator');
+                updateQZStatusIndicator(true, 'qzStatusIndicatorPrint');
+                showGlobalAlert('{{ trans('qz-tray-connected-successfully') }}', 'success', 5000);
+            };
+
+
+            updateQZStatusIndicator(qz.websocket.isActive(), 'qzStatusIndicator');
+            updateQZStatusIndicator(qz.websocket.isActive(), 'qzStatusIndicatorPrint');
+
+            if (qz.websocket.isActive()) {
+                loadFromLocalStorage();
+            } else {
+                showGlobalAlert('{{ trans('qz-tray-not-connected-click-to-start') }}', 'info', 0);
+            }
+            addAutoSaveListeners();
+        }
+
+        function addAutoSaveListeners() {
+            const inputsToSave = ['usbVendorId', 'usbProductId', 'usbInterface', 'usbEndpoint'];
+            inputsToSave.forEach(id => {
+                const inputElement = document.getElementById(id);
+                if (inputElement) {
+                    inputElement.removeEventListener('change', saveToLocalStorage);
+                    inputElement.addEventListener('change', saveToLocalStorage);
+                }
+            });
+        }
+
+        function connectQZTray() {
+            if (qz.websocket.isActive()) {
+                return;
+            }
+
+            showGlobalAlert('{{ trans('trying-to-connect-qz-tray') }}', 'info', 0);
+
+            qz.websocket.connect().then(() => {
+                updateQZStatusIndicator(true, 'qzStatusIndicator');
+                updateQZStatusIndicator(true, 'qzStatusIndicatorPrint');
+                showGlobalAlert('{{ trans('qz-tray-connected-successfully') }}', 'success', 5000);
+                loadFromLocalStorage();
+            }).catch(err => {
+                // El callback 'connectionError' ya se encarga de mostrar el estado y la alerta.
+                console.error("Error al conectar con QZ Tray:", err);
+                showGlobalAlert("{{ trans('error-connecting-to-qz-tray') }}" + err.message, 'danger', 0);
+            });
+        }
+
+        window.addEventListener('load', initQZListeners);
+
+        function scanUsbDevices() {
+            if (!qz.websocket.isActive()) {
+                showModalAlert('{{ trans('qz-tray-not-connected-before-scan') }}', 'warning');
+                return;
+            }
+            qz.usb.listDevices(false).then(devices => {
+                const container = document.getElementById('deviceListCompact');
+                container.innerHTML = '';
+
+                if (devices.length === 0) {
+                    container.innerHTML = '<li class="list-group-item text-muted">{{ trans('no-usb-devices-found') }}</li>';
+                    showModalAlert("{{ trans('no-usb-devices-found') }}", 'warning');
+                    return;
+                }
+
+                const knownDevices = [];
+                const unknownDevices = [];
+
+                devices.forEach(dev => {
+                    const uid = `0x${dev.vendorId.toString(16).toUpperCase()}:0x${dev.productId.toString(16).toUpperCase()}`;
+                    if (knownZebraPrinters[uid]) {
+                        knownDevices.push(dev);
+                    } else {
+                        unknownDevices.push(dev);
+                    }
+                });
+
+                knownDevices.sort((a, b) => {
+                    const uidA = `0x${a.vendorId.toString(16).toUpperCase()}:0x${b.productId.toString(16).toUpperCase()}`;
+                    const uidB = `0x${b.vendorId.toString(16).toUpperCase()}:0x${b.productId.toString(16).toUpperCase()}`;
+                    const nameA = knownZebraPrinters[uidA];
+                    const nameB = knownZebraPrinters[uidB];
+                    return nameA.localeCompare(nameB);
+                });
+
+                const sortedDevices = [...knownDevices, ...unknownDevices];
+                let defaultDeviceSet = false;
+
+                sortedDevices.forEach(dev => {
+                    const uid = `0x${dev.vendorId.toString(16).toUpperCase()}:0x${dev.productId.toString(16).toUpperCase()}`;
+                    const isKnown = knownZebraPrinters.hasOwnProperty(uid);
+                    const name = isKnown ? knownZebraPrinters[uid] : '{{ trans('unknown-device') }}';
+                    const btnClass = isKnown ? 'btn-primary' : 'btn-secondary';
+
+                    const listItem = document.createElement('li');
+                    listItem.className = 'list-group-item d-flex justify-content-between align-items-center py-2';
+
+                    listItem.innerHTML = `
+                        <span>${name} <small class="text-muted">(${uid})</small></span>
+                        <button class="btn btn-sm ${btnClass}"
+                            onclick="populateManualInputs('0x${dev.vendorId.toString(16).toUpperCase()}', '0x${dev.productId.toString(16).toUpperCase()}', '0x00', '0x01')">
+                            {{ trans('select') }}
+                        </button>
+                    `;
+                    container.appendChild(listItem);
+
+                    if (!defaultDeviceSet && isKnown) {
+                        populateManualInputs(`0x${dev.vendorId.toString(16).toUpperCase()}`, `0x${dev.productId.toString(16).toUpperCase()}`, '0x00', '0x01');
+                        defaultDeviceSet = true;
+                    }
+                });
+                showModalAlert(`{{ trans('num-usb-devices-detected') }}`.replace(/%num%/g, devices.length), 'info');
+            }).catch(err => {
+                console.error("Error al listar dispositivos USB:", err);
+                const container = document.getElementById('deviceListCompact');
+                container.innerHTML = '<li class="list-group-item text-danger">{{ trans('error-scanning-devices') }} ' + err.message + '</li>';
+                showModalAlert("{{ trans('error-scanning-usb-devices') }}" + err.message, 'danger');
+            });
+        }
+
+        function populateManualInputs(vendorIdHex, productIdHex, interfaceHex, endpointHex) {
+            document.getElementById('usbVendorId').value = vendorIdHex;
+            document.getElementById('usbProductId').value = productIdHex;
+            document.getElementById('usbInterface').value = interfaceHex;
+            document.getElementById('usbEndpoint').value = endpointHex;
+
+            const uid = `${vendorIdHex}:${productIdHex}`;
+            const name = knownZebraPrinters[uid] || '{{ trans('unknown-device') }}';
+            console.log(`{{ trans('manual-config-updated-for') }}`.replace(/%name%/g, name).replace(/%vendorId%/g, vendorIdHex).replace(/%productId%/g, productIdHex));
+            showModalAlert(`{{ trans('manual-config-updated-for-user') }}`.replace(/%name%/g, name) + ` {{ trans('you-can-adjust-parameters') }}`, 'success');
+            saveToLocalStorage();
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('usbVendorId', document.getElementById('usbVendorId').value);
+            localStorage.setItem('usbProductId', document.getElementById('usbProductId').value);
+            localStorage.setItem('usbInterface', document.getElementById('usbInterface').value);
+            localStorage.setItem('usbEndpoint', document.getElementById('usbEndpoint').value);
+            console.log('{{ trans('settings-saved-automatically') }}');
+        }
+
+        function loadFromLocalStorage() {
+            document.getElementById('usbVendorId').value = localStorage.getItem('usbVendorId') || '';
+            document.getElementById('usbProductId').value = localStorage.getItem('usbProductId') || '';
+            document.getElementById('usbInterface').value = localStorage.getItem('usbInterface') || '0x00';
+            document.getElementById('usbEndpoint').value = localStorage.getItem('usbEndpoint') || '0x01';
+            console.log('{{ trans('settings-loaded-from-local-storage') }}');
+        }
+
+        function sendDataToUSB(escposData, alertId = 'modalPrintAlert', messageId = 'modalPrintAlertMessage') {
+            if (!qz.websocket.isActive()) {
+                showModalAlert('{{ trans('qz-tray-not-connected-before-print') }}', 'danger', 0, alertId, messageId);
+                return;
+            }
+
+            const vendorIdHex = localStorage.getItem('usbVendorId') || document.getElementById('usbVendorId').value.trim();
+            const productIdHex = localStorage.getItem('usbProductId') || document.getElementById('usbProductId').value.trim();
+            const endpointHex = localStorage.getItem('usbEndpoint') || '0x01'; // Default si no se ha guardado
+            const interfaceHex = localStorage.getItem('usbInterface') || '0x00'; // Default si no se ha guardado
+
+            if (!vendorIdHex || !productIdHex) {
+                showModalAlert("{{ trans('vendor-product-id-required-to-print') }}", 'danger', 0, alertId, messageId);
+                $('#ticketPrintModal').modal('show');
+                return;
+            }
+
+            const deviceInfo = {
+                vendorId: vendorIdHex,
+                productId: productIdHex,
+                interface: interfaceHex
+            };
+
+            showModalAlert("{{ trans('preparing-to-send-data') }}", 'info', 0, alertId, messageId);
+
+            qz.usb.isClaimed(deviceInfo).then(claimed => {
+                const claimPromise = claimed ? Promise.resolve() : qz.usb.claimDevice(deviceInfo);
+
+                return claimPromise.then(() => {
+                    showModalAlert("{{ trans('sending-data-to-printer') }}", 'info', 0, alertId, messageId);
+                    // For ESC/POS, we need to send raw bytes. We'll create an array of commands.
+                    const config = qz.configs.create(null);
+                    const data = [
+                        { type: 'raw', format: 'command', flavor: 'escpos', data: escposData }
+                    ];
+                    return qz.print(config, data);
+                }).then(() => {
+                    showModalAlert("{{ trans('data-sent-to-usb-successfully') }}", 'success', 5000, alertId, messageId);
+                    return qz.usb.releaseDevice(deviceInfo);
+                }).catch(err => {
+                    console.error("Error al enviar datos o liberar el dispositivo:", err);
+                    showModalAlert("{{ trans('error-printing') }}" + (err.message || "{{ trans('check-connection-and-parameters') }}"), 'danger', 0, alertId, messageId);
+                });
+            }).catch(err => {
+                console.error("Error al verificar el estado del dispositivo:", err);
+                showModalAlert("{{ trans('device-connection-error') }}" + (err.message || "{{ trans('ensure-device-connected-and-qz-permissions') }}"), 'danger', 0, alertId, messageId);
+            });
+        }
+    </script>
+</div>
+
+{#
+Este segundo modal es parecido al primero pero dedicado ya al funcionamiento de la impresión
+    - Este panel solicita conexión automáticamente a QZ Tray al abrirlo (minimizar clicks)
+    - Cuando se abre, realiza una petición con las opciones pedidas para recibir el ticket
+    - Genera una previsualización aproximada del ticket en html y genera el código ESC/POS también
+    - Al pulsar el botón de imprimir, se manda a imprimir el ticket.
+#}
+<div class="modal fade" id="ticketPreviewPrintModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fa-solid fa-receipt me-2"></i>{{ trans('ticket-preview-and-print') }}
+                    <small id="qzStatusIndicatorPrint" class="ml-3 badge badge-warning">{{ trans('qz-tray-disconnected') }}</small>
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="modalPrintAlert" class="alert alert-dismissible fade show d-none mb-3" role="alert">
+                    <span id="modalPrintAlertMessage"></span>
+                    <button type="button" class="close" aria-label="Close" onclick="hideModalAlert('modalPrintAlert')">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="mb-3 text-right">
+                    <button class="btn btn-info mr-2" onclick="connectQZTray()">
+                        <i class="fa-solid fa-plug"></i> {{ trans('connect-to-qz-tray') }}
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" id="showConfigModalBtn">
+                        <i class="fa-solid fa-cog"></i> {{ trans('configure-printer') }}
+                    </button>
+                </div>
+
+                <h5 class="mb-3">{{ trans('ticket-preview-html') }}</h5>
+                <div id="ticketPreviewContainer" class="border p-3 mb-4" style="max-height: 50vh; overflow-y: auto; background-color: #f8f9fa; font-family: monospace;">
+                    <div class="d-flex justify-content-center align-items-center w-100" style="min-height: inherit;">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="sr-only">{{ trans('loading') }}</span>
+                        </div>
+                        <p class="ml-2 mb-0">{{ trans('loading-ticket-preview') }}</p>
+                    </div>
+                </div>
+
+                <div class="text-right">
+                    <button id="printTicketButton" class="btn btn-success" disabled>
+                        <i class="fa fa-print"></i> {{ trans('print-ticket') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    let receivedESCPOSTData = '';
+    let lastResponseData = null;
+
+    function updatePreviewAndESCPOST(responseData) {
+        if (!responseData || !responseData.ticket) {
+            console.error("updatePreviewAndESCPOST called with invalid response data.");
+            return;
+        }
+
+        const previewContainer = $('#ticketPreviewContainer');
+        previewContainer.empty();
+        
+        try {
+            const previewHtml = generateHtmlPreview(responseData.ticket);
+            previewContainer.html(previewHtml);
+
+            const escposData = generateESCPOS(responseData.ticket);
+            receivedESCPOSTData = escposData;
+
+            showModalAlert('{{ trans('ticket-preview-updated-successfully') }}', 'success', 5000, 'modalPrintAlert', 'modalPrintAlertMessage');
+            $('#printTicketButton').prop('disabled', false);
+
+        } catch (e) {
+            console.error("Error al generar ESC/POS o previsualización:", e);
+            previewContainer.html('<p class="text-danger text-center w-100">{{ trans('error-generating-escpos-check-console') }}</p>');
+            showModalAlert('{{ trans('error-generating-escpos') }} ' + e.message, 'danger', 0, 'modalPrintAlert', 'modalPrintAlertMessage');
+            $('#printTicketButton').prop('disabled', true);
+            receivedESCPOSTData = '';
+        }
+    }
+
+    function generateHtmlPreview(ticket) {
+        const s = (str) => String(str || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        let html = `<div style="width: 300px; margin: auto; background: #fff; padding: 10px;">`;
+        html += `<div style="text-align: center;"><strong>${s(ticket.company_name)}</strong></div>`;
+        html += `<div style="text-align: center;">${s(ticket.company_cif)}</div>`;
+        html += `<div style="text-align: center;">${s(ticket.company_address)}</div>`;
+        html += `<hr/>`;
+        html += `<div><strong>{{ trans('ticket-number') }}:</strong> ${s(ticket.number)}</div>`;
+        html += `<div><strong>{{ trans('date') }}:</strong> ${s(ticket.date)}</div>`;
+        html += `<hr/>`;
+        html += `<table>`;
+        html += `<thead><tr><th>{{ trans('description') }}</th><th>{{ trans('quantity') }}</th><th>{{ trans('price') }}</th><th>{{ trans('total') }}</th></tr></thead>`;
+        html += `<tbody>`;
+        ticket.lines.forEach(line => {
+            html += `<tr><td>${s(line.description)}</td><td>${s(line.quantity)}</td><td>${s(line.price)}</td><td>${s(line.total)}</td></tr>`;
+        });
+        html += `</tbody>`;
+        html += `</table>`;
+        html += `<hr/>`;
+        html += `<div style="text-align: right;"><strong>{{ trans('total') }}:</strong> ${s(ticket.total)}</div>`;
+        html += `</div>`;
+        return html;
+    }
+
+    function generateESCPOS(ticket) {
+        let commands = '';
+        commands += '\x1B' + '\x40'; // Initialize printer
+        commands += '\x1B' + '\x61' + '\x31'; // Center alignment
+        commands += '\x1B' + '\x21' + '\x30'; // Double height and width
+        commands += ticket.company_name + '\n';
+        commands += '\x1B' + '\x21' + '\x00'; // Normal text
+        commands += ticket.company_cif + '\n';
+        commands += ticket.company_address + '\n';
+        commands += '\x1B' + '\x61' + '\x30'; // Left alignment
+        commands += '--------------------------------\n';
+        commands += '{{ trans('ticket-number') }}: ' + ticket.number + '\n';
+        commands += '{{ trans('date') }}: ' + ticket.date + '\n';
+        commands += '--------------------------------\n';
+        ticket.lines.forEach(line => {
+            commands += line.description + '\n';
+            commands += '  ' + line.quantity + ' x ' + line.price + ' = ' + line.total + '\n';
+        });
+        commands += '--------------------------------\n';
+        commands += '\x1B' + '\x61' + '\x32'; // Right alignment
+        commands += '\x1B' + '\x21' + '\x30'; // Double height and width
+        commands += '{{ trans('total') }}: ' + ticket.total + '\n';
+        commands += '\x1B' + '\x21' + '\x00'; // Normal text
+        commands += '\n\n\n';
+        commands += '\x1D' + '\x56' + '\x41' + '\x03'; // Cut paper
+        return commands;
+    }
+
+    function generateTestESCPOS() {
+        let commands = '';
+        commands += '\x1B' + '\x40'; // Initialize printer
+        commands += '\x1B' + '\x61' + '\x31'; // Center alignment
+        commands += '\x1B' + '\x21' + '\x30'; // Double height and width
+        commands += '{{ trans('ticket-test') }}\n';
+        commands += '\x1B' + '\x21' + '\x00'; // Normal text
+        commands += 'QZ Tray connected successfully!\n';
+        commands += '\n\n\n';
+        commands += '\x1D' + '\x56' + '\x41' + '\x03'; // Cut paper
+        return commands;
+    }
+
+    $('#printTicketForThermalPrinter').click(() => {
+        connectQZTray();
+
+        const data = {
+            action: 'getThermalPrintInfo',
+            code: '{{ fsc.model.code }}'
+        };
+
+        $('#ticketPreviewPrintModal').modal('show');
+        $('#ticketPreviewContainer').html(`
+            <div class="d-flex justify-content-center align-items-center w-100" style="min-height: inherit;">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="sr-only">{{ trans('loading') }}</span>
+                </div>
+                <p class="ml-2 mb-0">{{ trans('loading-ticket-preview') }}</p>
+            </div>
+        `);
+        $('#printTicketButton').prop('disabled', true);
+        showModalAlert('{{ trans('requesting-ticket-data-from-server') }}', 'info', 0, 'modalPrintAlert', 'modalPrintAlertMessage');
+
+        $.ajax({
+            url: 'PrintTickets',
+            type: 'POST',
+            data: data,
+            success: function(response) {
+                console.log('Respuesta del servidor:', response);
+
+                if (response && response.ticket) {
+                    lastResponseData = response;
+                    updatePreviewAndESCPOST(lastResponseData);
+                } else {
+                    $('#ticketPreviewContainer').html('<p class="text-danger text-center w-100">{{ trans('no-valid-ticket-data-received') }}</p>');
+                    showModalAlert('{{ trans('no-valid-ticket-data-received-for-preview') }}', 'danger', 0, 'modalPrintAlert', 'modalPrintAlertMessage');
+                    $('#printTicketButton').prop('disabled', true);
+                    lastResponseData = null;
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('Error en la petición AJAX para impresora térmica:', textStatus, errorThrown);
+                $('#ticketPreviewContainer').html('<p class="text-danger text-center w-100">{{ trans('error-loading-preview-try-again') }}</p>');
+                showModalAlert('{{ trans('error-ajax-preview') }} ' + (errorThrown || textStatus), 'danger', 0, 'modalPrintAlert', 'modalPrintAlertMessage');
+                $('#printTicketButton').prop('disabled', true);
+                lastResponseData = null;
+            }
+        });
+    });
+
+    $('#printTicketButton').click(() => {
+        if (receivedESCPOSTData) {
+            sendDataToUSB(receivedESCPOSTData, 'modalPrintAlert', 'modalPrintAlertAlertMessage');
+        }
+        else {
+            showModalAlert('{{ trans('no-ticket-data-to-print') }}', 'warning', 5000, 'modalPrintAlert', 'modalPrintAlertMessage');
+        }
+    });
+
+    $(document).on('click', '#showConfigModalBtn', function() {
+        $('#ticketPreviewPrintModal').modal('hide');
+        $('#ticketPreviewPrintModal').on('hidden.bs.modal', function (e) {
+            $('#ticketPrintModal').modal('show');
+            // Es importante desvincular el evento para evitar que se dispare múltiples veces.
+            $(this).off('hidden.bs.modal');
+        });
+    });
+</script>
