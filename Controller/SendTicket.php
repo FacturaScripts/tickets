@@ -6,6 +6,7 @@
 namespace FacturaScripts\Plugins\Tickets\Controller;
 
 use FacturaScripts\Core\Base\Controller;
+use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Model\Base\ModelClass;
 use FacturaScripts\Core\Tools;
 use FacturaScripts\Dinamic\Lib\Tickets\Gift;
@@ -128,9 +129,8 @@ class SendTicket extends Controller
         }
 
         // 2. Busca el ticket recién creado para esta impresora, ordenado por fecha de creación.
-        $ticketModel = new Ticket();
-
-        $tickets = $ticketModel->all([], ['creationdate' => 'DESC'], 0, 1);
+        $where = [new DataBaseWhere('printed', false)];
+        $tickets = Ticket::all($where, ['creationdate' => 'DESC'], 0, 1);
         if (empty($tickets)) {
             $this->response->setContent(json_encode(['ok' => false, 'error' => $translator->trans('could-not-retrieve-temporary-ticket')]));
             return;
