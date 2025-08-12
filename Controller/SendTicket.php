@@ -109,6 +109,15 @@ class SendTicket extends Controller
             return;
         }
 
+        // Modificamos la longitud de línea según el ancho de papel seleccionado en el frontend.
+        $paperWidth = (string)$this->request->request->get('paperWidth', $printer->linelen);
+        $originalPaperWidth = $printer->linelen;
+        if ($paperWidth === '58') {
+            $printer->linelen = 32;
+        } elseif ($paperWidth === '80') {
+            $printer->linelen = 48;
+        }
+
         // Obtiene la clase de formato dinámicamente desde la petición.
         $formatClass = $this->request->request->get('format', '');
         if (empty($formatClass)) {
@@ -138,6 +147,9 @@ class SendTicket extends Controller
 
         $tempTicket = $tickets[0];
         $rawData = base64_decode($tempTicket->body);
+
+        // Restaura la longitud de línea original.
+        $printer->linelen = $originalPaperWidth;
 
         // 3. Borra el ticket temporal de la base de datos.
         if (false === $tempTicket->delete()) {
