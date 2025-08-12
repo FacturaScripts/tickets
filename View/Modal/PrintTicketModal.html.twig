@@ -89,7 +89,6 @@ Este primer modal contiene la configuración y el test de la impresora térmica
                         <select id="testPaperWidth" class="form-control">
                             <option value="80">80mm</option>
                             <option value="58">58mm</option>
-                            <option value="48">48mm</option>
                         </select>
                     </div>
                     <div class="form-group col-md-9 text-right">
@@ -120,8 +119,6 @@ Este primer modal contiene la configuración y el test de la impresora térmica
             let lineLength = 48; // Default for 80mm
             if (width === 58) {
                 lineLength = 32;
-            } else if (width === 48) {
-                lineLength = 24;
             }
 
             const center = '\x1B\x61\x01';
@@ -506,7 +503,6 @@ Este segundo modal es parecido al primero pero dedicado ya al funcionamiento de 
                         <select id="paperWidth" class="form-control">
                             <option value="80">80mm</option>
                             <option value="58">58mm</option>
-                            <option value="48">48mm</option>
                         </select>
                     </div>
                     <div class="form-group col-sm-3">
