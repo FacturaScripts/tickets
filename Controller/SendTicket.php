@@ -6,7 +6,7 @@
 namespace FacturaScripts\Plugins\Tickets\Controller;
 
 use FacturaScripts\Core\Base\Controller;
-use FacturaScripts\Core\Model\Base\ModelClass;
+use FacturaScripts\Core\Template\ModelClass;
 use FacturaScripts\Core\Tools;
 use FacturaScripts\Dinamic\Lib\Tickets\Gift;
 use FacturaScripts\Dinamic\Lib\Tickets\Normal;

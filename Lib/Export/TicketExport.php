@@ -6,7 +6,9 @@
 namespace FacturaScripts\Plugins\Tickets\Lib\Export;
 
 use FacturaScripts\Core\Lib\Export\ExportBase;
-use Symfony\Component\HttpFoundation\Response;
+use FacturaScripts\Core\Response;
+use FacturaScripts\Core\Tools;
+
 
 /**
  * @author Carlos Garcia Gomez <carlos@facturascripts.com>

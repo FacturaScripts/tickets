@@ -5,7 +5,9 @@
 
 namespace FacturaScripts\Plugins\Tickets\Lib\Tickets;
 
-use FacturaScripts\Core\Model\Base\ModelClass;
+use FacturaScripts\Core\Template\ModelClass;
+use FacturaScripts\Core\Tools;
+
 use FacturaScripts\Dinamic\Model\Ticket;
 use FacturaScripts\Dinamic\Model\TicketPrinter;
 

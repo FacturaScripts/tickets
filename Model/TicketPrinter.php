@@ -5,8 +5,8 @@
 
 namespace FacturaScripts\Plugins\Tickets\Model;
 
-use FacturaScripts\Core\Model\Base\ModelClass;
-use FacturaScripts\Core\Model\Base\ModelTrait;
+use FacturaScripts\Core\Template\ModelClass;
+use FacturaScripts\Core\Template\ModelTrait;
 use FacturaScripts\Core\Tools;
 use FacturaScripts\Dinamic\Model\ApiAccess;
 use FacturaScripts\Dinamic\Model\ApiKey;
@@ -108,7 +108,7 @@ class TicketPrinter extends ModelClass
     /** @var int */
     public $title_font_size;
 
-    public function clear()
+    public function clear(): void
     {
         parent::clear();
         $this->creationdate = Tools::date();
@@ -140,7 +140,7 @@ class TicketPrinter extends ModelClass
     public function getApiKey(): ApiKey
     {
         $apikey = new ApiKey();
-        $apikey->loadFromCode($this->idapikey);
+        $apikey->load($this->idapikey);
         return $apikey;
     }
 
