@@ -88,7 +88,7 @@ class EditTicketPrinter extends EditController
                 break;
 
             case 'ListTicket':
-                $id = $this->views[$mvn]->model->primaryColumnValue();
+                $id = $this->views[$mvn]->model->id();
                 $where = [new DataBaseWhere('idprinter', $id)];
                 $view->loadData('', $where);
                 break;

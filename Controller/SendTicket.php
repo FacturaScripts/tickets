@@ -82,7 +82,7 @@ class SendTicket extends Controller
         }
 
         $model = new $modelClass();
-        if (false === $model->loadFromCode($this->modelCode)) {
+        if (false === $model->load($this->modelCode)) {
             $this->setTemplate('Error/SendTicket');
             return;
         }
