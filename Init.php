@@ -15,6 +15,7 @@ use FacturaScripts\Dinamic\Lib\ExportManager;
 use FacturaScripts\Dinamic\Lib\Tickets\Gift;
 use FacturaScripts\Dinamic\Lib\Tickets\Normal;
 use FacturaScripts\Dinamic\Lib\Tickets\PaymentReceipt;
+use FacturaScripts\Dinamic\Lib\AssetManager;
 
 /**
  * @author Carlos Garcia Gomez <carlos@facturascripts.com>
@@ -25,6 +26,9 @@ final class Init extends InitClass
     {
         ExportManager::addOption('Ticket', 'ticket', 'fa-solid fa-receipt');
         $this->loadFormatTickets();
+
+        // assets
+        AssetManager::addJs(FS_ROUTE . '/Plugins/Tickets/node_modules/qz-tray/qz-tray.js');
     }
 
     public function uninstall(): void

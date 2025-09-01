@@ -298,6 +298,7 @@ abstract class BaseTicket
         // inicializamos la impresora virtual, para posteriormente obtener los comandos
         static::$connector = new DummyPrintConnector();
         static::$escpos = new Printer(static::$connector);
+        static::$connector->clear();
         static::$escpos->initialize();
     }
 
