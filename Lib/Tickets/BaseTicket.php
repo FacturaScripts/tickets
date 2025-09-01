@@ -6,7 +6,7 @@
 namespace FacturaScripts\Plugins\Tickets\Lib\Tickets;
 
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Core\Model\Base\ModelClass;
+use FacturaScripts\Core\Template\ModelClass;
 use FacturaScripts\Core\Plugins;
 use FacturaScripts\Core\Tools;
 use FacturaScripts\Core\Translator;
@@ -39,7 +39,7 @@ abstract class BaseTicket
 
     private static $openDrawer = true;
 
-    abstract public static function print(ModelClass $model, TicketPrinter $printer, User $user, Agente $agent = null): bool;
+    abstract public static function print(ModelClass $model, TicketPrinter $printer, User $user, ?Agente $agent = null): bool;
 
     public static function setLines(?array $lines = null): void
     {
@@ -98,7 +98,7 @@ abstract class BaseTicket
             // si no es una factura buscamos si tiene anticipos
             $prepagoModel = new PrePago();
             $where = [
-                new DataBaseWhere('modelid', $model->primaryColumnValue()),
+                new DataBaseWhere('modelid', $model->id()),
                 new DataBaseWhere('modelname', $model->modelClassName()),
             ];
             foreach ($prepagoModel->all($where, [], 0, 0) as $prepago) {
@@ -123,7 +123,7 @@ abstract class BaseTicket
         // pintamos las formas de pago
         foreach ($paymentMethods as $codpago => $total) {
             $payment = new FormaPago();
-            if (false === $payment->loadFromCode($codpago)) {
+            if (false === $payment->load($codpago)) {
                 continue;
             }
 
@@ -214,7 +214,7 @@ abstract class BaseTicket
                 ];
 
                 $impuesto = new Impuesto();
-                if ($line->codimpuesto && $impuesto->loadFromCode($line->codimpuesto)) {
+                if ($line->codimpuesto && $impuesto->load($line->codimpuesto)) {
                     $subtotals[$key]['tax'] = $impuesto->descripcion;
                 }
             }

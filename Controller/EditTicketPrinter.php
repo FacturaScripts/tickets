@@ -8,6 +8,8 @@ namespace FacturaScripts\Plugins\Tickets\Controller;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Lib\ExtendedController\BaseView;
 use FacturaScripts\Core\Lib\ExtendedController\EditController;
+use FacturaScripts\Core\Tools;
+
 
 /**
  * @author Carlos Garcia Gomez <carlos@facturascripts.com>
@@ -86,7 +88,7 @@ class EditTicketPrinter extends EditController
                 break;
 
             case 'ListTicket':
-                $id = $this->views[$mvn]->model->primaryColumnValue();
+                $id = $this->views[$mvn]->model->id();
                 $where = [new DataBaseWhere('idprinter', $id)];
                 $view->loadData('', $where);
                 break;

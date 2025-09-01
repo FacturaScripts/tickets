@@ -5,8 +5,8 @@
 
 namespace FacturaScripts\Plugins\Tickets\Model;
 
-use FacturaScripts\Core\Model\Base\ModelClass;
-use FacturaScripts\Core\Model\Base\ModelTrait;
+use FacturaScripts\Core\Template\ModelClass;
+use FacturaScripts\Core\Template\ModelTrait;
 use FacturaScripts\Core\Tools;
 use FacturaScripts\Dinamic\Model\Agente;
 
@@ -72,7 +72,7 @@ class Ticket extends ModelClass
      */
     public $title;
 
-    public function clear()
+    public function clear(): void
     {
         parent::clear();
         $this->appversion = 0.0;
@@ -84,7 +84,7 @@ class Ticket extends ModelClass
     public function getPrinter(): TicketPrinter
     {
         $printer = new TicketPrinter();
-        $printer->loadFromCode($this->idprinter);
+        $printer->load($this->idprinter);
         return $printer;
     }
 

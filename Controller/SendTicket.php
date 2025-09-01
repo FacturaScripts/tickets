@@ -6,8 +6,8 @@
 namespace FacturaScripts\Plugins\Tickets\Controller;
 
 use FacturaScripts\Core\Base\Controller;
+use FacturaScripts\Core\Template\ModelClass;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Core\Model\Base\ModelClass;
 use FacturaScripts\Core\Tools;
 use FacturaScripts\Dinamic\Lib\Tickets\Gift;
 use FacturaScripts\Dinamic\Lib\Tickets\Normal;
@@ -84,7 +84,7 @@ class SendTicket extends Controller
         }
 
         $model = new $modelClass();
-        if (false === $model->loadFromCode($this->modelCode)) {
+        if (false === $model->load($this->modelCode)) {
             $this->setTemplate('Error/SendTicket');
             return;
         }
