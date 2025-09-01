@@ -88,6 +88,9 @@ class TicketPrinter extends ModelClass
     public $print_lines_price;
 
     /** @var bool */
+    public $print_lines_price_tax;
+
+    /** @var bool */
     public $print_lines_price_unitary;
 
     /** @var bool */
@@ -124,6 +127,7 @@ class TicketPrinter extends ModelClass
         $this->print_lines_net = false;
         $this->print_lines_price = false;
         $this->print_lines_price_unitary = false;
+        $this->print_lines_price_tax = false;
         $this->print_lines_quantity = true;
         $this->print_lines_reference = false;
         $this->print_lines_total = true;
