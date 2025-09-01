@@ -46,6 +46,11 @@
                                     {{ trans('no-printer-connected') }}
                                 </div>
                             {% endfor %}
+                            {% if fsc.printers %}
+                                <button type="button" id="printTicketForThermalPrinter" class="btn btn-block btn-lg btn-primary mt-3">
+                                    <i class="fa-solid fa-print"></i>&nbsp; {{ trans('print-with-qz-tray') }}
+                                </button>
+                            {% endif %}
                         </div>
                     </div>
                     <div class="card shadow mb-5">
@@ -65,4 +70,5 @@
     </div>
 
     <img src="http://localhost:8089/" alt="remote-printer" class="d-none"/>
+    {% include "Modal/PrintTicketModal.html.twig" %}
 {% endblock %}

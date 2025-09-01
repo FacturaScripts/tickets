@@ -298,6 +298,7 @@ abstract class BaseTicket
         // inicializamos la impresora virtual, para posteriormente obtener los comandos
         static::$connector = new DummyPrintConnector();
         static::$escpos = new Printer(static::$connector);
+        static::$connector->clear();
         static::$escpos->initialize();
     }
 
@@ -360,6 +361,12 @@ abstract class BaseTicket
 
             if ($printer->print_lines_price) {
                 $td .= "\n" . sprintf("%11s", Tools::lang()->trans('price-abb') . ': ' . Tools::number($line->pvpunitario));
+                $jump = true;
+            }
+
+            if ($printer->print_lines_price_tax) {
+                $priceVat = $line->pvpunitario * (100 + $line->iva + $line->recargo) / 100;
+                $td .= "\n" . sprintf("%11s", Tools::lang()->trans('price-abb') . ': ' . Tools::number($priceVat));
                 $jump = true;
             }
 

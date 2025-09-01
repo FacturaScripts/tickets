@@ -105,6 +105,11 @@
         <default>true</default>
     </column>
     <column>
+        <name>print_lines_price_tax</name>
+        <type>boolean</type>
+        <default>false</default>
+    </column>
+    <column>
         <name>print_lines_quantity</name>
         <type>boolean</type>
         <default>true</default>

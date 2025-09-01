@@ -1,0 +1,8 @@
+{
+  "name": "tickets",
+  "version": "1.0.0",
+  "author": "Abderrahim Darghal Belkacemi",
+  "dependencies": {
+    "qz-tray": "^2.2.5"
+  }
+}
