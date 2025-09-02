@@ -33,6 +33,13 @@ Este primer modal contiene la configuración y el test de la impresora térmica
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <div class="alert alert-info d-flex align-items-center mb-3" role="alert">
+                    <i class="fa-solid fa-circle-info fa-fw me-2"></i>
+                    <div>
+                        ¿Problemas para conectar? Asegúrate de que QZ Tray está instalado y configurado.
+                        <a href="https://facturascripts.com/publicaciones/guia-rapida-qz-tray-para-imprimir-tickets" target="_blank" class="alert-link">Haz clic aquí para ver las instrucciones</a>.
+                    </div>
+                </div>
                 <div id="modalAlert" class="alert alert-dismissible alert-dismissible fade show d-none mb-3" role="alert">
                     <span id="modalAlertMessage"></span>
                     <button type="button" class="btn-close" aria-label="Close" onclick="hideModalAlert()"></button>
@@ -196,6 +203,15 @@ Este primer modal contiene la configuración y el test de la impresora térmica
                 }, duration);
                 alertDiv.dataset.timeoutId = newTimeoutId.toString();
             }
+
+            const instructionsAlert = document.getElementById('qzInstructionsAlert');
+            if (instructionsAlert && alertId === 'modalPrintAlert') {
+                if (type === 'danger' || type === 'warning') {
+                    instructionsAlert.classList.remove('d-none');
+                } else {
+                    instructionsAlert.classList.add('d-none');
+                }
+            }
         }
 
         function hideModalAlert(alertId = 'modalAlert') {
@@ -208,6 +224,13 @@ Este primer modal contiene la configuración y el test de la impresora térmica
                 if (alertDiv.dataset.timeoutId) {
                     clearTimeout(parseInt(alertDiv.dataset.timeoutId));
                     delete alertDiv.dataset.timeoutId;
+                }
+            }
+
+            if (alertId === 'modalPrintAlert') {
+                const instructionsAlert = document.getElementById('qzInstructionsAlert');
+                if (instructionsAlert) {
+                    instructionsAlert.classList.add('d-none');
                 }
             }
         }
@@ -469,6 +492,14 @@ Este segundo modal es parecido al primero pero dedicado ya al funcionamiento de 
                 <div id="modalPrintAlert" class="alert alert-dismissible alert-dismissible fade show d-none mb-3" role="alert">
                     <span id="modalPrintAlertMessage"></span>
                     <button type="button" class="btn-close" aria-label="Close" onclick="hideModalAlert('modalPrintAlert')"></button>
+                </div>
+
+                <div id="qzInstructionsAlert" class="alert alert-info d-flex align-items-center mb-3 d-none" role="alert">
+                    <i class="fa-solid fa-circle-info fa-fw me-2"></i>
+                    <div>
+                        ¿Problemas para conectar? Asegúrate de que QZ Tray está instalado y configurado.
+                        <a href="https://facturascripts.com/publicaciones/guia-rapida-qz-tray-para-imprimir-tickets" target="_blank" class="alert-link">Haz clic aquí para ver las instrucciones</a>.
+                    </div>
                 </div>
 
                 <div class="mb-3 text-end">
