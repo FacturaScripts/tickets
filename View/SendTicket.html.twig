@@ -42,12 +42,12 @@
                                     </p>
                                 {% endif %}
                             {% else %}
-                                <div class="alert alert-dismissible alert-dismissible alert-dismissible alert-warning mb-0">
+                                <div class="alert alert-dismissible alert-dismissible alert-dismissible alert-dismissible alert-warning mb-0">
                                     {{ trans('no-printer-connected') }}
                                 </div>
                             {% endfor %}
                             {% if fsc.printers %}
-                                <button type="button" id="printTicketForThermalPrinter" class="btn btn-block btn-lg btn-primary mt-3">
+                                <button type="button" id="printTicketForThermalPrinter" class="btn w-100 btn-lg btn-primary mt-3">
                                     <i class="fa-solid fa-print"></i>&nbsp; {{ trans('print-with-qz-tray') }}
                                 </button>
                             {% endif %}
