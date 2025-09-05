@@ -9,12 +9,6 @@ use FacturaScripts\Core\Base\Controller;
 use FacturaScripts\Core\Template\ModelClass;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Tools;
-use FacturaScripts\Dinamic\Lib\Tickets\Gift;
-use FacturaScripts\Dinamic\Lib\Tickets\Normal;
-use FacturaScripts\Dinamic\Lib\Tickets\PaymentReceipt;
-use FacturaScripts\Dinamic\Lib\Tickets\Service;
-use FacturaScripts\Dinamic\Lib\Tickets\TicketBai;
-use FacturaScripts\Dinamic\Model\ServicioAT;
 use FacturaScripts\Dinamic\Model\Ticket;
 use FacturaScripts\Dinamic\Model\TicketPrinter;
 
@@ -101,11 +95,10 @@ class SendTicket extends Controller
     {
         $this->setTemplate(false);
 
-        $translator = Tools::lang();
         $printerId = (int)$this->request->request->get('printer');
         $printer = new TicketPrinter();
         if (false === $printer->loadFromCode($printerId)) {
-            $this->response->setContent(json_encode(['ok' => false, 'error' => $translator->trans('printer-not-found')]));
+            $this->response->setContent(json_encode(['ok' => false, 'error' => Tools::trans('printer-not-found')]));
             return;
         }
 
@@ -121,19 +114,19 @@ class SendTicket extends Controller
         // Obtiene la clase de formato dinámicamente desde la petición.
         $formatClass = $this->request->request->get('format', '');
         if (empty($formatClass)) {
-            $this->response->setContent(json_encode(['ok' => false, 'error' => $translator->trans('format-class-not-provided')]));
+            $this->response->setContent(json_encode(['ok' => false, 'error' => Tools::trans('format-class-not-provided')]));
             return;
         }
 
         $formatClass = '\\' . $formatClass;
         if (false === class_exists($formatClass)) {
-            $this->response->setContent(json_encode(['ok' => false, 'error' => $translator->trans('invalid-format-class')]));
+            $this->response->setContent(json_encode(['ok' => false, 'error' => Tools::trans('invalid-format-class')]));
             return;
         }
 
         // 1. Llama a la función print de la clase dinámica para guardar el ticket.
         if (false === $formatClass::print($model, $printer, $this->user)) {
-            $this->response->setContent(json_encode(['ok' => false, 'error' => $translator->trans('failed-to-create-temporary-ticket')]));
+            $this->response->setContent(json_encode(['ok' => false, 'error' => Tools::trans('failed-to-create-temporary-ticket')]));
             return;
         }
 
@@ -141,7 +134,7 @@ class SendTicket extends Controller
         $where = [new DataBaseWhere('printed', false)];
         $tickets = Ticket::all($where, ['creationdate' => 'DESC'], 0, 1);
         if (empty($tickets)) {
-            $this->response->setContent(json_encode(['ok' => false, 'error' => $translator->trans('could-not-retrieve-temporary-ticket')]));
+            $this->response->setContent(json_encode(['ok' => false, 'error' => Tools::trans('could-not-retrieve-temporary-ticket')]));
             return;
         }
 
@@ -153,12 +146,12 @@ class SendTicket extends Controller
 
         // 3. Borra el ticket temporal de la base de datos.
         if (false === $tempTicket->delete()) {
-            Tools::log()->error($translator->trans('failed-to-delete-temporary-ticket') . ': ' . $tempTicket->id);
+            Tools::log()->error(Tools::trans('failed-to-delete-temporary-ticket') . ': ' . $tempTicket->id);
         }
 
         // 4. Comprueba que el cuerpo del ticket no esté vacío.
         if (empty($rawData)) {
-            $this->response->setContent(json_encode(['ok' => false, 'error' => $translator->trans('generated-ticket-body-is-empty')]));
+            $this->response->setContent(json_encode(['ok' => false, 'error' => Tools::trans('generated-ticket-body-is-empty')]));
             return;
         }
 
