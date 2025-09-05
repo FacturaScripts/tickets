@@ -5,11 +5,10 @@
 
 namespace FacturaScripts\Plugins\Tickets\Controller;
 
-use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Lib\ExtendedController\BaseView;
 use FacturaScripts\Core\Lib\ExtendedController\EditController;
 use FacturaScripts\Core\Tools;
-
+use FacturaScripts\Core\Where;
 
 /**
  * @author Carlos Garcia Gomez <carlos@facturascripts.com>
@@ -23,9 +22,7 @@ class EditTicketPrinter extends EditController
 
     public function getAppUrl(): string
     {
-        $url = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
-        $url .= '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-        return substr($url, 0, strrpos($url, '/'));
+        return Tools::siteUrl();
     }
 
     public function getModelClassName(): string
@@ -89,7 +86,7 @@ class EditTicketPrinter extends EditController
 
             case 'ListTicket':
                 $id = $this->views[$mvn]->model->id();
-                $where = [new DataBaseWhere('idprinter', $id)];
+                $where = [Where::column('idprinter', $id)];
                 $view->loadData('', $where);
                 break;
         }

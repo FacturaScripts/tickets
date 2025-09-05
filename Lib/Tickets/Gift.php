@@ -1,13 +1,11 @@
 <?php
 /**
- * Copyright (C) 2019-2023 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2019-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 
 namespace FacturaScripts\Plugins\Tickets\Lib\Tickets;
 
 use FacturaScripts\Core\Template\ModelClass;
-use FacturaScripts\Core\Tools;
-
 use FacturaScripts\Dinamic\Model\Ticket;
 use FacturaScripts\Dinamic\Model\TicketPrinter;
 

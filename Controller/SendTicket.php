@@ -7,8 +7,8 @@ namespace FacturaScripts\Plugins\Tickets\Controller;
 
 use FacturaScripts\Core\Base\Controller;
 use FacturaScripts\Core\Template\ModelClass;
-use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Tools;
+use FacturaScripts\Core\Where;
 use FacturaScripts\Dinamic\Model\Ticket;
 use FacturaScripts\Dinamic\Model\TicketPrinter;
 
@@ -97,7 +97,7 @@ class SendTicket extends Controller
 
         $printerId = (int)$this->request->request->get('printer');
         $printer = new TicketPrinter();
-        if (false === $printer->loadFromCode($printerId)) {
+        if (false === $printer->load($printerId)) {
             $this->response->setContent(json_encode(['ok' => false, 'error' => Tools::trans('printer-not-found')]));
             return;
         }
@@ -131,7 +131,7 @@ class SendTicket extends Controller
         }
 
         // 2. Busca el ticket recién creado para esta impresora, ordenado por fecha de creación.
-        $where = [new DataBaseWhere('printed', false)];
+        $where = [Where::column('printed', false)];
         $tickets = Ticket::all($where, ['creationdate' => 'DESC'], 0, 1);
         if (empty($tickets)) {
             $this->response->setContent(json_encode(['ok' => false, 'error' => Tools::trans('could-not-retrieve-temporary-ticket')]));
@@ -172,8 +172,7 @@ class SendTicket extends Controller
 
     protected function loadPrinters(): void
     {
-        $printerModel = new TicketPrinter();
-        $this->printers = $printerModel->all([], ['creationdate' => 'DESC'], 0, 0);
+        $this->printers = TicketPrinter::all([], ['creationdate' => 'DESC']);
     }
 
     protected function printAction(ModelClass $model): void

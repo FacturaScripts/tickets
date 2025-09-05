@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2019-2024 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2019-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 
 namespace FacturaScripts\Plugins\Tickets\Model;
@@ -190,9 +190,7 @@ class TicketPrinter extends ModelClass
 
     public function install(): string
     {
-        // dependencias
         new ApiKey();
-
         return parent::install();
     }
 

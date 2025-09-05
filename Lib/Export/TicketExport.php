@@ -1,14 +1,12 @@
 <?php
 /**
- * Copyright (C) 2019-2022 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2019-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 
 namespace FacturaScripts\Plugins\Tickets\Lib\Export;
 
 use FacturaScripts\Core\Lib\Export\ExportBase;
 use FacturaScripts\Core\Response;
-use FacturaScripts\Core\Tools;
-
 
 /**
  * @author Carlos Garcia Gomez <carlos@facturascripts.com>
@@ -23,7 +21,7 @@ class TicketExport extends ExportBase
     public function addBusinessDocPage($model): bool
     {
         $this->sendParams['modelClassName'] = $model->modelClassName();
-        $this->sendParams['modelCode'] = $model->primaryColumnValue();
+        $this->sendParams['modelCode'] = $model->id();
         return false;
     }
 
@@ -35,7 +33,7 @@ class TicketExport extends ExportBase
     public function addModelPage($model, $columns, $title = ''): bool
     {
         $this->sendParams['modelClassName'] = $model->modelClassName();
-        $this->sendParams['modelCode'] = $model->primaryColumnValue();
+        $this->sendParams['modelCode'] = $model->id();
         return true;
     }
 

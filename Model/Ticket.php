@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2019-2023 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2019-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 
 namespace FacturaScripts\Plugins\Tickets\Model;
@@ -17,59 +17,37 @@ class Ticket extends ModelClass
 {
     use ModelTrait;
 
-    /**
-     * @var float
-     */
+    /** @var float */
     public $appversion;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     public $base64;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $body;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $codagente;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $creationdate;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     public $id;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     public $idprinter;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $nick;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     public $printdelay;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     public $printed;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $title;
 
     public function clear(): void
@@ -90,10 +68,8 @@ class Ticket extends ModelClass
 
     public function install(): string
     {
-        // necesario para cargar las claves ajenas
         new Agente();
         new TicketPrinter();
-
         return parent::install();
     }
 

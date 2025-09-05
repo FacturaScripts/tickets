@@ -1,9 +1,10 @@
-{#
-* Copyright (C) 2019-2022 Carlos Garcia Gomez <carlos@facturascripts.com>
-* Author Carlos Garcia Gomez <carlos@facturascripts.com>
-#}
+{% extends "Master/MenuBghTemplate.html.twig" %}
 
-{% extends "Master/MenuTemplate.html.twig" %}
+{% block bodyHeaderOptions %}
+    <br/>
+    <br/>
+    <br/>
+{% endblock %}
 
 {% block body %}
     <div class="container" style="margin-top: -60px;">
@@ -18,14 +19,4 @@
             </div>
         </div>
     </div>
-{% endblock %}
-
-{% block css %}
-    {{ parent() }}
-    <style>
-        .bg-header {
-            background-color: #FAFBFC;
-            padding-bottom: 90px;
-        }
-    </style>
 {% endblock %}

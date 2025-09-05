@@ -6,8 +6,6 @@
 namespace FacturaScripts\Test\Plugins\Tickets\Lib\Tickets;
 
 use FacturaScripts\Core\Lib\Calculator;
-use FacturaScripts\Core\Tools;
-
 use FacturaScripts\Dinamic\Lib\Tickets\Normal;
 use FacturaScripts\Dinamic\Model\FacturaCliente;
 use FacturaScripts\Dinamic\Model\Ticket;

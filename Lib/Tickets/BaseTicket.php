@@ -1,15 +1,15 @@
 <?php
 /**
- * Copyright (C) 2023-2024 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2023-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 
 namespace FacturaScripts\Plugins\Tickets\Lib\Tickets;
 
-use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Template\ModelClass;
 use FacturaScripts\Core\Plugins;
 use FacturaScripts\Core\Tools;
 use FacturaScripts\Core\Translator;
+use FacturaScripts\Core\Where;
 use FacturaScripts\Dinamic\Model\Agente;
 use FacturaScripts\Dinamic\Model\FormaPago;
 use FacturaScripts\Dinamic\Model\Impuesto;
@@ -96,12 +96,11 @@ abstract class BaseTicket
             }
         } elseif (Plugins::isEnabled('PrePagos')) {
             // si no es una factura buscamos si tiene anticipos
-            $prepagoModel = new PrePago();
             $where = [
-                new DataBaseWhere('modelid', $model->id()),
-                new DataBaseWhere('modelname', $model->modelClassName()),
+                Where::column('modelid', $model->id()),
+                Where::column('modelname', $model->modelClassName()),
             ];
-            foreach ($prepagoModel->all($where, [], 0, 0) as $prepago) {
+            foreach (PrePago::all($where) as $prepago) {
                 if (isset($paymentMethods[$prepago->codpago])) {
                     $paymentMethods[$prepago->codpago] += $prepago->amount;
                     continue;
@@ -477,16 +476,25 @@ abstract class BaseTicket
             static::$escpos->text("\n" . static::sanitize($printer->footer) . "\n");
             static::$escpos->setJustification(Printer::JUSTIFY_LEFT);
         }
+
+        static::setFooterQR($model, $printer);
     }
+
+    protected static function setFooterQR(ModelClass $model, TicketPrinter $printer): void
+    {}
 
     protected static function setHeader(ModelClass $model, TicketPrinter $printer, string $title): void
     {
+        static::setHeaderQRbeforeLogo($model, $printer);
+
         if ($printer->print_stored_logo) {
             static::$escpos->setJustification(Printer::JUSTIFY_CENTER);
             // imprimimos el logotipo almacenado en la impresora
             static::$connector->write("\x1Cp\x01\x00\x00");
             static::$escpos->feed();
         }
+
+        static::setHeaderQRafterLogo($model, $printer);
 
         // obtenemos los datos de la empresa
         $company = $model->getCompany();
@@ -543,6 +551,12 @@ abstract class BaseTicket
             static::$escpos->setJustification();
         }
     }
+
+    protected static function setHeaderQRafterLogo(ModelClass $model, TicketPrinter $printer): void
+    {}
+
+    protected static function setHeaderQRbeforeLogo(ModelClass $model, TicketPrinter $printer): void
+    {}
 
     protected static function setHeaderTPV(ModelClass $model, TicketPrinter $printer): void
     {
