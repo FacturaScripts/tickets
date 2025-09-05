@@ -7,7 +7,6 @@ namespace FacturaScripts\Plugins\Tickets;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-use FacturaScripts\Core\Base\DataBase;
 use FacturaScripts\Core\Template\InitClass;
 use FacturaScripts\Core\Tools;
 use FacturaScripts\Dinamic\Controller\SendTicket;
@@ -15,7 +14,6 @@ use FacturaScripts\Dinamic\Lib\ExportManager;
 use FacturaScripts\Dinamic\Lib\Tickets\Gift;
 use FacturaScripts\Dinamic\Lib\Tickets\Normal;
 use FacturaScripts\Dinamic\Lib\Tickets\PaymentReceipt;
-use FacturaScripts\Dinamic\Lib\AssetManager;
 
 /**
  * @author Carlos Garcia Gomez <carlos@facturascripts.com>
@@ -26,9 +24,6 @@ final class Init extends InitClass
     {
         ExportManager::addOption('Ticket', 'ticket', 'fa-solid fa-receipt');
         $this->loadFormatTickets();
-
-        // assets
-        AssetManager::addJs(FS_ROUTE . '/Plugins/Tickets/node_modules/qz-tray/qz-tray.js');
     }
 
     public function uninstall(): void
@@ -39,9 +34,6 @@ final class Init extends InitClass
     {
         // activamos la API
         $this->setAPI();
-
-        // renombramos la tabla de tickets de antiguas versiones
-        $this->renameTicketsTable('tickets', 'tickets_docs');
     }
 
     private function loadFormatTickets(): void
@@ -53,20 +45,6 @@ final class Init extends InitClass
         }
 
         SendTicket::addFormat(PaymentReceipt::class, 'ReciboCliente', 'receipt');
-    }
-
-    private function renameTicketsTable(string $oldTable, string $newTable): void
-    {
-        $dataBase = new DataBase();
-        if (false === $dataBase->tableExists($oldTable)) {
-            return;
-        }
-
-        // comprobamos las columnas de la tabla antigua
-        $columns = $dataBase->getColumns($oldTable);
-        if (isset($columns['id']) && isset($columns['idprinter'])) {
-            $dataBase->exec("RENAME TABLE " . $oldTable . " TO " . $newTable . ";");
-        }
     }
 
     private function setAPI(): void

@@ -5,6 +5,7 @@
 
 namespace FacturaScripts\Plugins\Tickets\Lib\Tickets;
 
+use FacturaScripts\Core\Template\ExtensionsTrait;
 use FacturaScripts\Core\Template\ModelClass;
 use FacturaScripts\Core\Plugins;
 use FacturaScripts\Core\Tools;
@@ -25,6 +26,8 @@ use Mike42\Escpos\Printer;
  */
 abstract class BaseTicket
 {
+    use ExtensionsTrait;
+
     /** @var DummyPrintConnector */
     protected static $connector;
 
@@ -414,6 +417,9 @@ abstract class BaseTicket
 
     protected static function setBody(ModelClass $model, TicketPrinter $printer): void
     {
+        $extensionVar = new static();
+        $extensionVar->pipe('setBodyBefore', $model, $printer);
+
         if (false === in_array($model->modelClassName(), ['PresupuestoCliente', 'PedidoCliente', 'AlbaranCliente', 'FacturaCliente'])) {
             return;
         }
@@ -464,10 +470,15 @@ abstract class BaseTicket
         if ($printer->print_invoice_receipts && $model->modelClassName() === 'FacturaCliente') {
             static::$escpos->text(static::sanitize(static::getReceipts($model, $printer)));
         }
+
+        $extensionVar->pipe('setBodyAfter', $model, $printer);
     }
 
     protected static function setFooter(ModelClass $model, TicketPrinter $printer): void
     {
+        $extensionVar = new static();
+        $extensionVar->pipe('setFooterBefore', $model, $printer);
+
         static::$escpos->setTextSize($printer->footer_font_size, $printer->footer_font_size);
 
         // añadimos el pie de página
@@ -477,15 +488,13 @@ abstract class BaseTicket
             static::$escpos->setJustification(Printer::JUSTIFY_LEFT);
         }
 
-        static::setFooterQR($model, $printer);
+        $extensionVar->pipe('setFooterAfter', $model, $printer);
     }
-
-    protected static function setFooterQR(ModelClass $model, TicketPrinter $printer): void
-    {}
 
     protected static function setHeader(ModelClass $model, TicketPrinter $printer, string $title): void
     {
-        static::setHeaderQRbeforeLogo($model, $printer);
+        $extensionVar = new static();
+        $extensionVar->pipe('setHeaderBefore', $model, $printer);
 
         if ($printer->print_stored_logo) {
             static::$escpos->setJustification(Printer::JUSTIFY_CENTER);
@@ -493,8 +502,6 @@ abstract class BaseTicket
             static::$connector->write("\x1Cp\x01\x00\x00");
             static::$escpos->feed();
         }
-
-        static::setHeaderQRafterLogo($model, $printer);
 
         // obtenemos los datos de la empresa
         $company = $model->getCompany();
@@ -550,13 +557,9 @@ abstract class BaseTicket
             static::$escpos->text(static::sanitize($printer->head) . "\n\n");
             static::$escpos->setJustification();
         }
+
+        $extensionVar->pipe('setHeaderAfter', $model, $printer);
     }
-
-    protected static function setHeaderQRafterLogo(ModelClass $model, TicketPrinter $printer): void
-    {}
-
-    protected static function setHeaderQRbeforeLogo(ModelClass $model, TicketPrinter $printer): void
-    {}
 
     protected static function setHeaderTPV(ModelClass $model, TicketPrinter $printer): void
     {
