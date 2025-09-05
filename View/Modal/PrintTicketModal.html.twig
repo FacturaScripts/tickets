@@ -49,7 +49,7 @@ Este primer modal contiene la configuración y el test de la impresora térmica
                         <i class="fa-solid fa-plug"></i> {{ trans('connect-to-qz-tray') }}
                     </button>
                     <button class="btn btn-outline-secondary" onclick="scanUsbDevices()">
-                        <i class="fa fa-usb"></i> {{ trans('scan-usb-devices') }}
+                        <i class="fa-brands fa-usb"></i> {{ trans('scan-usb-devices') }}
                     </button>
                 </div>
 
@@ -506,7 +506,7 @@ Este segundo modal es parecido al primero pero dedicado ya al funcionamiento de 
                         <i class="fa-solid fa-plug"></i> {{ trans('connect-to-qz-tray') }}
                     </button>
                     <button type="button" class="btn btn-outline-secondary" id="showConfigModalBtn">
-                        <i class="fa-solid fa-cog"></i> {{ trans('configure-printer') }}
+                        <i class="fa-solid fa-gear"></i> {{ trans('configure-printer') }}
                     </button>
                 </div>
 
@@ -742,6 +742,7 @@ Este segundo modal es parecido al primero pero dedicado ya al funcionamiento de 
 
     $('#printTicketButton').click(() => {
         if (receivedESCPOSTData) {
+            $('#ticketPreviewPrintModal').modal('hide');
             sendDataToUSB(receivedESCPOSTData, 'modalPrintAlert', 'modalPrintAlertMessage');
         } else {
             showModalAlert(`{{ trans('no-ticket-data-to-print-load-first') }}`, 'warning', 5000, 'modalPrintAlert', 'modalPrintAlertMessage');
