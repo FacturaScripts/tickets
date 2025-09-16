@@ -190,18 +190,15 @@ class TicketPrinter extends ModelClass
 
     public function install(): string
     {
+        // dependencias
         new ApiKey();
+
         return parent::install();
     }
 
     public function isActive(): bool
     {
         return time() - strtotime($this->lastactivity) < self::MAX_INACTIVITY;
-    }
-
-    public static function primaryColumn(): string
-    {
-        return "id";
     }
 
     public function save(): bool

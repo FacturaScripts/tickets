@@ -68,14 +68,11 @@ class Ticket extends ModelClass
 
     public function install(): string
     {
+        // dependencias
         new Agente();
         new TicketPrinter();
-        return parent::install();
-    }
 
-    public static function primaryColumn(): string
-    {
-        return "id";
+        return parent::install();
     }
 
     public function save(): bool
