@@ -1,6 +1,6 @@
 {
     "check-connection-and-parameters": "Compruebe la conexión y los parámetros.",
-    "configure-printer": "Configurar impresora",
+    "configure-printer": "Nastavit tiskárnu",
     "connect-a-printer": "Conectar una impresora",
     "connect-a-printer-p": "Para conectar una impresora primero debe añadirla y después usar la aplicación para imprimir tickets.",
     "connect-to-qz-tray": "Připojit se k QZ Tray",
@@ -8,7 +8,7 @@
     "cut-command": "Comando de corte",
     "data-sent-to-usb-successfully": "Data byla úspěšně odeslána na USB zařízení.",
     "description-abb": "Popis",
-    "detected-usb-devices": "Dispositivos USB detectados",
+    "detected-usb-devices": "Detekovaná USB zařízení",
     "device-connection-error": "Error de conexión con el dispositivo:",
     "discount-abb": "Sleva",
     "download-app": "Descargar App",
