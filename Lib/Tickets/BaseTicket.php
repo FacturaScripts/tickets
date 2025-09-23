@@ -16,6 +16,7 @@ use FacturaScripts\Dinamic\Model\Impuesto;
 use FacturaScripts\Dinamic\Model\PrePago;
 use FacturaScripts\Dinamic\Model\TicketPrinter;
 use FacturaScripts\Dinamic\Model\User;
+use FacturaScripts\Dinamic\Model\AttachedFile;
 use Mike42\Escpos\PrintConnectors\DummyPrintConnector;
 use Mike42\Escpos\Printer;
 
@@ -481,15 +482,75 @@ abstract class BaseTicket
 
     protected static function setHeader(ModelClass $model, TicketPrinter $printer, string $title): void
     {
-        if ($printer->print_stored_logo) {
-            static::$escpos->setJustification(Printer::JUSTIFY_CENTER);
-            // imprimimos el logotipo almacenado en la impresora
-            static::$connector->write("\x1Cp\x01\x00\x00");
-            static::$escpos->feed();
-        }
-
         // obtenemos los datos de la empresa
         $company = $model->getCompany();
+
+        // imprimimos el logotipo de la empresa si procede
+        if ($printer->print_stored_logo) {
+            static::$escpos->setJustification(Printer::JUSTIFY_CENTER);
+
+            $printed = false;
+            $hasCompanyLogo = !empty($company->idlogo);
+            try {
+                if (!empty($company->idlogo)) {
+                    $file = new AttachedFile();
+                    if ($file->load($company->idlogo)) {
+                        $path = $file->getFullPath();
+                        if (is_string($path) && !empty($path) && is_file($path) && is_readable($path)) {
+                            // Comprobamos extensiones de imagen disponibles
+                            if (!extension_loaded('gd') && !extension_loaded('imagick')) {
+                                Tools::log()->warning('tickets: no GD/Imagick extensions available for image printing');
+                            }
+
+                            // Intentamos obtener información de la imagen
+                            $imgInfo = @getimagesize($path);
+                            if (false === $imgInfo) {
+                                Tools::log()->warning('tickets: unable to read image info for logo at ' . $path);
+                            } else {
+                                $mime = $imgInfo['mime'] ?? 'unknown';
+                                Tools::log()->notice('tickets: trying to print logo ' . basename($path) . ' (' . ($imgInfo[0] ?? '?') . 'x' . ($imgInfo[1] ?? '?') . ', ' . $mime . ')');
+                            }
+
+                            // Intentamos imprimir la imagen usando la librería ESC/POS
+                            try {
+                                $img = \Mike42\Escpos\EscposImage::load($path, false);
+                                // Método clásico
+                                static::$escpos->bitImage($img);
+                                static::$escpos->feed();
+                                $printed = true;
+                            } catch (\Throwable $e1) {
+                                Tools::log()->warning('tickets: bitImage() failed for logo: ' . $e1->getMessage());
+                                // Alternativa para versiones con graphics()
+                                try {
+                                    $img = \Mike42\Escpos\EscposImage::load($path, false);
+                                    static::$escpos->graphics($img);
+                                    static::$escpos->feed();
+                                    $printed = true;
+                                } catch (\Throwable $e2) {
+                                    Tools::log()->error('tickets: graphics() failed for logo: ' . $e2->getMessage());
+                                    $printed = false;
+                                }
+                            }
+                        } else {
+                            Tools::log()->warning('tickets: logo file not accessible (path invalid/unreadable): ' . var_export($path, true));
+                        }
+                    } else {
+                        Tools::log()->warning('tickets: attached logo file could not be loaded (id ' . $company->idlogo . ')');
+                    }
+                }
+            } catch (\Throwable $ignored) {
+                $printed = false;
+                Tools::log()->error('tickets: exception while preparing logo for printing: ' . $ignored->getMessage());
+            }
+
+            // Si no se pudo imprimir el logo real y existe un logo asignado, añadimos una nota informativa
+            if (!$printed && $hasCompanyLogo) {
+                static::$escpos->setJustification(Printer::JUSTIFY_CENTER);
+                static::$escpos->text(static::sanitize('(logo asignado no impreso)') . "\n");
+            }
+
+            static::$escpos->setJustification(Printer::JUSTIFY_LEFT);
+        }
 
         // establecemos el tamaño de la fuente
         static::$escpos->setTextSize($printer->title_font_size, $printer->title_font_size);
