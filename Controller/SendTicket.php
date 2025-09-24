@@ -106,6 +106,7 @@ class SendTicket extends Controller
     protected function getEscposAction(ModelClass $model): void
     {
         $this->setTemplate(false);
+        $this->response->headers->set('Content-Type', 'application/json');
 
         $printerId = (int)$this->request->request->get('printer');
         $printer = new TicketPrinter();
@@ -150,18 +151,14 @@ class SendTicket extends Controller
             return;
         }
 
+        // Obtiene el cuerpo del ticket temporal.
         $tempTicket = $tickets[0];
         $base64Data = $tempTicket->body;
         $rawData = base64_decode($base64Data);
-        // fwrite(fopen('php://stdout', 'w'), print_r($rawData, true) . "\n");
-        // $gestorDeCosillas = new FilePrintConnector('/dev/usb/lp0');
-        // $gestorDeCosillas->write($rawData);
-        // $gestorDeCosillas->finalize();
-
-
+                
         // Restaura la longitud de línea original.
         $printer->linelen = $originalPaperWidth;
-
+        
         // 3. Borra el ticket temporal de la base de datos.
         if (false === $tempTicket->delete()) {
             Tools::log()->error(Tools::trans('failed-to-delete-temporary-ticket') . ': ' . $tempTicket->id);
@@ -172,9 +169,16 @@ class SendTicket extends Controller
             $this->response->setContent(json_encode(['ok' => false, 'error' => Tools::trans('generated-ticket-body-is-empty')]));
             return;
         }
-
-        // 5. Devuelve una respuesta JSON correcta.
-        $this->response->setContent(json_encode(['ok' => true, 'data' => $rawData]));
+        
+        // 5. Devuelve el ESC/POS en HEX dentro de un JSON.
+        // Convertimos los bytes RAW a una cadena hex para transporte seguro.
+        $hexData = bin2hex($rawData);
+        $payload = [
+            'ok' => true,
+            'data' => $hexData,
+            'encoding' => 'hex',
+        ];
+        $this->response->setContent(json_encode($payload));
     }
 
     protected function getPrinter(int $id): TicketPrinter

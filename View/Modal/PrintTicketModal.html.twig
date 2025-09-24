@@ -679,8 +679,10 @@ Este segundo modal es parecido al primero pero dedicado ya al funcionamiento de 
             success: function(response) {
                 console.log('Response from server:', response);
                 if (response && response.ok && response.data && response.data.length > 0) {
-                    receivedESCPOSTData = response.data;
-                    const previewHtml = generateHtmlPreview(response.data);
+                    // Backend devuelve HEX; guardamos HEX para impresión con formato visible (\xHH por byte)
+                    receivedESCPOSTData = response.data.replace(/(..)/g, 'x$1');
+                    // modifica receivedESCPOSTData para que añada x a cada dos carácteres para que se vean como hex
+                    const previewHtml = generateHtmlPreview(receivedESCPOSTData);
                     $('#ticketPreviewContainer').html(previewHtml);
                     $('#printTicketButton').prop('disabled', false);
                     showModalAlert(`{{ trans('ticket-ready-to-print') }}`, 'success', 5000, 'modalPrintAlert', 'modalPrintAlertMessage');
@@ -743,7 +745,7 @@ Este segundo modal es parecido al primero pero dedicado ya al funcionamiento de 
 
     $('#printTicketButton').click(() => {
         if (receivedESCPOSTData) {
-            sendDataToUSB(receivedESCPOSTData, 'modalPrintAlert', 'modalPrintAlertMessage');
+            sendDataToUSB({type: 'hex', data: receivedESCPOSTData}, 'modalPrintAlert', 'modalPrintAlertMessage');
         } else {
             showModalAlert(`{{ trans('no-ticket-data-to-print-load-first') }}`, 'warning', 5000, 'modalPrintAlert', 'modalPrintAlertMessage');
         }
