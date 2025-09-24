@@ -5,6 +5,7 @@
         }
     },
     "require": {
-        "mike42/escpos-php": "^2.2"
+        "mike42/escpos-php": "^2.2",
+        "ext-gd": "*"
     }
 }

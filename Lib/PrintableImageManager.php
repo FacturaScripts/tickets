@@ -21,14 +21,21 @@ use Mike42\Escpos\GdEscposImage;
 
 class PrintableImageManager
 {
-
+    // Tamaño de la imagen que se imprime
     const MAX_WIDTH = 384;
     const MAX_HEIGHT = 384;
-    const OUTPUT_IMAGE_PATH = "nigger";
+
+    // gerarquía de carpetas
+    const PUBLIC_FOLDER = 'MyFiles';
+    const PUBLIC_SUBFOLDER = 'Public';
+    const PUBLIC_NAMESPACE = 'Tickets';
+
+    // Nombre del fichero de la imagen procesada
+    const PUBLIC_LOGO_FILENAME = 'printable-logo.png';
 
     /**
      * Crea una copia de la imagen pasada por argumento con el formato adecuado para la impresión
-     * y la guarda en public (sobreescribe la imagen si ya existe en public)
+     * y la guarda en la ruta pública estática del plugin (sobrescribe si ya existe)
      * 
      * Devuelve falso si el formato de imagen no es soportado o GdEscposImage si existe la imagen
      * 
@@ -125,48 +132,62 @@ class PrintableImageManager
             }
         }
 
-        // guardar el output con GD según la extensión (ya 1-bit visualmente)
-        $outExt = strtolower(pathinfo(self::OUTPUT_IMAGE_PATH, PATHINFO_EXTENSION));
-        if ($outExt === '') {
-            stderr("Error: Debes indicar extensión en el archivo de salida (png|jpg|gif|bmp).\n");
-        } else {
-            $saved = false;
-            switch ($outExt) {
-                case 'png':
-                    $saved = @imagepng($bw, self::OUTPUT_IMAGE_PATH, 6);
-                    break;
-                case 'jpg':
-                case 'jpeg':
-                    $saved = @imagejpeg($bw, self::OUTPUT_IMAGE_PATH, 90);
-                    break;
-                case 'gif':
-                    $saved = @imagegif($bw, self::OUTPUT_IMAGE_PATH);
-                    break;
-                case 'bmp':
-                    if (function_exists('imagebmp')) {
-                        $saved = @imagebmp($bw, self::OUTPUT_IMAGE_PATH, true);
-                    }
-                    break;
-            }
-            if ($saved) {
-                echo "Imagen procesada (1-bit) guardada en: {OUTPUT_IMAGE_PATH}\n";
-            } else {
-                stderr("No se pudo guardar la imagen en '{OUTPUT_IMAGE_PATH}'. Extensión no soportada o error de escritura.\n");
-            }
-        }
+        // Guardar salida en carpeta pública (ruta estática y formato PNG)
+        self::saveToPublic($bw);
 
         // Pasar recurso GD 1-bit al objeto EscposImage basado en GD
         $img = new GdEscposImageWrapper("", false);
         $img->readImageFromGdResource($bw);
+
         // Limpiar recursos GD, datos ya están en $img
         imagedestroy($dst);
         imagedestroy($bw);
 
         return $img;
+    }
 
-        // Imprimir centrado
-        // $printer->setJustification(Printer::JUSTIFY_CENTER);
-        // // Preferir GS ( L ) raster graphics; fallback a ESC *
-        // $printer->bitImageColumnFormat($img);
+    /**
+     * Guarda la imagen procesada en MyFiles/Public con el mismo nombre del fichero original.
+     * Siempre sobreescribe si ya existe.
+     *
+     * @param resource|\GdImage $gdImageBW Recurso u objeto GD (1-bit) a guardar.
+     */
+    protected static function saveToPublic($gdImageBW): void
+    {
+        try {
+            // aseguramos la carpeta pública (namespacing del plugin)
+            $publicFolderAbs = Tools::folder(self::PUBLIC_FOLDER, self::PUBLIC_SUBFOLDER, self::PUBLIC_NAMESPACE);
+            if (!Tools::folderCheckOrCreate($publicFolderAbs)) {
+                Tools::log('tickets')->warning('No se pudo crear carpeta pública: ' . $publicFolderAbs);
+                return;
+            }
+
+            $targetPath = Tools::folder($publicFolderAbs, self::PUBLIC_LOGO_FILENAME);
+
+            // Guardamos siempre como PNG para impresión térmica
+            $saved = @imagepng($gdImageBW, $targetPath, 6);
+
+            if (!$saved) {
+                Tools::log('tickets')->warning('No se pudo guardar imagen pública en: ' . $targetPath);
+            }
+        } catch (\Throwable $e) {
+            Tools::log('tickets')->error('Excepción guardando imagen pública: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Devuelve la ruta pública (URL relativa) del logo procesado en MyFiles/Public/Tickets.
+     * Si no existe, devuelve cadena vacía.
+     *
+     * @return string URL relativa tipo 'MyFiles/Public/Tickets/printable-logo.png' o vacía.
+     */
+    public static function getPublicImageUrl(): string
+    {
+        $publicFolderAbs = Tools::folder(self::PUBLIC_FOLDER, self::PUBLIC_SUBFOLDER, self::PUBLIC_NAMESPACE);
+        $publicFileAbs = Tools::folder($publicFolderAbs, self::PUBLIC_LOGO_FILENAME);
+        if (is_file($publicFileAbs)) {
+            return self::PUBLIC_FOLDER . '/' . self::PUBLIC_SUBFOLDER . '/' . self::PUBLIC_NAMESPACE . '/' . self::PUBLIC_LOGO_FILENAME;
+        }
+        return '';
     }
 }
