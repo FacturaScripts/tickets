@@ -32,6 +32,7 @@ class PaymentReceipt extends BaseTicket
         static::setBody($model, $printer);
         static::setFooter($model, $printer);
         $ticket->body = static::getBody();
+        $ticket->previewbody = static::getPreview();
         $ticket->base64 = true;
         $ticket->appversion = 1;
 
@@ -43,20 +44,20 @@ class PaymentReceipt extends BaseTicket
         static::$escpos->setTextSize($printer->font_size, $printer->font_size);
 
         // imprimimos los datos del recibo
-        static::$escpos->text(static::sanitize(static::$i18n->trans('invoice') . ': ' . $model->codigofactura) . "\n");
-        static::$escpos->text(static::sanitize(static::$i18n->trans('customer') . ': ' . $model->getInvoice()->nombrecliente) . "\n");
-        static::$escpos->text(static::sanitize(static::$i18n->trans('receipt') . ': ' . $model->numero) . "\n");
-        static::$escpos->text(static::sanitize(static::$i18n->trans('date') . ': ' . $model->fecha) . "\n\n");
-        static::$escpos->text(static::sanitize(static::$i18n->trans('amount') . ': ' . $model->importe . ' ' . $model->coddivisa) . "\n");
+        static::text(static::sanitize(static::$i18n->trans('invoice') . ': ' . $model->codigofactura) . "\n");
+        static::text(static::sanitize(static::$i18n->trans('customer') . ': ' . $model->getInvoice()->nombrecliente) . "\n");
+        static::text(static::sanitize(static::$i18n->trans('receipt') . ': ' . $model->numero) . "\n");
+        static::text(static::sanitize(static::$i18n->trans('date') . ': ' . $model->fecha) . "\n\n");
+        static::text(static::sanitize(static::$i18n->trans('amount') . ': ' . $model->importe . ' ' . $model->coddivisa) . "\n");
 
         if ($model->pagado) {
-            static::$escpos->text(static::sanitize(static::$i18n->trans('payment-date') . ': ' . $model->fechapago) . "\n\n");
+            static::text(static::sanitize(static::$i18n->trans('payment-date') . ': ' . $model->fechapago) . "\n\n");
         } else {
-            static::$escpos->text(static::sanitize(static::$i18n->trans('expiration') . ': ' . $model->vencimiento) . "\n\n");
+            static::text(static::sanitize(static::$i18n->trans('expiration') . ': ' . $model->vencimiento) . "\n\n");
         }
 
         if ($model->observaciones) {
-            static::$escpos->text(static::sanitize(static::$i18n->trans('observations') . ': ' . $model->observaciones) . "\n\n");
+            static::text(static::sanitize(static::$i18n->trans('observations') . ': ' . $model->observaciones) . "\n\n");
         }
     }
 }

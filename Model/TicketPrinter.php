@@ -10,6 +10,7 @@ use FacturaScripts\Core\Template\ModelTrait;
 use FacturaScripts\Core\Tools;
 use FacturaScripts\Dinamic\Model\ApiAccess;
 use FacturaScripts\Dinamic\Model\ApiKey;
+use FacturaScripts\Dinamic\Model\AttachedFile;
 
 /**
  * @author Carlos Garcia Gomez      <carlos@facturascripts.com>
@@ -107,6 +108,9 @@ class TicketPrinter extends ModelClass
 
     /** @var bool */
     public $print_stored_logo;
+
+    /** @var int|null */
+    public $idlogo;
 
     /** @var int */
     public $title_font_size;
@@ -218,6 +222,19 @@ class TicketPrinter extends ModelClass
         $this->head = Tools::noHtml($this->head);
         $this->name = Tools::noHtml($this->name);
         $this->opencommand = Tools::noHtml($this->opencommand);
+
+        // Validate assigned logo: only allow GD-friendly images (jpeg, png, gif)
+        if (!empty($this->idlogo)) {
+            $file = new AttachedFile();
+            if ($file->load((int)$this->idlogo)) {
+                // Server-side guard to accepted formats
+                if (!in_array($file->mimetype, ['image/jpeg', 'image/png', 'image/gif'], true)) {
+                    $this->idlogo = null;
+                }
+            } else {
+                $this->idlogo = null;
+            }
+        }
 
         return parent::save();
     }

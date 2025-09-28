@@ -31,6 +31,11 @@ class Ticket extends ModelClass
      * @var string
      */
     public $body;
+    
+    /**
+     * @var string
+     */
+    public $previewbody;
 
     /**
      * @var string
@@ -105,6 +110,7 @@ class Ticket extends ModelClass
     public function save(): bool
     {
         $this->body = $this->base64 ? $this->body : $this->sanitize($this->body);
+        $this->previewbody = $this->sanitize($this->previewbody);
         $this->title = Tools::noHtml($this->title);
 
         if ($this->printed && empty($this->printdelay)) {

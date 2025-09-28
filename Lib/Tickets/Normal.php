@@ -6,8 +6,6 @@
 namespace FacturaScripts\Plugins\Tickets\Lib\Tickets;
 
 use FacturaScripts\Core\Template\ModelClass;
-use FacturaScripts\Core\Tools;
-
 use FacturaScripts\Dinamic\Model\Agente;
 use FacturaScripts\Dinamic\Model\Ticket;
 use FacturaScripts\Dinamic\Model\TicketPrinter;
@@ -32,6 +30,7 @@ class Normal extends BaseTicket
         static::setBody($model, $printer);
         static::setFooter($model, $printer);
         $ticket->body = static::getBody();
+        $ticket->previewbody = static::getPreview();
         $ticket->base64 = true;
         $ticket->appversion = 1;
 

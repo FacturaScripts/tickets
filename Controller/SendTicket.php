@@ -8,6 +8,7 @@ namespace FacturaScripts\Plugins\Tickets\Controller;
 use FacturaScripts\Core\Base\Controller;
 use FacturaScripts\Core\Template\ModelClass;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
+use FacturaScripts\Core\KernelException;
 use FacturaScripts\Core\Tools;
 use FacturaScripts\Dinamic\Model\Ticket;
 use FacturaScripts\Dinamic\Model\TicketPrinter;
@@ -83,6 +84,12 @@ class SendTicket extends Controller
             return;
         }
 
+        // Lanzar excepción si no existe gd (necesaria para otros ficheros del plugin)
+        if (!extension_loaded('gd')) {
+            Tools::log()->critical('php-extension-not-found', ['%extension%' => 'gd']);
+            throw new KernelException('DefaultError', Tools::trans('php-extension-not-found', ['%extension%' => 'gd']));
+        }
+
         $action = $this->request->request->get('action', '');
         if ($action === 'print') {
             $this->printAction($model);
@@ -91,13 +98,19 @@ class SendTicket extends Controller
         }
     }
 
+    /**
+     * Esta función se aprovecha de la funcionalidad existente de generar escpos y realiza lo siguiente:
+     * 1. Crea un ticket con las especificaciones de la impresora y longitud de linea segun el ancho de papel
+     * 2. Extrae el escpos generado y lo devuelve al usuario
+     */
     protected function getEscposAction(ModelClass $model): void
     {
         $this->setTemplate(false);
+        $this->response->headers->set('Content-Type', 'application/json');
 
         $printerId = (int)$this->request->request->get('printer');
         $printer = new TicketPrinter();
-        if (false === $printer->loadFromCode($printerId)) {
+        if (false === $printer->load($printerId)) {
             $this->response->setContent(json_encode(['ok' => false, 'error' => Tools::trans('printer-not-found')]));
             return;
         }
@@ -138,12 +151,15 @@ class SendTicket extends Controller
             return;
         }
 
+        // Obtiene el cuerpo del ticket temporal.
         $tempTicket = $tickets[0];
-        $rawData = base64_decode($tempTicket->body);
-
+        $base64Data = $tempTicket->body;
+        $rawData = base64_decode($base64Data);
+        $previewBody = $tempTicket->previewbody ?? '';
+                
         // Restaura la longitud de línea original.
         $printer->linelen = $originalPaperWidth;
-
+        
         // 3. Borra el ticket temporal de la base de datos.
         if (false === $tempTicket->delete()) {
             Tools::log()->error(Tools::trans('failed-to-delete-temporary-ticket') . ': ' . $tempTicket->id);
@@ -154,9 +170,17 @@ class SendTicket extends Controller
             $this->response->setContent(json_encode(['ok' => false, 'error' => Tools::trans('generated-ticket-body-is-empty')]));
             return;
         }
-
-        // 5. Devuelve una respuesta JSON correcta.
-        $this->response->setContent(json_encode(['ok' => true, 'data' => $rawData]));
+        
+        // 5. Devuelve el ESC/POS en HEX dentro de un JSON.
+        // Convertimos los bytes RAW a una cadena hex para transporte seguro.
+        $hexData = bin2hex($rawData);
+        $payload = [
+            'ok' => true,
+            'data' => $hexData,
+            'encoding' => 'hex',
+            'previewBody' => $previewBody,
+        ];
+        $this->response->setContent(json_encode($payload));
     }
 
     protected function getPrinter(int $id): TicketPrinter

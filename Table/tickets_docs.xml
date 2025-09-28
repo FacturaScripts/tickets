@@ -18,6 +18,10 @@
         <type>text</type>
     </column>
     <column>
+        <name>previewbody</name>
+        <type>text</type>
+    </column>
+    <column>
         <name>codagente</name>
         <type>character varying(10)</type>
     </column>

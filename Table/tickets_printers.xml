@@ -135,6 +135,10 @@
         <default>false</default>
     </column>
     <column>
+        <name>idlogo</name>
+        <type>integer</type>
+    </column>
+    <column>
         <name>title_font_size</name>
         <type>integer</type>
         <default>2</default>
@@ -146,5 +150,9 @@
     <constraint>
         <name>ca_tickets_printers_api</name>
         <type>FOREIGN KEY (idapikey) REFERENCES api_keys (id) ON DELETE RESTRICT ON UPDATE CASCADE</type>
+    </constraint>
+    <constraint>
+        <name>ca_tickets_printers_attached_files</name>
+        <type>FOREIGN KEY (idlogo) REFERENCES attached_files (idfile) ON DELETE SET NULL ON UPDATE CASCADE</type>
     </constraint>
 </table>
