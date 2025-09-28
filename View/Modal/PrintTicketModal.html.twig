@@ -579,7 +579,7 @@ Este segundo modal es parecido al primero pero dedicado ya al funcionamiento de 
             } else if (line.startsWith('[IMG:') && line.endsWith(']')) {
                 const url = line.substring(5, line.length - 1);
                 const safeUrl = escapeHtml(url);
-                html += `<div style=\"text-align:center; margin:8px 0;\"><img src=\"${safeUrl}\" alt=\"ticket-image\" style=\"display:inline-block; max-width:100%; image-rendering: pixelated;\"/></div>`;
+                html += `<div style=\"text-align:center; margin:8px 0;\"><img src=\"${safeUrl}\" alt=\"ticket-image\" style=\"display:inline-block; width:70%; max-width:100%; height:auto; image-rendering: pixelated;\"/></div>`;
             } else if (line.length === 0) {
                 html += '<div>&nbsp;</div>';
             } else {
