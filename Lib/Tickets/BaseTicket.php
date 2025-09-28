@@ -39,6 +39,9 @@ abstract class BaseTicket
     /** @var array */
     protected static $lines;
 
+    /** @var string */
+    protected static $preview = '';
+
     private static $openDrawer = true;
 
     abstract public static function print(ModelClass $model, TicketPrinter $printer, User $user, ?Agente $agent = null): bool;
@@ -57,14 +60,18 @@ abstract class BaseTicket
     {
         // dejamos espacio
         static::$escpos->feed(4);
+        // añadimos al preview líneas en blanco equivalentes
+        static::$preview .= "\n\n\n\n";
 
         // abrimos el cajón
         if (static::$openDrawer) {
             static::$escpos->pulse();
+            static::$preview .= "[PULSE]\n";
         }
 
         // cortamos el papel
         static::$escpos->cut();
+        static::$preview .= "[CUT]\n";
 
         // devolvemos los comandos de impresión
         $body = static::$escpos->getPrintConnector()->getData();
@@ -302,6 +309,20 @@ abstract class BaseTicket
         static::$escpos = new Printer(static::$connector);
         static::$connector->clear();
         static::$escpos->initialize();
+        // inicial para previsualización
+        static::$preview = "[INIT]\n";
+    }
+
+    protected static function text(string $text): void
+    {
+        // Escribimos al ESC/POS y al preview (en claro)
+        static::$escpos->text($text);
+        static::$preview .= $text;
+    }
+
+    public static function getPreview(): string
+    {
+        return static::$preview ?? '';
     }
 
     protected static function printLines(TicketPrinter $printer, array $lines): void
@@ -333,8 +354,8 @@ abstract class BaseTicket
             return;
         }
 
-        static::$escpos->text(static::sanitize($th) . "\n");
-        static::$escpos->text($printer->getDashLine() . "\n");
+        static::text(static::sanitize($th) . "\n");
+        static::text($printer->getDashLine() . "\n");
 
         foreach ($lines as $line) {
             $td = '';
@@ -388,11 +409,11 @@ abstract class BaseTicket
                 $td .= "\n";
             }
 
-            static::$escpos->text(static::sanitize($td) . "\n");
-            static::$escpos->text(static::getTrazabilidad($line, $width));
+            static::text(static::sanitize($td) . "\n");
+            static::text(static::getTrazabilidad($line, $width));
         }
 
-        static::$escpos->text($printer->getDashLine() . "\n");
+        static::text($printer->getDashLine() . "\n");
     }
 
     protected static function sanitize(?string $txt): string
@@ -433,15 +454,15 @@ abstract class BaseTicket
                 . sprintf("%10s", Tools::number($item['taxbase'])) . "\n"
                 . sprintf("%" . ($printer->linelen - 11) . "s", $item['tax']) . " "
                 . sprintf("%10s", Tools::number($item['taxamount']));
-            static::$escpos->text(static::sanitize($text) . "\n");
+            static::text(static::sanitize($text) . "\n");
 
             if ($item['taxsurcharge']) {
                 $text = sprintf("%" . ($printer->linelen - 11) . "s", "RE " . $item['taxsurchargep']) . " "
                     . sprintf("%10s", Tools::number($item['taxsurcharge']));
-                static::$escpos->text(static::sanitize($text) . "\n");
+                static::text(static::sanitize($text) . "\n");
             }
         }
-        static::$escpos->text($printer->getDashLine() . "\n");
+        static::text($printer->getDashLine() . "\n");
 
         // añadimos los totales
         $text = sprintf("%" . ($printer->linelen - 11) . "s", static::$i18n->trans('total')) . " "
@@ -456,16 +477,16 @@ abstract class BaseTicket
                 . sprintf("%10s", Tools::number($model->tpv_cambio)) . "\n";
         }
 
-        static::$escpos->text(static::sanitize($text) . "\n\n");
+        static::text(static::sanitize($text) . "\n\n");
 
         // añadimos las formas de pago
         if ($printer->print_payment_methods) {
-            static::$escpos->text(static::sanitize(static::getPaymentMethods($model, $printer)));
+            static::text(static::sanitize(static::getPaymentMethods($model, $printer)));
         }
 
         // añadimos los recibos
         if ($printer->print_invoice_receipts && $model->modelClassName() === 'FacturaCliente') {
-            static::$escpos->text(static::sanitize(static::getReceipts($model, $printer)));
+            static::text(static::sanitize(static::getReceipts($model, $printer)));
         }
     }
 
@@ -476,7 +497,7 @@ abstract class BaseTicket
         // añadimos el pie de página
         if ($printer->footer) {
             static::$escpos->setJustification(Printer::JUSTIFY_CENTER);
-            static::$escpos->text("\n" . static::sanitize($printer->footer) . "\n");
+            static::text("\n" . static::sanitize($printer->footer) . "\n");
             static::$escpos->setJustification(Printer::JUSTIFY_LEFT);
         }
     }
@@ -499,13 +520,18 @@ abstract class BaseTicket
                 if ($img !== false) {
                     static::$escpos->bitImageColumnFormat($img);
                     // static::$escpos->feed();
+                    // añadimos una pista de imagen para el preview usando la imagen pública generada
+                    $publicUrl = PrintableImageManager::getPublicImageUrl();
+                    if (!empty($publicUrl)) {
+                        static::$preview .= '[IMG:' . $publicUrl . "]\n";
+                    }
                 } else {
                     // Fallback si no se ha podido crear la imagen imprimible
-                    static::$escpos->text(static::sanitize('no se ha podido imprimir la imagen') . "\n");
+                    static::text(static::sanitize('no se ha podido imprimir la imagen') . "\n");
                 }
             } else {
                 // Fallback si no hay logo configurado pero se ha activado imprimir logo
-                static::$escpos->text(static::sanitize('sin logo seleccionado') . "\n");
+                static::text(static::sanitize('sin logo seleccionado') . "\n");
             }
 
             static::$escpos->setJustification(Printer::JUSTIFY_LEFT);
@@ -519,50 +545,50 @@ abstract class BaseTicket
 
         // imprimimos el nombre corto de la empresa
         if ($printer->print_comp_shortname) {
-            static::$escpos->text(static::sanitize($company->nombrecorto) . "\n");
+            static::text(static::sanitize($company->nombrecorto) . "\n");
             static::$escpos->setTextSize($printer->head_font_size, $printer->head_font_size);
 
             // imprimimos el nombre de la empresa
-            static::$escpos->text(static::sanitize($company->nombre) . "\n");
+            static::text(static::sanitize($company->nombre) . "\n");
         } else {
             // imprimimos el nombre de la empresa
-            static::$escpos->text(static::sanitize($company->nombre) . "\n");
+            static::text(static::sanitize($company->nombre) . "\n");
             static::$escpos->setTextSize($printer->head_font_size, $printer->head_font_size);
         }
 
         static::$escpos->setJustification();
 
         // imprimimos la dirección de la empresa
-        static::$escpos->text(static::sanitize($company->direccion) . "\n");
-        static::$escpos->text(static::sanitize("CP: " . $company->codpostal . ', ' . $company->ciudad) . "\n");
-        static::$escpos->text(static::sanitize($company->tipoidfiscal . ': ' . $company->cifnif) . "\n\n");
+        static::text(static::sanitize($company->direccion) . "\n");
+        static::text(static::sanitize("CP: " . $company->codpostal . ', ' . $company->ciudad) . "\n");
+        static::text(static::sanitize($company->tipoidfiscal . ': ' . $company->cifnif) . "\n\n");
 
         if ($printer->print_comp_tlf) {
             if (false === empty($company->telefono1) && false === empty($company->telefono2)) {
-                static::$escpos->text(static::sanitize($company->telefono1 . ' / ' . $company->telefono2) . "\n");
+                static::text(static::sanitize($company->telefono1 . ' / ' . $company->telefono2) . "\n");
             } elseif (false === empty($company->telefono1)) {
-                static::$escpos->text(static::sanitize($company->telefono1) . "\n");
+                static::text(static::sanitize($company->telefono1) . "\n");
             } elseif (false === empty($company->telefono2)) {
-                static::$escpos->text(static::sanitize($company->telefono2) . "\n");
+                static::text(static::sanitize($company->telefono2) . "\n");
             }
         }
 
         // imprimimos el título del documento
-        static::$escpos->text(static::sanitize($title) . "\n");
+        static::text(static::sanitize($title) . "\n");
 
         static::setHeaderTPV($model, $printer);
 
         // si es un documento de venta
         // imprimimos la fecha y el cliente
         if (in_array($model->modelClassName(), ['PresupuestoCliente', 'PedidoCliente', 'AlbaranCliente', 'FacturaCliente'])) {
-            static::$escpos->text(static::sanitize(static::$i18n->trans('date') . ': ' . $model->fecha . ' ' . $model->hora) . "\n");
-            static::$escpos->text(static::sanitize(static::$i18n->trans('customer') . ': ' . $model->nombrecliente) . "\n\n");
+            static::text(static::sanitize(static::$i18n->trans('date') . ': ' . $model->fecha . ' ' . $model->hora) . "\n");
+            static::text(static::sanitize(static::$i18n->trans('customer') . ': ' . $model->nombrecliente) . "\n\n");
         }
 
         // añadimos la cabecera
         if ($printer->head) {
             static::$escpos->setJustification(Printer::JUSTIFY_CENTER);
-            static::$escpos->text(static::sanitize($printer->head) . "\n\n");
+            static::text(static::sanitize($printer->head) . "\n\n");
             static::$escpos->setJustification();
         }
     }
@@ -577,7 +603,7 @@ abstract class BaseTicket
             return;
         }
 
-        static::$escpos->text(
+        static::text(
             static::sanitize(static::$i18n->trans('pos-terminal') . ': ' . $model->getTerminal()->name) . "\n"
         );
     }

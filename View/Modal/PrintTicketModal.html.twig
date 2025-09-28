@@ -554,95 +554,38 @@ Este segundo modal es parecido al primero pero dedicado ya al funcionamiento de 
     const LSK_PRINTER_ID = 'selectedQzPrinterId';
     const LSK_TICKET_PAPER_WIDTH = 'ticketPaperWidth';
 
-    function generateHtmlPreview(escposData) {
+    // Nuevo renderizador de previsualización basado en flags simples en previewBody
+    function escapeHtml(text) {
+        return text
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/\"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    function renderTicketPreview(previewText) {
+        if (!previewText) return `<p class=\"text-muted text-center\" style=\"white-space: normal;\">{{ trans('select-printer-and-load-preview') }}</p>`;
         let html = '';
-        let buffer = '';
-        let justification = 'left';
-        let isDoubleStrike = false;
-
-        function flushBuffer() {
-            if (buffer.length > 0) {
-                let style = `text-align: ${justification}; margin: 0; padding: 0;`;
-                if (isDoubleStrike) {
-                    style += ' font-size: 1.2em; font-weight: bold;';
-                }
-                // Escape HTML characters from the buffer content
-                const safeBuffer = buffer.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                html += `<div style="${style}">${safeBuffer.replace(/ /g, '&nbsp;')}</div>`;
-            }
-            buffer = '';
-        }
-
-        for (let i = 0; i < escposData.length; i++) {
-            const char = escposData[i];
-            const next = i + 1 < escposData.length ? escposData[i + 1] : '';
-            const next2 = i + 2 < escposData.length ? escposData[i + 2] : '';
-
-            // Printer Initialize
-            if (char === '\x1b' && next === '@') {
-                flushBuffer();
+        const lines = previewText.split('\n');
+        for (const raw of lines) {
+            const line = raw.trimEnd();
+            if (line === '[INIT]') {
                 html += translatedSnippets.init;
-                i++; // Consume '@'
-                continue;
-            }
-
-            // Justification
-            if (char === '\x1b' && next === 'a') {
-                flushBuffer();
-                if (next2 === '\x00') justification = 'left';
-                else if (next2 === '\x01') justification = 'center';
-                else if (next2 === '\x02') justification = 'right';
-                i += 2;
-                continue;
-            }
-
-            // Character Size
-            if (char === '\x1d' && next === '!') {
-                flushBuffer();
-                isDoubleStrike = (next2 !== '\x00');
-                i += 2;
-                continue;
-            }
-
-            // Cut Paper
-            if (char === '\x1d' && next === 'V') {
-                flushBuffer();
+            } else if (line === '[CUT]') {
                 html += translatedSnippets.cut;
-                const mode = next2;
-                i += 2; // Skip 'V' and 'mode'
-                if ((mode === 'A' || mode === 'B' || mode === '\x41' || mode === '\x42') && i < escposData.length) {
-                    i++; // Skip 'n' for modes A and B
-                }
-                continue;
-            }
-
-            // Pulse Drawer
-            if (char === '\x1b' && next === 'p') {
-                flushBuffer();
+            } else if (line === '[PULSE]') {
                 html += translatedSnippets.pulse;
-                i += 4; // Skips p, m, t1, t2
-                continue;
-            }
-
-            // Print and feed n lines
-            if (char === '\x1b' && next === 'd') {
-                flushBuffer();
-                const n = i + 2 < escposData.length ? escposData.charCodeAt(i + 2) : 0;
-                for (let j = 0; j < n; j++) {
-                    html += '<div>&nbsp;</div>'; // Represents a blank line
-                }
-                i += 2; // consume 'd' and 'n'
-                continue;
-            }
-
-            if (char === '\n') {
-                flushBuffer();
-            } else if (char >= ' ') { // Append printable characters
-                buffer += char;
+            } else if (line.startsWith('[IMG:') && line.endsWith(']')) {
+                const url = line.substring(5, line.length - 1);
+                const safeUrl = escapeHtml(url);
+                html += `<div style=\"text-align:center; margin:8px 0;\"><img src=\"${safeUrl}\" alt=\"ticket-image\" style=\"display:inline-block; max-width:100%; image-rendering: pixelated;\"/></div>`;
+            } else if (line.length === 0) {
+                html += '<div>&nbsp;</div>';
+            } else {
+                html += `<div style=\"text-align:left; margin:0; padding:0;\">${escapeHtml(line).replace(/ /g, '&nbsp;')}</div>`;
             }
         }
-        flushBuffer(); // Flush any remaining text
-
         return html;
     }
 
@@ -679,10 +622,10 @@ Este segundo modal es parecido al primero pero dedicado ya al funcionamiento de 
             success: function(response) {
                 console.log('Response from server:', response);
                 if (response && response.ok && response.data && response.data.length > 0) {
-                    // Backend devuelve HEX; guardamos HEX para impresión con formato visible (\xHH por byte)
-                    receivedESCPOSTData = response.data.replace(/(..)/g, 'x$1');
-                    // modifica receivedESCPOSTData para que añada x a cada dos carácteres para que se vean como hex
-                    const previewHtml = generateHtmlPreview(receivedESCPOSTData);
+                    // Guardamos HEX crudo para impresión
+                    receivedESCPOSTData = response.data;
+                    // Renderizamos preview simple desde previewBody
+                    const previewHtml = renderTicketPreview(response.previewBody || '');
                     $('#ticketPreviewContainer').html(previewHtml);
                     $('#printTicketButton').prop('disabled', false);
                     showModalAlert(`{{ trans('ticket-ready-to-print') }}`, 'success', 5000, 'modalPrintAlert', 'modalPrintAlertMessage');

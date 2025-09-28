@@ -38,8 +38,8 @@ class Gift extends Normal
             return;
         }
 
-        static::$escpos->text(static::sanitize($th) . "\n");
-        static::$escpos->text($printer->getDashLine() . "\n");
+        static::text(static::sanitize($th) . "\n");
+        static::text($printer->getDashLine() . "\n");
 
         foreach (self::getLines($model) as $line) {
             $td = '';
@@ -53,9 +53,9 @@ class Gift extends Normal
                 $td .= sprintf("%-" . $width . "s", substr($line->descripcion, 0, $width));
             }
 
-            static::$escpos->text(static::sanitize($td) . "\n");
+            static::text(static::sanitize($td) . "\n");
         }
 
-        static::$escpos->text($printer->getDashLine() . "\n");
+        static::text($printer->getDashLine() . "\n");
     }
 }

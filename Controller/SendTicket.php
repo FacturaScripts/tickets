@@ -155,6 +155,7 @@ class SendTicket extends Controller
         $tempTicket = $tickets[0];
         $base64Data = $tempTicket->body;
         $rawData = base64_decode($base64Data);
+        $previewBody = $tempTicket->previewbody ?? '';
                 
         // Restaura la longitud de línea original.
         $printer->linelen = $originalPaperWidth;
@@ -177,6 +178,7 @@ class SendTicket extends Controller
             'ok' => true,
             'data' => $hexData,
             'encoding' => 'hex',
+            'previewBody' => $previewBody,
         ];
         $this->response->setContent(json_encode($payload));
     }

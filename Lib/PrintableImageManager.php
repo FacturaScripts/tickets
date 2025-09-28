@@ -132,6 +132,10 @@ class PrintableImageManager
             }
         }
 
+        // Hacer el color blanco transparente para previsualización (mejor estética)
+        // En imágenes indexadas funciona con imagecolortransparent y se preserva en PNG
+        @imagecolortransparent($bw, $whiteIdx);
+
         // Guardar salida en carpeta pública (ruta estática y formato PNG)
         self::saveToPublic($bw);
 
