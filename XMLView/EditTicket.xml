@@ -27,7 +27,7 @@
                 <widget type="datetime" fieldname="creationdate" readonly="dinamic"/>
             </column>
             <column name="body" numcolumns="12" order="150">
-                <widget type="textarea" fieldname="body" readonly="dinamic" rows="12"/>
+                <widget type="ticket" fieldname="body" readonly="dinamic" rows="12"/>
             </column>
         </group>
     </columns>
