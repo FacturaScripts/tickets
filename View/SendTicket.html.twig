@@ -19,7 +19,7 @@
                     <div class="card shadow mb-4 h-100">
                         <div class="card-body">
                             <h1 class="h2 mb-3">
-                                <i class="{{ fsc.getPageData().icon }}"></i> {{ fsc.title }}
+                                <i class="{{ fsc.getPageData().icon }} fa-fw me-1"></i> {{ fsc.title }}
                             </h1>
                             <div class="mb-3">
                                 <label for="format" class="form-label">{{ trans('format') }}</label>
@@ -31,8 +31,8 @@
                             </div>
                             <div class="mb-3">
                                 <label for="copies" class="form-label">{{ trans('number-of-copies') }}</label>
-                                <input type="number" name="copies" id="copies" class="form-control" value="1" min="1" max="10" required>
-                                <small class="form-text text-muted">{{ trans('number-of-copies-help') }}</small>
+                                <input type="number" name="copies" id="copies" class="form-control" value="1" min="1"
+                                       max="10" required>
                             </div>
                             {% for printer in fsc.printers %}
                                 {% if printer.isActive() %}
@@ -43,7 +43,7 @@
                                 {% else %}
                                     <button type="submit" name="printer" value="{{ printer.id }}"
                                             class="btn w-100 btn-lg btn-warning mt-3">
-                                        <i class="fa-solid fa-print"></i>&nbsp; {{ printer.name }}
+                                        <i class="fa-solid fa-print fa-fw me-1"></i>&nbsp; {{ printer.name }}
                                     </button>
                                     <p class="text-muted">
                                         {{ trans('last-activity') }}: {{ printer.lastactivity }}
@@ -57,11 +57,11 @@
                         </div>
                         <div class="card-footer mt-auto">
                             <h2 class="h5 mb-2">
-                                <i class="fa-solid fa-print"></i> {{ trans('connect-a-printer') }}
+                                <i class="fa-solid fa-print fa-fw me-1"></i> {{ trans('connect-a-printer') }}
                             </h2>
-                            <p class="mb-2">{{ trans('connect-a-printer-p') }}</p>
+                            <p>{{ trans('connect-a-printer-p') }}</p>
                             <a href="ListTicketPrinter" class="btn btn-secondary">
-                                <i class="fa-solid fa-gear"></i> {{ trans('printers') }}
+                                <i class="fa-solid fa-plus fa-fw me-1"></i> {{ trans('printers') }}
                             </a>
                         </div>
                     </div>
@@ -73,10 +73,11 @@
                         <div class="card shadow mb-4 h-100">
                             <div class="card-body">
                                 <h2 class="h3 mb-3">
-                                    <i class="fa-solid fa-print"></i> {{ trans('thermal-printer-qz-tray') }}
+                                    <i class="fa-solid fa-print fa-fw me-1"></i> {{ trans('thermal-printer-qz-tray') }}
                                 </h2>
                                 <p>{{ trans('thermal-printer-qz-tray-description') }}</p>
-                                <button type="button" id="printTicketForThermalPrinter" class="btn w-100 btn-lg btn-primary">
+                                <button type="button" id="printTicketForThermalPrinter"
+                                        class="btn w-100 btn-lg btn-primary">
                                     <i class="fa-solid fa-print"></i>&nbsp; {{ trans('print-with-qz-tray') }}
                                 </button>
                             </div>
