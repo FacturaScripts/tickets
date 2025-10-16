@@ -511,7 +511,7 @@ Este segundo modal es parecido al primero pero dedicado ya al funcionamiento de 
                 </div>
 
                 <div class="row align-items-end">
-                    <div class="mb-3 col-sm-6">
+                    <div class="mb-3 col-sm-5">
                         <label for="qzPrinterSelector">{{ trans('printer') }}</label>
                         <select id="qzPrinterSelector" class="form-select">
                             <option value="">{{ trans('select-a-printer') }}</option>
@@ -520,12 +520,16 @@ Este segundo modal es parecido al primero pero dedicado ya al funcionamiento de 
                             {% endfor %}
                         </select>
                     </div>
-                    <div class="mb-3 col-sm-3">
+                    <div class="mb-3 col-sm-2">
                         <label for="paperWidth">{{ trans('paper-width') }}</label>
                         <select id="paperWidth" class="form-select">
                             <option value="80">80mm</option>
                             <option value="58">58mm</option>
                         </select>
+                    </div>
+                    <div class="mb-3 col-sm-2">
+                        <label for="qzCopies">{{ trans('copies') }}</label>
+                        <input type="number" id="qzCopies" class="form-control" value="1" min="1" max="10">
                     </div>
                     <div class="mb-3 col-sm-3">
                         <button id="printTicketButton" class="btn btn-success w-100" disabled>
@@ -645,7 +649,7 @@ Este segundo modal es parecido al primero pero dedicado ya al funcionamiento de 
         return html;
     }
 
-    function loadTicketData(printerId, format, paperWidth) {
+    function loadTicketData(printerId, format, paperWidth, copies) {
         if (!printerId) {
             showModalAlert(`{{ trans('please-select-a-printer') }}`, 'warning', 5000, 'modalPrintAlert', 'modalPrintAlertMessage');
             return;
@@ -655,6 +659,7 @@ Este segundo modal es parecido al primero pero dedicado ya al funcionamiento de 
             return;
         }
 
+        copies = copies || 1;
         localStorage.setItem(LSK_PRINTER_ID, printerId);
         localStorage.setItem(LSK_TICKET_PAPER_WIDTH, paperWidth);
         $('#printTicketButton').prop('disabled', true);
@@ -667,7 +672,8 @@ Este segundo modal es parecido al primero pero dedicado ya al funcionamiento de 
             modelCode: '{{ fsc.modelCode }}',
             printer: printerId,
             format: format,
-            paperWidth: paperWidth
+            paperWidth: paperWidth,
+            copies: copies
         };
 
         $.ajax({
@@ -721,22 +727,24 @@ Este segundo modal es parecido al primero pero dedicado ya al funcionamiento de 
         const savedPrinterId = localStorage.getItem(LSK_PRINTER_ID);
         const firstPrinterId = $('#qzPrinterSelector option:nth-child(2)').val();
         const printerIdToLoad = savedPrinterId || firstPrinterId;
-        
+
         const savedPaperWidth = $('#paperWidth').val();
         const format = $('select[name="format"]').val();
+        const copies = $('#qzCopies').val() || 1;
 
         if (printerIdToLoad) {
             $('#qzPrinterSelector').val(printerIdToLoad);
-            loadTicketData(printerIdToLoad, format, savedPaperWidth);
+            loadTicketData(printerIdToLoad, format, savedPaperWidth, copies);
         }
     });
 
-    $('#qzPrinterSelector, #paperWidth').change(function() {
+    $('#qzPrinterSelector, #paperWidth, #qzCopies').change(function() {
         const selectedPrinterId = $('#qzPrinterSelector').val();
         const selectedPaperWidth = $('#paperWidth').val();
+        const selectedCopies = $('#qzCopies').val() || 1;
         const format = $('select[name="format"]').val();
         if (selectedPrinterId) {
-            loadTicketData(selectedPrinterId, format, selectedPaperWidth);
+            loadTicketData(selectedPrinterId, format, selectedPaperWidth, selectedCopies);
         }
     });
 

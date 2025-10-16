@@ -8,23 +8,31 @@
 
 {% block body %}
     <div class="container" style="margin-top: -60px;">
-        <div class="row">
-            <div class="col-12">
-                <form action="{{ fsc.url() }}" method="post">
-                    <input type="hidden" name="action" value="print"/>
-                    <input type="hidden" name="modelClassName" value="{{ fsc.modelClassName }}"/>
-                    <input type="hidden" name="modelCode" value="{{ fsc.modelCode }}"/>
-                    <div class="card shadow mb-4">
+        <form action="{{ fsc.url() }}" method="post">
+            <input type="hidden" name="action" value="print"/>
+            <input type="hidden" name="modelClassName" value="{{ fsc.modelClassName }}"/>
+            <input type="hidden" name="modelCode" value="{{ fsc.modelCode }}"/>
+
+            <div class="row">
+                {# Card para impresión normal #}
+                <div class="col-12 {% if fsc.printers %}col-lg-6{% endif %}">
+                    <div class="card shadow mb-4 h-100">
                         <div class="card-body">
                             <h1 class="h2 mb-3">
                                 <i class="{{ fsc.getPageData().icon }}"></i> {{ fsc.title }}
                             </h1>
                             <div class="mb-3">
-                                <select name="format" class="form-select" required>
+                                <label for="format" class="form-label">{{ trans('format') }}</label>
+                                <select name="format" id="format" class="form-select" required>
                                     {% for format in fsc.getFormats(fsc.modelClassName) %}
                                         <option value="{{ format.className }}">{{ trans(format.label) }}</option>
                                     {% endfor %}
                                 </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="copies" class="form-label">{{ trans('number-of-copies') }}</label>
+                                <input type="number" name="copies" id="copies" class="form-control" value="1" min="1" max="10" required>
+                                <small class="form-text text-muted">{{ trans('number-of-copies-help') }}</small>
                             </div>
                             {% for printer in fsc.printers %}
                                 {% if printer.isActive() %}
@@ -34,7 +42,7 @@
                                     </button>
                                 {% else %}
                                     <button type="submit" name="printer" value="{{ printer.id }}"
-                                            class="btn w-100 btn-lg btn-warning">
+                                            class="btn w-100 btn-lg btn-warning mt-3">
                                         <i class="fa-solid fa-print"></i>&nbsp; {{ printer.name }}
                                     </button>
                                     <p class="text-muted">
@@ -42,31 +50,41 @@
                                     </p>
                                 {% endif %}
                             {% else %}
-                                <div class="alert alert-dismissible alert-dismissible alert-dismissible alert-dismissible alert-warning mb-0">
+                                <div class="alert alert-warning mb-0">
                                     {{ trans('no-printer-connected') }}
                                 </div>
                             {% endfor %}
-                            {% if fsc.printers %}
-                                <button type="button" id="printTicketForThermalPrinter" class="btn w-100 btn-lg btn-primary mt-3">
-                                    <i class="fa-solid fa-print"></i>&nbsp; {{ trans('print-with-qz-tray') }}
-                                </button>
-                            {% endif %}
                         </div>
-                    </div>
-                    <div class="card shadow mb-5">
-                        <div class="card-body">
-                            <h2 class="h3">
+                        <div class="card-footer mt-auto">
+                            <h2 class="h5 mb-2">
                                 <i class="fa-solid fa-print"></i> {{ trans('connect-a-printer') }}
                             </h2>
-                            <p>{{ trans('connect-a-printer-p') }}</p>
+                            <p class="mb-2">{{ trans('connect-a-printer-p') }}</p>
                             <a href="ListTicketPrinter" class="btn btn-secondary">
-                                {{ trans('printers') }}
+                                <i class="fa-solid fa-gear"></i> {{ trans('printers') }}
                             </a>
                         </div>
                     </div>
-                </form>
+                </div>
+
+                {# Card para QZ Tray #}
+                {% if fsc.printers %}
+                    <div class="col-12 col-lg-6">
+                        <div class="card shadow mb-4 h-100">
+                            <div class="card-body">
+                                <h2 class="h3 mb-3">
+                                    <i class="fa-solid fa-print"></i> {{ trans('thermal-printer-qz-tray') }}
+                                </h2>
+                                <p>{{ trans('thermal-printer-qz-tray-description') }}</p>
+                                <button type="button" id="printTicketForThermalPrinter" class="btn w-100 btn-lg btn-primary">
+                                    <i class="fa-solid fa-print"></i>&nbsp; {{ trans('print-with-qz-tray') }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
-        </div>
+        </form>
     </div>
 
     <img src="http://localhost:8089/" alt="remote-printer" class="d-none"/>

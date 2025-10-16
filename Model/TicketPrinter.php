@@ -27,9 +27,6 @@ class TicketPrinter extends ModelClass
     /** @var string */
     public $creationdate;
 
-    /** @var string */
-    public $cutcommand;
-
     /** @var int */
     public $font_size;
 
@@ -62,9 +59,6 @@ class TicketPrinter extends ModelClass
 
     /** @var string */
     public $nick;
-
-    /** @var string */
-    public $opencommand;
 
     /** @var bool */
     public $print_comp_shortname;
@@ -148,35 +142,6 @@ class TicketPrinter extends ModelClass
         return $apikey;
     }
 
-    public function getCommandStr(string $command): string
-    {
-        $commandStr = '';
-        switch ($command) {
-            case 'cut':
-                if (empty($this->cutcommand)) {
-                    break;
-                }
-
-                $chars = explode('.', $this->cutcommand);
-                foreach ($chars as $char) {
-                    $commandStr .= chr($char);
-                }
-                break;
-
-            case 'open':
-                if (empty($this->opencommand)) {
-                    break;
-                }
-
-                $chars = explode('.', $this->opencommand);
-                foreach ($chars as $char) {
-                    $commandStr .= chr($char);
-                }
-                break;
-        }
-
-        return $commandStr;
-    }
 
     public function getDashLine(): string
     {
@@ -208,11 +173,9 @@ class TicketPrinter extends ModelClass
         }
 
         $this->apikey = $this->getApiKey()->apikey;
-        $this->cutcommand = Tools::noHtml($this->cutcommand);
         $this->footer = Tools::noHtml($this->footer);
         $this->head = Tools::noHtml($this->head);
         $this->name = Tools::noHtml($this->name);
-        $this->opencommand = Tools::noHtml($this->opencommand);
 
         return parent::save();
     }

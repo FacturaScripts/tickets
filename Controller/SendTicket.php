@@ -124,39 +124,49 @@ class SendTicket extends Controller
             return;
         }
 
-        // 1. Llama a la función print de la clase dinámica para guardar el ticket.
-        if (false === $formatClass::print($model, $printer, $this->user)) {
-            $this->response->setContent(json_encode(['ok' => false, 'error' => Tools::trans('failed-to-create-temporary-ticket')]));
-            return;
-        }
+        // Obtener el número de copias (por defecto 1)
+        $copies = max(1, min(10, (int)$this->request->request->get('copies', 1)));
+        $allRawData = '';
 
-        // 2. Busca el ticket recién creado para esta impresora, ordenado por fecha de creación.
-        $where = [Where::column('printed', false)];
-        $tickets = Ticket::all($where, ['creationdate' => 'DESC'], 0, 1);
-        if (empty($tickets)) {
-            $this->response->setContent(json_encode(['ok' => false, 'error' => Tools::trans('could-not-retrieve-temporary-ticket')]));
-            return;
-        }
+        // Generar los datos ESC/POS para cada copia
+        for ($i = 0; $i < $copies; $i++) {
+            // 1. Llama a la función print de la clase dinámica para guardar el ticket.
+            if (false === $formatClass::print($model, $printer, $this->user)) {
+                $this->response->setContent(json_encode(['ok' => false, 'error' => Tools::trans('failed-to-create-temporary-ticket')]));
+                return;
+            }
 
-        $tempTicket = $tickets[0];
-        $rawData = base64_decode($tempTicket->body);
+            // 2. Busca el ticket recién creado para esta impresora, ordenado por fecha de creación.
+            $where = [Where::column('printed', false)];
+            $tickets = Ticket::all($where, ['creationdate' => 'DESC'], 0, 1);
+            if (empty($tickets)) {
+                $this->response->setContent(json_encode(['ok' => false, 'error' => Tools::trans('could-not-retrieve-temporary-ticket')]));
+                return;
+            }
+
+            $tempTicket = $tickets[0];
+            $rawData = base64_decode($tempTicket->body);
+
+            // 3. Borra el ticket temporal de la base de datos.
+            if (false === $tempTicket->delete()) {
+                Tools::log()->error(Tools::trans('failed-to-delete-temporary-ticket') . ': ' . $tempTicket->id);
+            }
+
+            // 4. Comprueba que el cuerpo del ticket no esté vacío.
+            if (empty($rawData)) {
+                $this->response->setContent(json_encode(['ok' => false, 'error' => Tools::trans('generated-ticket-body-is-empty')]));
+                return;
+            }
+
+            // Concatenar los datos de cada copia
+            $allRawData .= $rawData;
+        }
 
         // Restaura la longitud de línea original.
         $printer->linelen = $originalPaperWidth;
 
-        // 3. Borra el ticket temporal de la base de datos.
-        if (false === $tempTicket->delete()) {
-            Tools::log()->error(Tools::trans('failed-to-delete-temporary-ticket') . ': ' . $tempTicket->id);
-        }
-
-        // 4. Comprueba que el cuerpo del ticket no esté vacío.
-        if (empty($rawData)) {
-            $this->response->setContent(json_encode(['ok' => false, 'error' => Tools::trans('generated-ticket-body-is-empty')]));
-            return;
-        }
-
-        // 5. Devuelve una respuesta JSON correcta.
-        $this->response->setContent(json_encode(['ok' => true, 'data' => $rawData]));
+        // 5. Devuelve una respuesta JSON correcta con todas las copias concatenadas.
+        $this->response->setContent(json_encode(['ok' => true, 'data' => $allRawData]));
     }
 
     protected function getPrinter(int $id): TicketPrinter
@@ -192,9 +202,26 @@ class SendTicket extends Controller
             return;
         }
 
+        // Obtener el número de copias (por defecto 1)
+        $copies = max(1, min(10, (int)$this->request->request->get('copies', 1)));
+
         $format = new $formatClass();
-        if ($format::print($model, $printer, $this->user)) {
-            Tools::log()->notice('sending-to-printer');
+        $success = true;
+
+        // Imprimir el número de copias solicitadas
+        for ($i = 0; $i < $copies; $i++) {
+            if (false === $format::print($model, $printer, $this->user)) {
+                $success = false;
+                break;
+            }
+        }
+
+        if ($success) {
+            if ($copies > 1) {
+                Tools::log()->notice('sending-copies-to-printer', ['%copies%' => $copies]);
+            } else {
+                Tools::log()->notice('sending-to-printer');
+            }
             $this->redirect($model->url(), 1);
         }
     }

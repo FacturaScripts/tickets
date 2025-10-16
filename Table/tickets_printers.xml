@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- * Copyright (C) 2019-2024 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2019-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
  * Author Carlos Garcia Gomez <carlos@facturascripts.com>
  * Author Daniel Fernández Giménez <hola@danielfg.es>
 -->
@@ -12,10 +12,6 @@
     <column>
         <name>creationdate</name>
         <type>date</type>
-    </column>
-    <column>
-        <name>cutcommand</name>
-        <type>character varying(20)</type>
     </column>
     <column>
         <name>font_size</name>
@@ -64,10 +60,6 @@
     <column>
         <name>nick</name>
         <type>character varying(50)</type>
-    </column>
-    <column>
-        <name>opencommand</name>
-        <type>character varying(20)</type>
     </column>
     <column>
         <name>print_comp_shortname</name>
