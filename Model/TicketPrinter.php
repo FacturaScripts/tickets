@@ -163,7 +163,7 @@ class TicketPrinter extends ModelClass
 
     public function isActive(): bool
     {
-        return time() - strtotime($this->lastactivity) < self::MAX_INACTIVITY;
+        return !empty($this->lastactivity) && time() - strtotime($this->lastactivity) < self::MAX_INACTIVITY;
     }
 
     public function save(): bool
@@ -173,6 +173,7 @@ class TicketPrinter extends ModelClass
         }
 
         $this->apikey = $this->getApiKey()->apikey;
+
         $this->footer = Tools::noHtml($this->footer);
         $this->head = Tools::noHtml($this->head);
         $this->name = Tools::noHtml($this->name);
