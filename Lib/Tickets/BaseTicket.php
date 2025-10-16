@@ -5,9 +5,8 @@
 
 namespace FacturaScripts\Plugins\Tickets\Lib\Tickets;
 
-use FacturaScripts\Core\Template\ExtensionsTrait;
-use FacturaScripts\Core\Template\ModelClass;
 use FacturaScripts\Core\Plugins;
+use FacturaScripts\Core\Template\ModelClass;
 use FacturaScripts\Core\Tools;
 use FacturaScripts\Core\Translator;
 use FacturaScripts\Core\Where;
@@ -26,8 +25,6 @@ use Mike42\Escpos\Printer;
  */
 abstract class BaseTicket
 {
-    use ExtensionsTrait;
-
     /** @var DummyPrintConnector */
     protected static $connector;
 
@@ -133,7 +130,7 @@ abstract class BaseTicket
                 $txt .= "\n";
             }
 
-            $cont ++;
+            $cont++;
             $width = $cont === 1
                 ? $printer->linelen - $widthTotal
                 : $printer->linelen - $widthTotal - 1;
