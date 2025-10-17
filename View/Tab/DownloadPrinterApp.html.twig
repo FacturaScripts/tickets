@@ -34,14 +34,14 @@
                 <h1 class="h4 mt-5 mb-1">URL:</h1>
                 <div class="d-flex align-items-center gap-2">
                     <code id="appUrl">{{ fsc.getAppUrl() }}</code>
-                    <button class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard('appUrl')" title="{{ trans('copy-to-clipboard') }}">
+                    <button class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard('appUrl')" title="{{ trans('copy') }}">
                         <i class="fa-solid fa-copy"></i>
                     </button>
                 </div>
                 <h2 class="h4 mt-4 mb-1">{{ trans('api-key') }}:</h2>
                 <div class="d-flex align-items-center gap-2">
                     <code id="appKey">{{ fsc.getAppKey() }}</code>
-                    <button class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard('appKey')" title="{{ trans('copy-to-clipboard') }}">
+                    <button class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard('appKey')" title="{{ trans('copy') }}">
                         <i class="fa-solid fa-copy"></i>
                     </button>
                 </div>
