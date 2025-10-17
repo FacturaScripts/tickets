@@ -6,7 +6,7 @@
 <div class="card shadow mb-3">
     <div class="card-body">
         <div class="row">
-            <div class="col-sm">
+            <div class="col-md">
                 <p>{{ trans('connect-a-printer-p') }}</p>
                 <div class="dropdown d-inline-block me-1">
                     <button class="btn btn-info dropdown-toggle" type="button" data-bs-toggle="dropdown"
@@ -32,13 +32,48 @@
                     </div>
                 </div>
                 <h1 class="h4 mt-5 mb-1">URL:</h1>
-                <code>{{ fsc.getAppUrl() }}</code>
+                <div class="d-flex align-items-center gap-2">
+                    <code id="appUrl">{{ fsc.getAppUrl() }}</code>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard('appUrl')" title="{{ trans('copy-to-clipboard') }}">
+                        <i class="fa-solid fa-copy"></i>
+                    </button>
+                </div>
                 <h2 class="h4 mt-4 mb-1">{{ trans('api-key') }}:</h2>
-                <code>{{ fsc.getAppKey() }}</code>
+                <div class="d-flex align-items-center gap-2">
+                    <code id="appKey">{{ fsc.getAppKey() }}</code>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard('appKey')" title="{{ trans('copy-to-clipboard') }}">
+                        <i class="fa-solid fa-copy"></i>
+                    </button>
+                </div>
             </div>
-            <div class="col-sm-4">
+            <div class="col-md-4">
                 <img src="{{ asset('Dinamic/Assets/Images/printer-app.png') }}" alt="app" class="img-fluid"/>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    function copyToClipboard(elementId) {
+        const element = document.getElementById(elementId);
+        const text = element.textContent;
+
+        navigator.clipboard.writeText(text).then(function() {
+            // Mostrar feedback visual
+            const button = element.nextElementSibling;
+            const originalHTML = button.innerHTML;
+            button.innerHTML = '<i class="fa-solid fa-check"></i>';
+            button.classList.remove('btn-outline-secondary');
+            button.classList.add('btn-success');
+
+            setTimeout(function() {
+                button.innerHTML = originalHTML;
+                button.classList.remove('btn-success');
+                button.classList.add('btn-outline-secondary');
+            }, 2000);
+        }).catch(function(err) {
+            console.error('Error al copiar al portapapeles:', err);
+            alert('{{ trans('error-copying-to-clipboard') }}');
+        });
+    }
+</script>
