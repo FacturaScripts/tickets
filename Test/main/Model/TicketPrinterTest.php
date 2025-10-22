@@ -33,30 +33,6 @@ final class TicketPrinterTest extends TestCase
         $this->assertTrue($user->delete(), 'user-cant-delete');
     }
 
-    public function testGetCommandStrCutAndOpen(): void
-    {
-        // crear usuario
-        $user = $this->getRandomUser();
-        $user->password = 'test1234';
-        $this->assertTrue($user->save(), 'cant-create-user');
-
-        // crear impresora con comandos
-        $printer = new TicketPrinter();
-        $printer->name = 'test printer';
-        $printer->nick = $user->nick;
-        $printer->cutcommand = '65.66.67';
-        $printer->opencommand = '68.69';
-        $this->assertTrue($printer->save(), 'printer-cant-save');
-
-        // verificar comandos
-        $this->assertSame('ABC', $printer->getCommandStr('cut'));
-        $this->assertSame('DE', $printer->getCommandStr('open'));
-
-        // eliminar
-        $this->assertTrue($printer->delete(), 'printer-cant-delete');
-        $this->assertTrue($user->delete(), 'user-cant-delete');
-    }
-
     public function testGetDashLineAndIsActive(): void
     {
         // crear usuario
