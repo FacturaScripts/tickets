@@ -29,7 +29,7 @@
     "line-length": "Número de caracteres por linha",
     "loading": "A carregar...",
     "loading-ticket-preview": "Cargando previsualización del ticket...",
-    "manual-config-updated-for": "Configuración manual actualizada para %name% (Vendor: %vendorId%, Product: %productId%).",
+    "manual-config-updated-for": "Configuração manual atualizada para %name% (Fornecedor: %vendorId%, Produto: %productId%).",
     "manual-config-updated-for-user": "Configuração atualizada para %name%.",
     "net-abb": "Líquido",
     "no-printer-connected": "Nenhuma impressora conectada ou configurada.",
