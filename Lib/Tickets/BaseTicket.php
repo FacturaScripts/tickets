@@ -446,11 +446,11 @@ abstract class BaseTicket
         $text = sprintf("%" . ($printer->linelen - 11) . "s", static::$i18n->trans('total')) . " "
             . sprintf("%10s", Tools::number($model->total));
 
-        if (property_exists($model, 'tpv_efectivo') && $model->tpv_efectivo > 0) {
+        if ($model->hasColumn('tpv_efectivo') && $model->tpv_efectivo > 0) {
             $text .= sprintf("%" . ($printer->linelen - 11) . "s", static::$i18n->trans('cash')) . " "
                 . sprintf("%10s", Tools::number($model->tpv_efectivo)) . "\n";
         }
-        if (property_exists($model, 'tpv_cambio') && $model->tpv_cambio > 0) {
+        if ($model->hasColumn('tpv_cambio') && $model->tpv_cambio > 0) {
             $text .= sprintf("%" . ($printer->linelen - 11) . "s", static::$i18n->trans('money-change')) . " "
                 . sprintf("%10s", Tools::number($model->tpv_cambio)) . "\n";
         }

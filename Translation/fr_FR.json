@@ -34,7 +34,7 @@
     "net-abb": "Net",
     "no-printer-connected": "Aucune imprimante connectée ou configurée.",
     "no-ticket-data-to-print-load-first": "Aucune donnée de ticket à imprimer. Chargez un aperçu d'abord.",
-    "no-ticket-format-found-model": "Aucun format de ticket trouvé pour ce modèle",
+    "no-ticket-format-found-model": "Aucun format de ticket n’a été trouvé pour ce modèle",
     "no-usb-devices-found": "Aucun périphérique USB trouvé.",
     "no-valid-ticket-data-received": "Aucune donnée de ticket valide n'a été reçue du serveur.",
     "num-usb-devices-detected": "%num% périphériques USB détectés.",
