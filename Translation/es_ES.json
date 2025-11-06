@@ -95,5 +95,7 @@
     "unknown-device": "Dispositivo desconocido",
     "vendor-id": "Vendor ID",
     "vendor-product-id-required-to-print": "El Vendor ID y el Product ID son necesarios para imprimir.",
-    "you-can-adjust-parameters": "Puede ajustar los parámetros si es necesario."
+    "you-can-adjust-parameters": "Puede ajustar los parámetros si es necesario.",
+    "last-activity": "Última actividad",
+    "print-shipping-address": "Imprimir dirección de envío"
 }
