@@ -19,7 +19,6 @@ use FacturaScripts\Dinamic\Model\User;
 use Mike42\Escpos\PrintConnectors\DummyPrintConnector;
 use Mike42\Escpos\Printer;
 use FacturaScripts\Dinamic\Model\Contacto;
-use FacturaScripts\Dinamic\Model\Pais;
 
 /**
  * @author Carlos Garcia Gomez      <carlos@facturascripts.com>
@@ -559,16 +558,10 @@ abstract class BaseTicket
                     
                 } else if ($shippingAddress->load($model->idcontactoenv)) {
                     // si existe el contacto de envio lo imprimimos
-                    static::$escpos->text(static::sanitize($shippingAddress->direccion) . ", ");
+                    static::$escpos->text(static::sanitize($shippingAddress->direccion) . "\n");
                     static::$escpos->text(static::sanitize(
                             $shippingAddress->codpostal . ' (' . $shippingAddress->ciudad . '), ' . $shippingAddress->provincia
                         ) . ", ");
-                    $pais = new Pais();
-                    if ($pais->load($shippingAddress->codpais)) {
-                        static::$escpos->text(static::sanitize($pais->nombre) . "\n");
-                    } else {
-                        static::$escpos->text(static::sanitize($shippingAddress->codpais) . "\n");
-                    }
 
                 }else{
                     // sino imprimimos la direccion de factura
