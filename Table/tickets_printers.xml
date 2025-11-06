@@ -80,6 +80,11 @@
         <default>false</default>
     </column>
     <column>
+        <name>print_shipping_address</name>
+        <type>boolean</type>
+        <default>false</default>
+    </column>
+    <column>
         <name>print_invoice_receipts</name>
         <type>boolean</type>
         <default>false</default>

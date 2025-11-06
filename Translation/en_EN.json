@@ -102,5 +102,6 @@
     "vendor-product-id-required-to-print": "Vendor ID and Product ID are required to print.",
     "you-can-adjust-parameters": "You can adjust the parameters if necessary.",
     "last-activity": "Last activity",
-    "print-with-qz-tray": "Print with QZ Tray"
+    "print-with-qz-tray": "Print with QZ Tray",
+    "print-shipping-address": "Print shipping address"
 }
