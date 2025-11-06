@@ -18,6 +18,8 @@ use FacturaScripts\Dinamic\Model\TicketPrinter;
 use FacturaScripts\Dinamic\Model\User;
 use Mike42\Escpos\PrintConnectors\DummyPrintConnector;
 use Mike42\Escpos\Printer;
+use FacturaScripts\Dinamic\Model\Contacto;
+use FacturaScripts\Dinamic\Model\Pais;
 
 /**
  * @author Carlos Garcia Gomez      <carlos@facturascripts.com>
@@ -534,6 +536,34 @@ abstract class BaseTicket
         if (in_array($model->modelClassName(), ['PresupuestoCliente', 'PedidoCliente', 'AlbaranCliente', 'FacturaCliente'])) {
             static::$escpos->text(static::sanitize(static::$i18n->trans('date') . ': ' . $model->fecha . ' ' . $model->hora) . "\n");
             static::$escpos->text(static::sanitize(static::$i18n->trans('customer') . ': ' . $model->nombrecliente) . "\n\n");
+
+            // si se debe imprimir la dirección de envio
+            if ($printer->print_shipping_address) {
+                static::$escpos->text(static::sanitize(static::$i18n->trans('address') . ': '));
+                $shippingAddress = new Contacto();
+                
+                if(empty($model->idcontactoenv) && empty($model->direccion)){
+                    // si las dos están vacías entonces un -
+                    static::$escpos->text(static::sanitize(' - '));
+                    
+                } else if ($shippingAddress->load($model->idcontactoenv)) {
+                    // si existe el contacto de envio lo imprimimos
+                    static::$escpos->text(static::sanitize($shippingAddress->direccion) . ", ");
+                    static::$escpos->text(static::sanitize(
+                            $shippingAddress->codpostal . ' (' . $shippingAddress->ciudad . '), ' . $shippingAddress->provincia
+                        ) . ", ");
+                    $pais = new Pais();
+                    if ($pais->load($shippingAddress->codpais)) {
+                        static::$escpos->text(static::sanitize($pais->nombre) . "\n\n");
+                    } else {
+                        static::$escpos->text(static::sanitize($shippingAddress->codpais) . "\n\n");
+                    }
+
+                }else{
+                    // sino imprimimos la direccion de factura
+                    static::$escpos->text(static::sanitize($model->direccion) . "\n");
+                }
+            }
         }
 
         // añadimos la cabecera
