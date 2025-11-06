@@ -546,7 +546,7 @@ abstract class BaseTicket
         // imprimimos la fecha y el cliente
         if (in_array($model->modelClassName(), ['PresupuestoCliente', 'PedidoCliente', 'AlbaranCliente', 'FacturaCliente'])) {
             static::$escpos->text(static::sanitize(static::$i18n->trans('date') . ': ' . $model->fecha . ' ' . $model->hora) . "\n");
-            static::$escpos->text(static::sanitize(static::$i18n->trans('customer') . ': ' . $model->nombrecliente) . "\n\n");
+            static::$escpos->text(static::sanitize(static::$i18n->trans('customer') . ': ' . $model->nombrecliente) . "\n");
 
             // si se debe imprimir la dirección de envio
             if ($printer->print_shipping_address) {
@@ -565,9 +565,9 @@ abstract class BaseTicket
                         ) . ", ");
                     $pais = new Pais();
                     if ($pais->load($shippingAddress->codpais)) {
-                        static::$escpos->text(static::sanitize($pais->nombre) . "\n\n");
+                        static::$escpos->text(static::sanitize($pais->nombre) . "\n");
                     } else {
-                        static::$escpos->text(static::sanitize($shippingAddress->codpais) . "\n\n");
+                        static::$escpos->text(static::sanitize($shippingAddress->codpais) . "\n");
                     }
 
                 }else{
@@ -575,6 +575,8 @@ abstract class BaseTicket
                     static::$escpos->text(static::sanitize($model->direccion) . "\n");
                 }
             }
+
+            static::$escpos->text("\n");
         }
 
         // añadimos la cabecera
