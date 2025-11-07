@@ -142,6 +142,14 @@ class TicketPrinter extends ModelClass
         return $apikey;
     }
 
+    public function getCommandStr(string $command): string
+    {
+        return match ($command) {
+            'open' => "\x1B\x70\x00\x19\xFA",
+            'cut' => "\x1D\x56\x00",
+            default => '',
+        };
+    }
 
     public function getDashLine(): string
     {

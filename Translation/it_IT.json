@@ -44,7 +44,7 @@
     "please-select-a-format": "Per favore, seleziona un formato.",
     "please-select-a-printer": "Si prega di selezionare una stampante.",
     "preparing-to-send-data": "Preparazione all'invio dei dati...",
-    "preview-cut-paper": "[Cortar Papel]",
+    "preview-cut-paper": "[Taglia carta]",
     "preview-init-printer": "[Init Printer]",
     "preview-pulse-drawer": "[Apri Cassetto]",
     "price-abb": "Prezzo",
@@ -91,9 +91,9 @@
     "ticket-preview-html": "Anteprima del Ticket (HTML)",
     "ticket-ready-to-print": "Biglietto pronto per essere stampato.",
     "total-abb": "Totale",
-    "trying-to-connect-qz-tray": "Sto cercando di collegarmi a QZ Tray...",
+    "trying-to-connect-qz-tray": "Tentativo di connessione a QZ Tray...",
     "unknown-device": "Dispositivo sconosciuto",
     "vendor-id": "ID Fornitore",
     "vendor-product-id-required-to-print": "Il Vendor ID e il Product ID sono necessari per stampare.",
-    "you-can-adjust-parameters": "Puoi regolare i parametri se necessario."
+    "you-can-adjust-parameters": "Può regolare i parametri se necessario."
 }

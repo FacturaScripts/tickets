@@ -76,7 +76,7 @@
     "qz-tray-disconnected-reload": "QZ Tray ist getrennt. Laden Sie die Seite bei Bedarf neu.",
     "qz-tray-not-connected": "Probleme bei der Verbindung? Stellen Sie sicher, dass QZ Tray installiert und konfiguriert ist.",
     "qz-tray-not-connected-before-print": "QZ Tray ist nicht verbunden. Bitte verbinden Sie sich vor dem Drucken.",
-    "qz-tray-not-connected-before-scan": "QZ Tray ist nicht verbunden. Bitte verbinden Sie sich vor dem Scannen.",
+    "qz-tray-not-connected-before-scan": "QZ Tray ist nicht verbunden. Bitte verbinden Sie das Gerät, bevor Sie scannen.",
     "qz-tray-not-connected-click-to-start": "QZ Tray ist nicht verbunden. Klicken Sie auf Verbinden, um es zu starten.",
     "reference-abb": "Ref.",
     "select-a-printer": "Wählen Sie einen Drucker aus",

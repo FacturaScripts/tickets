@@ -14,7 +14,7 @@
     "ensure-correct-settings-before-print": "Asegúrese de que los ajustes son correctos antes de intentar imprimir.",
     "ensure-device-connected-and-qz-permissions": "Certifique-se de que o dispositivo está conectado e que o QZ Tray tem permissões.",
     "error-ajax-preview": "Erro AJAX ao carregar a pré-visualização:",
-    "error-connecting-to-qz-tray": "Error al conectar con QZ Tray:",
+    "error-connecting-to-qz-tray": "Erro ao conectar ao QZ Tray:",
     "error-printing": "Erro ao imprimir:",
     "error-scanning-devices": "Erro ao escanear dispositivos:",
     "error-scanning-usb-devices": "Erro ao procurar dispositivos USB:",
