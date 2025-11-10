@@ -15,7 +15,7 @@
     "ensure-device-connected-and-qz-permissions": "Ujistěte se, že je zařízení připojeno a QZ Tray má oprávnění.",
     "error-ajax-preview": "Chyba AJAX při načítání náhledu:",
     "error-connecting-to-qz-tray": "Chyba při připojování k QZ Tray:",
-    "error-printing": "Error al imprimir:",
+    "error-printing": "Chyba při tisku:",
     "error-scanning-devices": "Chyba při skenování zařízení:",
     "error-scanning-usb-devices": "Chyba při skenování USB zařízení:",
     "expiration-abb": "Expirace",

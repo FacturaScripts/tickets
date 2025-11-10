@@ -33,7 +33,7 @@
     "manual-config-updated-for-user": "Configuración actualizada para %name%.",
     "net-abb": "Net",
     "no-printer-connected": "Ninguna impresora conectada o configurada.",
-    "no-ticket-data-to-print-load-first": "No hay datos de ticket para imprimir. Cargue una previsualización primero.",
+    "no-ticket-data-to-print-load-first": "No hi ha dades de tiquet per imprimir. Carregueu una previsualització primer.",
     "no-ticket-format-found-model": "No s'ha trobat cap format de ticket per a aquest model",
     "no-usb-devices-found": "No s'han trobat dispositius USB.",
     "no-valid-ticket-data-received": "No s'han rebut dades de ticket vàlides del servidor.",
