@@ -7,6 +7,7 @@ namespace FacturaScripts\Plugins\Tickets;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
+use FacturaScripts\Core\Html;
 use FacturaScripts\Core\Template\InitClass;
 use FacturaScripts\Core\Tools;
 use FacturaScripts\Dinamic\Controller\SendTicket;
@@ -14,6 +15,7 @@ use FacturaScripts\Dinamic\Lib\ExportManager;
 use FacturaScripts\Dinamic\Lib\Tickets\Gift;
 use FacturaScripts\Dinamic\Lib\Tickets\Normal;
 use FacturaScripts\Dinamic\Lib\Tickets\PaymentReceipt;
+use Twig\TwigFunction;
 
 /**
  * @author Carlos Garcia Gomez <carlos@facturascripts.com>
@@ -24,6 +26,7 @@ final class Init extends InitClass
     {
         ExportManager::addOption('Ticket', 'ticket', 'fa-solid fa-receipt');
         $this->loadFormatTickets();
+        $this->loadTwigFunctions();
     }
 
     public function uninstall(): void
@@ -45,6 +48,14 @@ final class Init extends InitClass
         }
 
         SendTicket::addFormat(PaymentReceipt::class, 'ReciboCliente', 'receipt');
+    }
+
+    private function loadTwigFunctions(): void
+    {
+        Html::addFunction(new TwigFunction('mc20printerWs', function () {
+            $canal = md5(Tools::siteUrl());
+            return 'https://ai.factura.city/mc20printer/' . $canal . '/print';
+        }));
     }
 
     private function setAPI(): void

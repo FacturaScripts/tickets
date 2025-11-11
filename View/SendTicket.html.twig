@@ -71,4 +71,31 @@
     </div>
 
     <img src="http://127.0.0.1:8089/" alt="remote-printer" class="d-none"/>
+
+    <script>
+        // Enviar petición al websocket al cargar la página
+        const url = '{{ mc20printerWs() }}';
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                action: 'print'
+            })
+        })
+        .then(function(response) {
+            if (!response.ok) {
+                throw new Error('Error ' + response.status + ': ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(function(data) {
+            console.log('Websocket OK:', data);
+        })
+        .catch(function(error) {
+            alert('Error al conectar con websocket:\n' + url + '\n\n' + error.message);
+        });
+    </script>
 {% endblock %}
