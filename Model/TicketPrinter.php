@@ -102,6 +102,9 @@ class TicketPrinter extends ModelClass
     /** @var bool */
     public $print_stored_logo;
 
+    /** @var bool */
+    public $print_shipping_address;
+
     /** @var int */
     public $title_font_size;
 
@@ -127,6 +130,7 @@ class TicketPrinter extends ModelClass
         $this->print_lines_total = true;
         $this->print_payment_methods = false;
         $this->print_stored_logo = false;
+        $this->print_shipping_address = false;
         $this->title_font_size = 2;
     }
 

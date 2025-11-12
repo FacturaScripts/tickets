@@ -18,6 +18,7 @@ use FacturaScripts\Dinamic\Model\TicketPrinter;
 use FacturaScripts\Dinamic\Model\User;
 use Mike42\Escpos\PrintConnectors\DummyPrintConnector;
 use Mike42\Escpos\Printer;
+use FacturaScripts\Dinamic\Model\Contacto;
 
 /**
  * @author Carlos Garcia Gomez      <carlos@facturascripts.com>
@@ -544,7 +545,31 @@ abstract class BaseTicket
         // imprimimos la fecha y el cliente
         if (in_array($model->modelClassName(), ['PresupuestoCliente', 'PedidoCliente', 'AlbaranCliente', 'FacturaCliente'])) {
             static::$escpos->text(static::sanitize(static::$i18n->trans('date') . ': ' . $model->fecha . ' ' . $model->hora) . "\n");
-            static::$escpos->text(static::sanitize(static::$i18n->trans('customer') . ': ' . $model->nombrecliente) . "\n\n");
+            static::$escpos->text(static::sanitize(static::$i18n->trans('customer') . ': ' . $model->nombrecliente) . "\n");
+
+            // si se debe imprimir la dirección de envio
+            if ($printer->print_shipping_address) {
+                static::$escpos->text(static::sanitize(static::$i18n->trans('address') . ': '));
+                $shippingAddress = new Contacto();
+                
+                if(empty($model->idcontactoenv) && empty($model->direccion)){
+                    // si las dos están vacías entonces un -
+                    static::$escpos->text(static::sanitize(' - '));
+                    
+                } else if ($shippingAddress->load($model->idcontactoenv)) {
+                    // si existe el contacto de envio lo imprimimos
+                    static::$escpos->text(static::sanitize($shippingAddress->direccion) . "\n");
+                    static::$escpos->text(static::sanitize(
+                            $shippingAddress->codpostal . ' (' . $shippingAddress->ciudad . '), ' . $shippingAddress->provincia
+                        ) . ", ");
+
+                }else{
+                    // sino imprimimos la direccion de factura
+                    static::$escpos->text(static::sanitize($model->direccion) . "\n");
+                }
+            }
+
+            static::$escpos->text("\n");
         }
 
         // añadimos la cabecera
