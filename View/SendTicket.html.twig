@@ -68,34 +68,45 @@
                 </div>
             </div>
         </form>
+
+        {# Mensaje de error del websocket #}
+        <div id="websocket-error" class="alert alert-danger mt-3 d-none" role="alert">
+            <i class="fa-solid fa-triangle-exclamation fa-fw me-1"></i>
+            <span id="websocket-error-message"></span>
+        </div>
     </div>
 
-    <img src="http://127.0.0.1:8089/" alt="remote-printer" class="d-none"/>
+    {% if fsc.printers|length > 0 %}
+        <img src="http://127.0.0.1:8089/" alt="remote-printer" class="d-none"/>
 
-    <script>
-        // Enviar petición al websocket al cargar la página
-        const url = '{{ mc20printerWs() }}';
+        <script>
+            // Enviar petición al websocket al cargar la página
+            const url = '{{ mc20printerWs() }}';
 
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                action: 'print'
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    action: 'print'
+                })
             })
-        })
-        .then(function(response) {
-            if (!response.ok) {
-                throw new Error('Error ' + response.status + ': ' + response.statusText);
-            }
-            return response.json();
-        })
-        .then(function(data) {
-            console.log('Websocket OK:', data);
-        })
-        .catch(function(error) {
-            alert('Error al conectar con websocket:\n' + url + '\n\n' + error.message);
-        });
-    </script>
+            .then(function(response) {
+                if (!response.ok) {
+                    throw new Error('Error ' + response.status + ': ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(function(data) {
+                console.log('Websocket OK:', data);
+            })
+            .catch(function(error) {
+                const errorDiv = document.getElementById('websocket-error');
+                const errorMessage = document.getElementById('websocket-error-message');
+                errorMessage.textContent = 'Error al conectar con mc20printer. ' + error.message;
+                errorDiv.classList.remove('d-none');
+            });
+        </script>
+    {% endif %}
 {% endblock %}
