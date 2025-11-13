@@ -39,6 +39,7 @@
     "no-valid-ticket-data-received": "Nie otrzymano od serwera prawidłowych danych paragonu.",
     "num-usb-devices-detected": "Wykryto %num% urządzeń USB.",
     "number-of-copies": "Liczba kopii",
+    "old-mc20printer-version": "Probablemente esté usando una versión antigua de mc20printer. Descarga la última versión.",
     "open-command": "Komenda otwarcia",
     "paper-width": "Szerokość papieru",
     "please-select-a-format": "Proszę wybrać format.",
@@ -95,5 +96,6 @@
     "unknown-device": "Nieznane urządzenie",
     "vendor-id": "ID dostawcy",
     "vendor-product-id-required-to-print": "Vendor ID i Product ID są wymagane do wydrukowania.",
+    "websocket-error": "Error al conectar al websocket",
     "you-can-adjust-parameters": "Możesz dostosować parametry, jeśli zajdzie taka potrzeba."
 }

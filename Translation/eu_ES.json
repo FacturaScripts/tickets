@@ -39,6 +39,7 @@
     "no-valid-ticket-data-received": "Ez dira iritsiko ticket baliozkoa datuak zerbitzutik.",
     "num-usb-devices-detected": "%num% dispositivos USB detectados.",
     "number-of-copies": "Nº de copias",
+    "old-mc20printer-version": "Probablemente esté usando una versión antigua de mc20printer. Descarga la última versión.",
     "open-command": "Irekitzeko komandoa",
     "paper-width": "Paperaren zabalera",
     "please-select-a-format": "Mesedez, aukeratu formatua.",
@@ -95,5 +96,6 @@
     "unknown-device": "Gailu ezezaguna",
     "vendor-id": "Vendor ID",
     "vendor-product-id-required-to-print": "Saltzailearen IDa eta Produktu IDa inprimatzeko beharrezkoak dira.",
+    "websocket-error": "Error al conectar al websocket",
     "you-can-adjust-parameters": "Parametroak behar izanez gero egokitu ditzakezu."
 }

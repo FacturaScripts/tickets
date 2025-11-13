@@ -69,10 +69,27 @@
             </div>
         </form>
 
+        <br/>
+
         {# Mensaje de error del websocket #}
-        <div id="websocket-error" class="alert alert-danger mt-3 d-none" role="alert">
-            <i class="fa-solid fa-triangle-exclamation fa-fw me-1"></i>
-            <span id="websocket-error-message"></span>
+        <div id="websocket-error" class="card border-danger shadow-sm mt-3 d-none">
+            <div class="card-header bg-danger text-white">
+                <i class="fa-solid fa-triangle-exclamation fa-fw me-1"></i>
+                <strong>{{ trans('websocket-error') }}</strong>
+            </div>
+            <div class="card-body">
+                <p class="mb-2 text-danger">
+                    <span id="websocket-error-message"></span>
+                </p>
+                <p class="mb-3">
+                    {{ trans('old-mc20printer-version') }}
+                </p>
+                {% if fsc.printers|length > 0 %}
+                    <a href="{{ fsc.printers[0].url() }}#mainTabsContent" class="btn btn-outline-primary">
+                        <i class="fa-solid fa-download fa-fw me-1"></i> {{ trans('download-app') }}
+                    </a>
+                {% endif %}
+            </div>
         </div>
     </div>
 
@@ -104,7 +121,7 @@
             .catch(function(error) {
                 const errorDiv = document.getElementById('websocket-error');
                 const errorMessage = document.getElementById('websocket-error-message');
-                errorMessage.textContent = 'Error al conectar con mc20printer. ' + error.message;
+                errorMessage.textContent = error.message;
                 errorDiv.classList.remove('d-none');
             });
         </script>

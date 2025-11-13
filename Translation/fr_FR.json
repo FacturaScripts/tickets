@@ -39,6 +39,7 @@
     "no-valid-ticket-data-received": "Aucune donnée de ticket valide n'a été reçue du serveur.",
     "num-usb-devices-detected": "%num% périphériques USB détectés.",
     "number-of-copies": "Nombre de copies",
+    "old-mc20printer-version": "Probablemente esté usando una versión antigua de mc20printer. Descarga la última versión.",
     "open-command": "Commande d'ouverture",
     "paper-width": "Largeur du papier",
     "please-select-a-format": "Veuillez sélectionner un format.",
@@ -95,5 +96,6 @@
     "unknown-device": "Appareil inconnu",
     "vendor-id": "ID fournisseur",
     "vendor-product-id-required-to-print": "L'ID fournisseur et l'ID produit sont nécessaires pour imprimer.",
+    "websocket-error": "Error al conectar al websocket",
     "you-can-adjust-parameters": "Vous pouvez ajuster les paramètres si nécessaire."
 }
