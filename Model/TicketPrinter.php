@@ -145,8 +145,8 @@ class TicketPrinter extends ModelClass
     public function getCommandStr(string $command): string
     {
         return match ($command) {
-            'open' => "\x1B\x70\x00\x19\xFA",
-            'cut' => "\x1D\x56\x00",
+            'cut' => chr('27') . chr('109'),
+            'open' => chr('27') . chr('112') . chr('48') . chr('55') . chr('121'),
             default => '',
         };
     }
