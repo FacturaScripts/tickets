@@ -44,7 +44,7 @@
     "paper-width": "Largura do papel",
     "please-select-a-format": "Por favor, selecione um formato.",
     "please-select-a-printer": "Por favor, selecione uma impressora.",
-    "preparing-to-send-data": "Preparando para enviar los datos...",
+    "preparing-to-send-data": "A preparar o envio dos dados...",
     "preview-cut-paper": "[Cortar Papel]",
     "preview-init-printer": "[Inicializar Impressora]",
     "preview-pulse-drawer": "[Abrir Gaveta]",
@@ -96,6 +96,6 @@
     "unknown-device": "Dispositivo desconocido",
     "vendor-id": "ID do vendedor",
     "vendor-product-id-required-to-print": "El Vendor ID y el Product ID son necesarios para imprimir.",
-    "websocket-error": "Error al conectar al websocket",
+    "websocket-error": "Erro ao conectar ao WebSocket",
     "you-can-adjust-parameters": "Você pode ajustar os parâmetros, se necessário."
 }

@@ -39,7 +39,7 @@
     "no-valid-ticket-data-received": "No s'han rebut dades de tiquet vàlides del servidor.",
     "num-usb-devices-detected": "%num% dispositius USB detectats.",
     "number-of-copies": "Nombre de còpies",
-    "old-mc20printer-version": "Probablemente esté usando una versión antigua de mc20printer. Descarga la última versión.",
+    "old-mc20printer-version": "Probablement utilitzeu una versió antiga de mc20printer. Descarrega la darrera versió.",
     "open-command": "Comanament d'obertura",
     "paper-width": "Amplada del paper",
     "please-select-a-format": "Si us plau, seleccioneu un format.",
@@ -96,6 +96,6 @@
     "unknown-device": "Dispositiu desconegut",
     "vendor-id": "ID del proveïdor",
     "vendor-product-id-required-to-print": "El Vendor ID i el Product ID són necessaris per imprimir.",
-    "websocket-error": "Error al conectar al websocket",
+    "websocket-error": "Error en connectar al websocket",
     "you-can-adjust-parameters": "Podeu ajustar els paràmetres si és necessari."
 }
