@@ -393,6 +393,10 @@ abstract class BaseTicket
 
     protected static function sanitize(?string $txt): string
     {
+        if ($txt === null || $txt === '') {
+            return '';
+        }
+
         $changes = ['/à/' => 'a', '/á/' => 'a', '/â/' => 'a', '/ã/' => 'a', '/ä/' => 'a',
             '/å/' => 'a', '/æ/' => 'ae', '/ç/' => 'c', '/è/' => 'e', '/é/' => 'e', '/ê/' => 'e',
             '/ë/' => 'e', '/ì/' => 'i', '/í/' => 'i', '/î/' => 'i', '/ï/' => 'i', '/ð/' => 'd',
@@ -408,7 +412,8 @@ abstract class BaseTicket
             '/Ý/' => 'Y', '/Ÿ/' => 'Y'
         ];
 
-        return preg_replace(array_keys($changes), $changes, $txt);
+        $result = preg_replace(array_keys($changes), $changes, $txt);
+        return $result !== null ? $result : $txt;
     }
 
     protected static function setBody(ModelClass $model, TicketPrinter $printer): void

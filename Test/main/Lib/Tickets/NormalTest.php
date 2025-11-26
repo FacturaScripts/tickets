@@ -84,6 +84,57 @@ final class NormalTest extends TestCase
         $this->assertTrue($user->delete(), 'user-cant-delete');
     }
 
+    public function testPrintWithSpecialCharacters(): void
+    {
+        // crear usuario
+        $user = $this->getRandomUser();
+        $user->password = 'test1234';
+        $this->assertTrue($user->save(), 'cant-create-user');
+
+        // comprobar que no existe ningún ticket
+        $ticket = new Ticket();
+        $ticketCount = $ticket->count();
+
+        // creamos el cliente
+        $customer = $this->getRandomCustomer();
+        $this->assertTrue($customer->save(), 'cant-create-customer');
+
+        // creamos la factura
+        $invoice = new FacturaCliente();
+        $this->assertTrue($invoice->setSubject($customer), 'invoice-cant-set-subject');
+        $this->assertTrue($invoice->save(), 'cant-create-invoice');
+
+        // añadimos una línea con caracteres especiales (ñ, acentos, diéresis, ç, etc.)
+        $firstLine = $invoice->getNewLine();
+        $firstLine->cantidad = self::PRODUCT1_QUANTITY;
+        $firstLine->descripcion = 'Diseño español: àèìòù áéíóú âêîôû äëïöü ñÑ çÇ €';
+        $firstLine->pvpunitario = self::PRODUCT1_PRICE;
+        $this->assertTrue($firstLine->save(), 'cant-save-first-line');
+
+        // recalculamos
+        $lines = $invoice->getLines();
+        $this->assertTrue(Calculator::calculate($invoice, $lines, true), 'cant-update-invoice');
+
+        // crear impresora
+        $printer = new TicketPrinter();
+        $printer->name = 'test printer';
+        $printer->nick = $user->nick;
+        $this->assertTrue($printer->save(), 'printer-cant-save');
+
+        // crear ticket - esto no debe fallar con caracteres especiales
+        $this->assertTrue(Normal::print($invoice, $printer, new User()), 'print-failed-with-special-chars');
+
+        // comprobar existencia ticket
+        $this->assertEquals($ticketCount + 1, $ticket->count(), 'ticket-not-created');
+
+        // eliminamos
+        $this->assertTrue($invoice->delete(), 'cant-delete-invoice');
+        $this->assertTrue($customer->getDefaultAddress()->delete(), 'contacto-cant-delete');
+        $this->assertTrue($customer->delete(), 'cant-delete-customer');
+        $this->assertTrue($printer->delete(), 'printer-cant-delete');
+        $this->assertTrue($user->delete(), 'user-cant-delete');
+    }
+
     protected function tearDown(): void
     {
         $this->logErrors();
