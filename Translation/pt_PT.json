@@ -74,7 +74,7 @@
     "product-id": "ID do produto",
     "qz-tray-connection-error": "Error de conexión con QZ Tray.",
     "qz-tray-disconnected": "QZ Tray desconectado",
-    "qz-tray-disconnected-reload": "QZ Tray desconectado. Recargue la página si es necesario.",
+    "qz-tray-disconnected-reload": "QZ Tray desligado. Recarregue a página se necessário.",
     "qz-tray-not-connected": "¿Problemas para conectar? Verifique se o QZ Tray está instalado e configurado",
     "qz-tray-not-connected-before-print": "O QZ Tray não está conectado. Conecte-o antes de imprimir.",
     "qz-tray-not-connected-before-scan": "QZ Tray não está conectado. Conecte-se antes de escanear.",
@@ -95,7 +95,7 @@
     "trying-to-connect-qz-tray": "A tentar ligar ao QZ Tray...",
     "unknown-device": "Dispositivo desconocido",
     "vendor-id": "ID do vendedor",
-    "vendor-product-id-required-to-print": "El Vendor ID y el Product ID son necesarios para imprimir.",
+    "vendor-product-id-required-to-print": "O Vendor ID e o Product ID são necessários para imprimir.",
     "websocket-error": "Erro ao conectar ao WebSocket",
     "you-can-adjust-parameters": "Você pode ajustar os parâmetros, se necessário."
 }

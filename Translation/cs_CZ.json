@@ -37,7 +37,7 @@
     "no-ticket-format-found-model": "Nebyl nalezen žádný formát lístku pro tento model",
     "no-usb-devices-found": "Žádné USB zařízení nebylo nalezeno.",
     "no-valid-ticket-data-received": "Nebyla přijata platná data o tiketu ze serveru.",
-    "num-usb-devices-detected": "%num% dispositivos USB detectados.",
+    "num-usb-devices-detected": "%num% zařízení USB detekováno.",
     "number-of-copies": "Nº de copias",
     "old-mc20printer-version": "Probablemente esté usando una versión antigua de mc20printer. Descarga la última versión.",
     "open-command": "Comando de apertura",

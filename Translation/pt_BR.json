@@ -95,7 +95,7 @@
     "trying-to-connect-qz-tray": "Tentando conectar com QZ Tray...",
     "unknown-device": "Dispositivo desconhecido",
     "vendor-id": "ID do vendedor",
-    "vendor-product-id-required-to-print": "O ID do fornecedor e o ID do produto são necessários para imprimir.",
+    "vendor-product-id-required-to-print": "O Vendor ID e o Product ID são necessários para imprimir.",
     "websocket-error": "Erro ao conectar ao websocket",
     "you-can-adjust-parameters": "Você pode ajustar os parâmetros se necessário."
 }

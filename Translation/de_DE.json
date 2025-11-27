@@ -96,6 +96,6 @@
     "unknown-device": "Unbekanntes Gerät",
     "vendor-id": "Lieferanten-ID",
     "vendor-product-id-required-to-print": "Vendor‑ID und Product‑ID werden zum Drucken benötigt.",
-    "websocket-error": "Error al conectar al websocket",
+    "websocket-error": "Fehler beim Verbinden mit dem WebSocket",
     "you-can-adjust-parameters": "Sie können die Parameter bei Bedarf anpassen."
 }
