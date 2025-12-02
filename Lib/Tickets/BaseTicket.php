@@ -385,7 +385,7 @@ abstract class BaseTicket
             }
 
             static::$escpos->text(static::sanitize($td) . "\n");
-            static::$escpos->text(static::getTrazabilidad($line, $width));
+            static::$escpos->text(static::sanitize(static::getTrazabilidad($line, $width)));
         }
 
         static::$escpos->text($printer->getDashLine() . "\n");
@@ -395,6 +395,17 @@ abstract class BaseTicket
     {
         if ($txt === null || $txt === '') {
             return '';
+        }
+
+        // Primero, aseguramos que la cadena es UTF-8 válida
+        // Si no lo es, la convertimos desde ISO-8859-1 (Latin1) a UTF-8
+        if (!mb_check_encoding($txt, 'UTF-8')) {
+            $txt = mb_convert_encoding($txt, 'UTF-8', 'ISO-8859-1');
+        }
+
+        // Si aún no es válida, eliminamos caracteres inválidos
+        if (!mb_check_encoding($txt, 'UTF-8')) {
+            $txt = mb_convert_encoding($txt, 'UTF-8', 'UTF-8');
         }
 
         $changes = ['/à/' => 'a', '/á/' => 'a', '/â/' => 'a', '/ã/' => 'a', '/ä/' => 'a',
