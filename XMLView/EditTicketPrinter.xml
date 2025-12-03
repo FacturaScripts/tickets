@@ -84,7 +84,7 @@
                 <widget type="checkbox" fieldname="print_lines_price"/>
             </column>
             <column name="print-lines-price-tax" order="140">
-                <widget type="checkbox" fieldname="print-lines-price-tax"/>
+                <widget type="checkbox" fieldname="print_lines_price_tax"/>
             </column>
             <column name="print-lines-discount" order="150">
                 <widget type="checkbox" fieldname="print_lines_discount"/>
