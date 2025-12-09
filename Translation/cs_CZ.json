@@ -38,7 +38,7 @@
     "no-usb-devices-found": "Žádné USB zařízení nebylo nalezeno.",
     "no-valid-ticket-data-received": "Nebyla přijata platná data o tiketu ze serveru.",
     "num-usb-devices-detected": "%num% zařízení USB detekováno.",
-    "number-of-copies": "Nº de copias",
+    "number-of-copies": "Počet kopií",
     "old-mc20printer-version": "Probablemente esté usando una versión antigua de mc20printer. Descarga la última versión.",
     "open-command": "Comando de apertura",
     "paper-width": "Šířka papíru",
@@ -96,6 +96,6 @@
     "unknown-device": "Neznámé zařízení",
     "vendor-id": "ID dodavatele",
     "vendor-product-id-required-to-print": "ID dodavatele a ID produktu jsou nezbytné k tisku.",
-    "websocket-error": "Error al conectar al websocket",
+    "websocket-error": "Chyba při připojení k websocketu",
     "you-can-adjust-parameters": "Můžete upravit parametry, pokud je to nutné."
 }
