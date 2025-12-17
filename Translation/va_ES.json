@@ -74,7 +74,7 @@
     "product-id": "ID del producte",
     "qz-tray-connection-error": "Error de connexió amb QZ Tray.",
     "qz-tray-disconnected": "QZ Tray desconnectat",
-    "qz-tray-disconnected-reload": "QZ Tray desconnectat. Recargue la pàgina si és necessari.",
+    "qz-tray-disconnected-reload": "QZ Tray desconnectat. Torna a carregar la pàgina si cal.",
     "qz-tray-not-connected": "Tens problemes per connectar? Assegura't que QZ Tray està instal·lat i configurat",
     "qz-tray-not-connected-before-print": "QZ Tray no està connectat. Connecteu-vos abans d'imprimir.",
     "qz-tray-not-connected-before-scan": "QZ Tray no està connectat. Connecteu-vos abans d'escannejar.",

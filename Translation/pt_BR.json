@@ -37,7 +37,7 @@
     "no-ticket-format-found-model": "Não foi encontrado nenhum formato de ticket para este modelo",
     "no-usb-devices-found": "Não foram encontrados dispositivos USB.",
     "no-valid-ticket-data-received": "Não foram recebidos dados de ticket válidos do servidor.",
-    "num-usb-devices-detected": "%num% dispositivos USB detectados.",
+    "num-usb-devices-detected": "%num% dispositivos USB detetados.",
     "number-of-copies": "Nº de cópias",
     "old-mc20printer-version": "Provavelmente você está usando uma versão antiga do mc20printer. Baixe a versão mais recente.",
     "open-command": "Comando aberto",
