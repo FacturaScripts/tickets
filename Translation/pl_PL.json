@@ -21,7 +21,7 @@
     "expiration-abb": "Ważność",
     "failed-to-create-temporary-ticket": "Nie można utworzyć tymczasowego biletu",
     "failed-to-delete-temporary-ticket": "Nie udało się usunąć tymczasowego biletu",
-    "format-class-not-provided": "Clase de formato no proporcionada",
+    "format-class-not-provided": "Nie podano klasy formatu",
     "generated-ticket-body-is-empty": "Treść wygenerowanego biletu jest pusta",
     "gift": "Prezent",
     "interface": "Interfejs",

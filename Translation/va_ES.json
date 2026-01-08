@@ -30,7 +30,7 @@
     "loading": "Carregant...",
     "loading-ticket-preview": "Carregant la previsualització del tiquet...",
     "manual-config-updated-for": "Configuració manual actualitzada per a %name% (Vendor: %vendorId%, Product: %productId%).",
-    "manual-config-updated-for-user": "Configuración actualizada para %name%.",
+    "manual-config-updated-for-user": "Configuració actualitzada per a %name%.",
     "net-abb": "Net",
     "no-printer-connected": "Ninguna impresora conectada o configurada.",
     "no-ticket-data-to-print-load-first": "No hi ha dades de tiquet per imprimir. Carregueu una previsualització primer.",
@@ -96,6 +96,6 @@
     "unknown-device": "Dispositiu desconegut",
     "vendor-id": "ID del venedor",
     "vendor-product-id-required-to-print": "El Vendor ID i el Product ID són necessaris per imprimir.",
-    "websocket-error": "Error al conectar al websocket",
+    "websocket-error": "Error en connectar amb el websocket",
     "you-can-adjust-parameters": "Podeu ajustar els paràmetres si és necessari."
 }

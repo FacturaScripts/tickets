@@ -28,7 +28,7 @@
     "invalid-format-class": "Classe de formato inválida",
     "line-length": "Comprimento da linha",
     "loading": "A carregar...",
-    "loading-ticket-preview": "Carregando pré-visualização do ticket...",
+    "loading-ticket-preview": "A carregar a pré-visualização do ticket...",
     "manual-config-updated-for": "Configuração manual atualizada para %name% (Fornecedor: %vendorId%, Produto: %productId%).",
     "manual-config-updated-for-user": "Configuração atualizada para %name%.",
     "net-abb": "Líquido",
@@ -67,7 +67,7 @@
     "print-stored-logo": "Imprimir logotipo armazenado na impressora",
     "print-test-ticket": "Imprimir cupom de teste",
     "print-with-qz-tray": "Imprimir com QZ Tray",
-    "print-with-ticket-printer": "Imprimir com a impressora de tíquetes",
+    "print-with-ticket-printer": "Imprimir com impressora de tickets",
     "printer": "Impressora",
     "printer-not-found": "Impressora não encontrada",
     "printers": "Impressoras",
@@ -96,6 +96,6 @@
     "unknown-device": "Dispositivo desconhecido",
     "vendor-id": "ID do vendedor",
     "vendor-product-id-required-to-print": "O Vendor ID e o Product ID são necessários para imprimir.",
-    "websocket-error": "Erro ao conectar ao websocket",
+    "websocket-error": "Erro ao conectar ao WebSocket",
     "you-can-adjust-parameters": "Você pode ajustar os parâmetros se necessário."
 }
