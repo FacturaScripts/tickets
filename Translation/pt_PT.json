@@ -97,5 +97,5 @@
     "vendor-id": "ID do vendedor",
     "vendor-product-id-required-to-print": "O Vendor ID e o Product ID são necessários para imprimir.",
     "websocket-error": "Erro ao conectar ao WebSocket",
-    "you-can-adjust-parameters": "Você pode ajustar os parâmetros, se necessário."
+    "you-can-adjust-parameters": "Pode ajustar os parâmetros, se necessário."
 }
