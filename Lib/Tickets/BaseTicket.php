@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2023-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2023-2026 Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 
 namespace FacturaScripts\Plugins\Tickets\Lib\Tickets;
@@ -13,7 +13,7 @@ use FacturaScripts\Core\Where;
 use FacturaScripts\Dinamic\Model\Agente;
 use FacturaScripts\Dinamic\Model\FormaPago;
 use FacturaScripts\Dinamic\Model\Impuesto;
-use FacturaScripts\Dinamic\Model\PrePago;
+use FacturaScripts\Dinamic\Model\PrePagoCli;
 use FacturaScripts\Dinamic\Model\TicketPrinter;
 use FacturaScripts\Dinamic\Model\User;
 use Mike42\Escpos\PrintConnectors\DummyPrintConnector;
@@ -97,10 +97,10 @@ abstract class BaseTicket
         } elseif (Plugins::isEnabled('PrePagos')) {
             // si no es una factura buscamos si tiene anticipos
             $where = [
-                Where::column('modelid', $model->id()),
-                Where::column('modelname', $model->modelClassName()),
+                Where::eq('modelid', $model->id()),
+                Where::eq('modelname', $model->modelClassName()),
             ];
-            foreach (PrePago::all($where) as $prepago) {
+            foreach (PrePagoCli::all($where) as $prepago) {
                 if (isset($paymentMethods[$prepago->codpago])) {
                     $paymentMethods[$prepago->codpago] += $prepago->amount;
                     continue;
