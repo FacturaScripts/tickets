@@ -39,6 +39,7 @@
     "no-valid-ticket-data-received": "Aucune donnée de ticket valide n'a été reçue du serveur.",
     "num-usb-devices-detected": "%num% périphériques USB détectés.",
     "number-of-copies": "Nombre de copies",
+    "old-mc20printer-version": "Vous utilisez probablement une ancienne version de mc20printer. Téléchargez la dernière version.",
     "open-command": "Commande d'ouverture",
     "paper-width": "Largeur du papier",
     "please-select-a-format": "Veuillez sélectionner un format.",
@@ -92,8 +93,9 @@
     "ticket-ready-to-print": "Ticket prêt à imprimer.",
     "total-abb": "Total",
     "trying-to-connect-qz-tray": "Tentative de connexion à QZ Tray...",
-    "unknown-device": "Dispositif inconnu",
+    "unknown-device": "Appareil inconnu",
     "vendor-id": "ID fournisseur",
     "vendor-product-id-required-to-print": "L'ID fournisseur et l'ID produit sont nécessaires pour imprimer.",
+    "websocket-error": "Erreur lors de la connexion au websocket",
     "you-can-adjust-parameters": "Vous pouvez ajuster les paramètres si nécessaire."
 }

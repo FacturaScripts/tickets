@@ -39,6 +39,7 @@
     "no-valid-ticket-data-received": "No valid ticket data received from the server.",
     "num-usb-devices-detected": "%num% USB devices detected.",
     "number-of-copies": "Number of copies",
+    "old-mc20printer-version": "You are probably using an outdated version of mc20printer. Please download the latest version.",
     "open-command": "Open command",
     "paper-width": "Paper width",
     "please-select-a-format": "Please select a format.",
@@ -97,5 +98,7 @@
     "vendor-product-id-required-to-print": "Vendor ID and Product ID are required to print.",
     "you-can-adjust-parameters": "You can adjust the parameters if necessary.",
     "last-activity": "Last activity",
-    "print-shipping-address": "Print shipping address"
+    "print-shipping-address": "Print shipping address",
+    "websocket-error": "Error connecting to the WebSocket",
+    "you-can-adjust-parameters": "You can adjust the parameters if necessary."
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2019-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2019-2026 Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 
 namespace FacturaScripts\Plugins\Tickets\Controller;
@@ -19,10 +19,11 @@ class EditTicket extends EditController
 
     public function getPageData(): array
     {
-        $pageData = parent::getPageData();
-        $pageData['title'] = 'Ticket';
-        $pageData['icon'] = 'fa-solid fa-search';
-        return $pageData;
+        $data = parent::getPageData();
+        $data['menu'] = 'admin';
+        $data['title'] = 'Ticket';
+        $data['icon'] = 'fa-solid fa-search';
+        return $data;
     }
 
     protected function createViews()

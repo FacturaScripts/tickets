@@ -39,6 +39,7 @@
     "no-valid-ticket-data-received": "Es wurden keine gültigen Ticketdaten vom Server empfangen.",
     "num-usb-devices-detected": "%num% USB-Geräte erkannt.",
     "number-of-copies": "Anzahl der Kopien",
+    "old-mc20printer-version": "Möglicherweise verwenden Sie eine ältere Version von mc20printer. Laden Sie die neueste Version herunter.",
     "open-command": "Öffnen Befehl",
     "paper-width": "Papierbreite",
     "please-select-a-format": "Bitte wählen Sie ein Format aus.",
@@ -76,7 +77,7 @@
     "qz-tray-disconnected-reload": "QZ Tray ist getrennt. Laden Sie die Seite bei Bedarf neu.",
     "qz-tray-not-connected": "Probleme bei der Verbindung? Stellen Sie sicher, dass QZ Tray installiert und konfiguriert ist.",
     "qz-tray-not-connected-before-print": "QZ Tray ist nicht verbunden. Bitte verbinden Sie sich vor dem Drucken.",
-    "qz-tray-not-connected-before-scan": "QZ Tray ist nicht verbunden. Bitte verbinden Sie sich vor dem Scannen.",
+    "qz-tray-not-connected-before-scan": "QZ Tray ist nicht verbunden. Bitte verbinden Sie das Gerät, bevor Sie scannen.",
     "qz-tray-not-connected-click-to-start": "QZ Tray ist nicht verbunden. Klicken Sie auf Verbinden, um es zu starten.",
     "reference-abb": "Ref.",
     "select-a-printer": "Wählen Sie einen Drucker aus",
@@ -87,7 +88,7 @@
     "settings-saved-automatically": "Einstellungen automatisch im lokalen Speicher gespeichert.",
     "ticket-footer": "Fußzeile",
     "ticket-head": "Kopfzeile",
-    "ticket-preview-and-print": "Ticketvorschau und Drucken",
+    "ticket-preview-and-print": "Ticketvorschau und -druck",
     "ticket-preview-html": "Ticket-Vorschau (HTML)",
     "ticket-ready-to-print": "Ticket bereit zum Drucken.",
     "total-abb": "Gesamt",
@@ -95,5 +96,6 @@
     "unknown-device": "Unbekanntes Gerät",
     "vendor-id": "Lieferanten-ID",
     "vendor-product-id-required-to-print": "Vendor‑ID und Product‑ID werden zum Drucken benötigt.",
+    "websocket-error": "Fehler beim Verbinden mit dem WebSocket",
     "you-can-adjust-parameters": "Sie können die Parameter bei Bedarf anpassen."
 }

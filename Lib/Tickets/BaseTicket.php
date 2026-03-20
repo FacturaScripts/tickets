@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2023-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2023-2026 Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 
 namespace FacturaScripts\Plugins\Tickets\Lib\Tickets;
@@ -13,7 +13,7 @@ use FacturaScripts\Core\Where;
 use FacturaScripts\Dinamic\Model\Agente;
 use FacturaScripts\Dinamic\Model\FormaPago;
 use FacturaScripts\Dinamic\Model\Impuesto;
-use FacturaScripts\Dinamic\Model\PrePago;
+use FacturaScripts\Dinamic\Model\PrePagoCli;
 use FacturaScripts\Dinamic\Model\TicketPrinter;
 use FacturaScripts\Dinamic\Model\User;
 use Mike42\Escpos\PrintConnectors\DummyPrintConnector;
@@ -98,10 +98,10 @@ abstract class BaseTicket
         } elseif (Plugins::isEnabled('PrePagos')) {
             // si no es una factura buscamos si tiene anticipos
             $where = [
-                Where::column('modelid', $model->id()),
-                Where::column('modelname', $model->modelClassName()),
+                Where::eq('modelid', $model->id()),
+                Where::eq('modelname', $model->modelClassName()),
             ];
-            foreach (PrePago::all($where) as $prepago) {
+            foreach (PrePagoCli::all($where) as $prepago) {
                 if (isset($paymentMethods[$prepago->codpago])) {
                     $paymentMethods[$prepago->codpago] += $prepago->amount;
                     continue;
@@ -386,7 +386,7 @@ abstract class BaseTicket
             }
 
             static::$escpos->text(static::sanitize($td) . "\n");
-            static::$escpos->text(static::getTrazabilidad($line, $width));
+            static::$escpos->text(static::sanitize(static::getTrazabilidad($line, $width)));
         }
 
         static::$escpos->text($printer->getDashLine() . "\n");
@@ -394,6 +394,21 @@ abstract class BaseTicket
 
     protected static function sanitize(?string $txt): string
     {
+        if ($txt === null || $txt === '') {
+            return '';
+        }
+
+        // Primero, aseguramos que la cadena es UTF-8 válida
+        // Si no lo es, la convertimos desde ISO-8859-1 (Latin1) a UTF-8
+        if (!mb_check_encoding($txt, 'UTF-8')) {
+            $txt = mb_convert_encoding($txt, 'UTF-8', 'ISO-8859-1');
+        }
+
+        // Si aún no es válida, eliminamos caracteres inválidos
+        if (!mb_check_encoding($txt, 'UTF-8')) {
+            $txt = mb_convert_encoding($txt, 'UTF-8', 'UTF-8');
+        }
+
         $changes = ['/à/' => 'a', '/á/' => 'a', '/â/' => 'a', '/ã/' => 'a', '/ä/' => 'a',
             '/å/' => 'a', '/æ/' => 'ae', '/ç/' => 'c', '/è/' => 'e', '/é/' => 'e', '/ê/' => 'e',
             '/ë/' => 'e', '/ì/' => 'i', '/í/' => 'i', '/î/' => 'i', '/ï/' => 'i', '/ð/' => 'd',
@@ -409,7 +424,8 @@ abstract class BaseTicket
             '/Ý/' => 'Y', '/Ÿ/' => 'Y'
         ];
 
-        return preg_replace(array_keys($changes), $changes, $txt);
+        $result = preg_replace(array_keys($changes), $changes, $txt);
+        return $result !== null ? $result : $txt;
     }
 
     protected static function setBody(ModelClass $model, TicketPrinter $printer): void
