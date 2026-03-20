@@ -96,6 +96,9 @@
     "unknown-device": "Unknown device",
     "vendor-id": "Vendor ID",
     "vendor-product-id-required-to-print": "Vendor ID and Product ID are required to print.",
+    "you-can-adjust-parameters": "You can adjust the parameters if necessary.",
+    "last-activity": "Last activity",
+    "print-shipping-address": "Print shipping address",
     "websocket-error": "Error connecting to the WebSocket",
     "you-can-adjust-parameters": "You can adjust the parameters if necessary."
 }
