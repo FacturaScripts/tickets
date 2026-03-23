@@ -38,7 +38,7 @@ abstract class BaseTicket
     /** @var array */
     protected static $lines;
 
-    private static $openDrawer = true;
+    private static $openDrawer = false;
 
     abstract public static function print(ModelClass $model, TicketPrinter $printer, User $user, ?Agente $agent = null): bool;
 
@@ -47,7 +47,13 @@ abstract class BaseTicket
         static::$lines = $lines;
     }
 
-    protected static function setOpenDrawer(bool $openDrawer): void
+    /**
+     * Esta función tiene que ser llamada antes que print() o getBody() para que tenga efecto.
+     * 
+     * Esto es debido a que modifica la variable $openDrawer que si está activada injecta el código de abrir
+     * cajón en el body.
+     */
+    protected static function setOpenDrawer(bool $openDrawer = true): void
     {
         static::$openDrawer = $openDrawer;
     }
