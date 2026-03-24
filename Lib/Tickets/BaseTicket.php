@@ -444,6 +444,20 @@ abstract class BaseTicket
         $lines = self::getLines($model);
         static::printLines($printer, $lines);
 
+        // descuentos globales
+        if ($printer->print_lines_discount) {
+            if ($model->hasColumn('dtopor1') && $model->dtopor1 > 0) {
+                $textDto1 = sprintf("%" . ($printer->linelen - 11) . "s", static::$i18n->trans('discount') . " 1") . " "
+                    . sprintf("%10s", $model->dtopor1 . '%');
+                static::$escpos->text(static::sanitize($textDto1) . "\n");
+            }
+            if ($model->hasColumn('dtopor2') && $model->dtopor2 > 0) {
+                $textDto2 = sprintf("%" . ($printer->linelen - 11) . "s", static::$i18n->trans('discount') . " 2") . " "
+                    . sprintf("%10s", $model->dtopor2 . '%');
+                static::$escpos->text(static::sanitize($textDto2) . "\n");
+            }
+        }
+
         foreach (static::getSubtotals($model, $lines) as $item) {
             $text = sprintf("%" . ($printer->linelen - 11) . "s", static::$i18n->trans('tax-base') . ' ' . $item['taxp']) . " "
                 . sprintf("%10s", Tools::number($item['taxbase'])) . "\n"
