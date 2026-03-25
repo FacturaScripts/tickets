@@ -56,6 +56,9 @@
             <column name="print-shipping-address" order="160">
                 <widget type="checkbox" fieldname="print_shipping_address"/>
             </column>
+            <column name="print-client-fiscal-data" order="165">
+                <widget type="checkbox" fieldname="print_client_fiscal_data"/>
+            </column>
         </group>
         <group name="header" title="header" icon="fa-solid fa-arrows-up-to-line" numcolumns="6">
             <column name="ticket-head" numcolumns="12" order="100">

@@ -99,6 +99,6 @@
     "you-can-adjust-parameters": "You can adjust the parameters if necessary.",
     "last-activity": "Last activity",
     "print-shipping-address": "Print shipping address",
-    "websocket-error": "Error connecting to the WebSocket",
-    "you-can-adjust-parameters": "You can adjust the parameters if necessary."
+    "print-client-fiscal-data": "Print customer's fiscal data",
+    "websocket-error": "Error connecting to the WebSocket"
 }

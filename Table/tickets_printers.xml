@@ -77,6 +77,11 @@
         <default>false</default>
     </column>
     <column>
+        <name>print_client_fiscal_data</name>
+        <type>boolean</type>
+        <default>false</default>
+    </column>
+    <column>
         <name>print_invoice_receipts</name>
         <type>boolean</type>
         <default>false</default>

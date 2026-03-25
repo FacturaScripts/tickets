@@ -67,6 +67,9 @@ class TicketPrinter extends ModelClass
     public $print_comp_tlf;
 
     /** @var bool */
+    public $print_client_fiscal_data;
+
+    /** @var bool */
     public $print_invoice_receipts;
 
     /** @var bool */
@@ -118,6 +121,7 @@ class TicketPrinter extends ModelClass
         $this->linelen = 48;
         $this->print_comp_shortname = false;
         $this->print_comp_tlf = false;
+        $this->print_client_fiscal_data = false;
         $this->print_invoice_receipts = false;
         $this->print_lines_description = true;
         $this->print_lines_discount = false;
