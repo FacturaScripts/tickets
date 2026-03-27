@@ -36,15 +36,31 @@
                             </div>
                             {% for printer in fsc.printers %}
                                 {% if printer.isActive() %}
-                                    <button type="submit" name="printer" value="{{ printer.id }}"
-                                            class="btn w-100 btn-lg btn-success mt-3">
-                                        <i class="fa-solid fa-print"></i>&nbsp; {{ printer.name }}
-                                    </button>
+                                    <div class="btn-group w-100 mt-3" role="group">
+                                        <button type="submit" name="printer" value="{{ printer.id }}"
+                                                class="btn btn-lg btn-success">
+                                            <i class="fa-solid fa-print fa-fw me-1"></i>
+                                            {{ printer.name }} - {{ trans('print') }}
+                                        </button>
+                                        <button type="submit" name="printer_drawer" value="{{ printer.id }}"
+                                                class="btn btn-lg btn-outline-success">
+                                            <i class="fa-solid fa-inbox fa-fw me-1"></i>
+                                            {{ printer.name }} - {{ trans('print') }} + {{ trans('open-drawer') }}
+                                        </button>
+                                    </div>
                                 {% else %}
-                                    <button type="submit" name="printer" value="{{ printer.id }}"
-                                            class="btn w-100 btn-lg btn-warning mt-3">
-                                        <i class="fa-solid fa-print fa-fw me-1"></i>&nbsp; {{ printer.name }}
-                                    </button>
+                                    <div class="btn-group w-100 mt-3" role="group">
+                                        <button type="submit" name="printer" value="{{ printer.id }}"
+                                                class="btn btn-lg btn-warning">
+                                            <i class="fa-solid fa-print fa-fw me-1"></i>
+                                            {{ printer.name }} - {{ trans('print') }}
+                                        </button>
+                                        <button type="submit" name="printer_drawer" value="{{ printer.id }}"
+                                                class="btn btn-lg btn-outline-warning">
+                                            <i class="fa-solid fa-inbox fa-fw me-1"></i>
+                                            {{ printer.name }} - {{ trans('print') }} + {{ trans('open-drawer') }}
+                                        </button>
+                                    </div>
                                     <p class="text-muted">
                                         {{ trans('last-activity') }}: {{ printer.lastactivity }}
                                     </p>

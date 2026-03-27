@@ -85,7 +85,8 @@ class SendTicket extends Controller
 
         $action = $this->request->request->get('action', '');
         if ($action === 'print') {
-            $this->printAction($model);
+            $openDrawer = $this->request->request->has('printer_drawer');
+            $this->printAction($model, $openDrawer);
         } elseif ($action === 'get-escpos') {
             $this->getEscposAction($model);
         }
@@ -185,7 +186,7 @@ class SendTicket extends Controller
         $this->printers = TicketPrinter::all([], ['creationdate' => 'DESC']);
     }
 
-    protected function printAction(ModelClass $model): void
+    protected function printAction(ModelClass $model, bool $openDrawer = false): void
     {
         $formatClass = $this->request->request->get('format', '');
         if (empty($formatClass)) {
@@ -197,7 +198,9 @@ class SendTicket extends Controller
             return;
         }
 
-        $printer = $this->getPrinter((int)$this->request->request->get('printer'));
+        $printerId = (int)($this->request->request->get('printer_drawer')
+            ?: $this->request->request->get('printer'));
+        $printer = $this->getPrinter($printerId);
         if (false === $printer->exists()) {
             return;
         }
@@ -208,13 +211,15 @@ class SendTicket extends Controller
         $format = new $formatClass();
         $success = true;
 
-        // Imprimir el número de copias solicitadas
+        // Imprimir el número de copias solicitadas, abriendo el cajón solo en la primera
         for ($i = 0; $i < $copies; $i++) {
+            $formatClass::setOpenDrawer($openDrawer && $i === 0);
             if (false === $format::print($model, $printer, $this->user)) {
                 $success = false;
                 break;
             }
         }
+        $formatClass::setOpenDrawer(false);
 
         if ($success) {
             if ($copies > 1) {

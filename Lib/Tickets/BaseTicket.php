@@ -57,7 +57,7 @@ abstract class BaseTicket
      * Esto es debido a que modifica la variable $openDrawer que si está activada injecta el código de abrir
      * cajón en el body.
      */
-    protected static function setOpenDrawer(bool $openDrawer = true): void
+    public static function setOpenDrawer(bool $openDrawer = true): void
     {
         static::$openDrawer = $openDrawer;
     }
