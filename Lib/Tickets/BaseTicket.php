@@ -1,16 +1,19 @@
 <?php
+
 /**
  * Copyright (C) 2023-2026 Carlos Garcia Gomez <carlos@facturascripts.com>
  */
 
 namespace FacturaScripts\Plugins\Tickets\Lib\Tickets;
 
+use FacturaScripts\Core\DataSrc\Divisas;
 use FacturaScripts\Core\DataSrc\Paises;
 use FacturaScripts\Core\Plugins;
 use FacturaScripts\Core\Template\ModelClass;
 use FacturaScripts\Core\Tools;
 use FacturaScripts\Core\Translator;
 use FacturaScripts\Core\Where;
+use FacturaScripts\Dinamic\Lib\Calculator;
 use FacturaScripts\Dinamic\Model\Agente;
 use FacturaScripts\Dinamic\Model\FormaPago;
 use FacturaScripts\Dinamic\Model\Impuesto;
@@ -411,19 +414,68 @@ abstract class BaseTicket
             $txt = mb_convert_encoding($txt, 'UTF-8', 'UTF-8');
         }
 
-        $changes = ['/à/' => 'a', '/á/' => 'a', '/â/' => 'a', '/ã/' => 'a', '/ä/' => 'a',
-            '/å/' => 'a', '/æ/' => 'ae', '/ç/' => 'c', '/è/' => 'e', '/é/' => 'e', '/ê/' => 'e',
-            '/ë/' => 'e', '/ì/' => 'i', '/í/' => 'i', '/î/' => 'i', '/ï/' => 'i', '/ð/' => 'd',
-            '/ñ/' => 'n', '/ò/' => 'o', '/ó/' => 'o', '/ô/' => 'o', '/õ/' => 'o', '/ö/' => 'o',
-            '/ő/' => 'o', '/ø/' => 'o', '/ù/' => 'u', '/ú/' => 'u', '/û/' => 'u', '/ü/' => 'u',
-            '/ű/' => 'u', '/ý/' => 'y', '/þ/' => 'th', '/ÿ/' => 'y',
-            '/&quot;/' => '-', '/´/' => '/\'/', '/€/' => 'EUR', '/º/' => '.',
-            '/À/' => 'A', '/Á/' => 'A', '/Â/' => 'A', '/Ä/' => 'A',
-            '/Ç/' => 'C', '/È/' => 'E', '/É/' => 'E', '/Ê/' => 'E',
-            '/Ë/' => 'E', '/Ì/' => 'I', '/Í/' => 'I', '/Î/' => 'I', '/Ï/' => 'I',
-            '/Ñ/' => 'N', '/Ò/' => 'O', '/Ó/' => 'O', '/Ô/' => 'O', '/Ö/' => 'O',
-            '/Ù/' => 'U', '/Ú/' => 'U', '/Û/' => 'U', '/Ü/' => 'U',
-            '/Ý/' => 'Y', '/Ÿ/' => 'Y'
+        $changes = [
+            '/à/' => 'a',
+            '/á/' => 'a',
+            '/â/' => 'a',
+            '/ã/' => 'a',
+            '/ä/' => 'a',
+            '/å/' => 'a',
+            '/æ/' => 'ae',
+            '/ç/' => 'c',
+            '/è/' => 'e',
+            '/é/' => 'e',
+            '/ê/' => 'e',
+            '/ë/' => 'e',
+            '/ì/' => 'i',
+            '/í/' => 'i',
+            '/î/' => 'i',
+            '/ï/' => 'i',
+            '/ð/' => 'd',
+            '/ñ/' => 'n',
+            '/ò/' => 'o',
+            '/ó/' => 'o',
+            '/ô/' => 'o',
+            '/õ/' => 'o',
+            '/ö/' => 'o',
+            '/ő/' => 'o',
+            '/ø/' => 'o',
+            '/ù/' => 'u',
+            '/ú/' => 'u',
+            '/û/' => 'u',
+            '/ü/' => 'u',
+            '/ű/' => 'u',
+            '/ý/' => 'y',
+            '/þ/' => 'th',
+            '/ÿ/' => 'y',
+            '/&quot;/' => '-',
+            '/´/' => '/\'/',
+            '/€/' => 'EUR',
+            '/º/' => '.',
+            '/À/' => 'A',
+            '/Á/' => 'A',
+            '/Â/' => 'A',
+            '/Ä/' => 'A',
+            '/Ç/' => 'C',
+            '/È/' => 'E',
+            '/É/' => 'E',
+            '/Ê/' => 'E',
+            '/Ë/' => 'E',
+            '/Ì/' => 'I',
+            '/Í/' => 'I',
+            '/Î/' => 'I',
+            '/Ï/' => 'I',
+            '/Ñ/' => 'N',
+            '/Ò/' => 'O',
+            '/Ó/' => 'O',
+            '/Ô/' => 'O',
+            '/Ö/' => 'O',
+            '/Ù/' => 'U',
+            '/Ú/' => 'U',
+            '/Û/' => 'U',
+            '/Ü/' => 'U',
+            '/Ý/' => 'Y',
+            '/Ÿ/' => 'Y'
         ];
 
         $result = preg_replace(array_keys($changes), $changes, $txt);
@@ -446,33 +498,61 @@ abstract class BaseTicket
         $lines = self::getLines($model);
         static::printLines($printer, $lines);
 
-        // descuentos globales
-        if ($printer->print_lines_discount) {
-            if ($model->hasColumn('dtopor1') && $model->dtopor1 > 0) {
-                $textDto1 = sprintf("%" . ($printer->linelen - 11) . "s", static::$i18n->trans('discount') . " 1") . " "
-                    . sprintf("%10s", $model->dtopor1 . '%');
-                static::$escpos->text(static::sanitize($textDto1) . "\n");
-            }
-            if ($model->hasColumn('dtopor2') && $model->dtopor2 > 0) {
-                $textDto2 = sprintf("%" . ($printer->linelen - 11) . "s", static::$i18n->trans('discount') . " 2") . " "
-                    . sprintf("%10s", $model->dtopor2 . '%');
-                static::$escpos->text(static::sanitize($textDto2) . "\n");
-            }
+        // obtenemos los subtotales
+        $subtotals = Calculator::getSubTotals($model, $lines);
+
+        // calculamos el descuento 1
+        $totalDto1 = $model->dtopor1 > 0 ? $model->netosindto * $model->dtopor1 / 100 : 0;
+
+        // calculamos el descuento 2
+        $totalDto2 = $model->dtopor2 > 0 ? ($model->netosindto - $totalDto1) * $model->dtopor2 / 100 : 0;
+
+        // mostramos el subtotal sin descuentos si hay algún descuento global
+        if ($totalDto1 > 0 || $totalDto2 > 0) {
+            $netoSinDto = sprintf("%" . ($printer->linelen - 10) . "s", static::$i18n->trans('subtotal')) . " "
+                . sprintf("%9s", Tools::number($model->netosindto));
+            static::$escpos->text(static::sanitize($netoSinDto) . "\n");
         }
 
-        foreach (static::getSubtotals($model, $lines) as $item) {
-            $text = sprintf("%" . ($printer->linelen - 11) . "s", static::$i18n->trans('tax-base') . ' ' . $item['taxp']) . " "
-                . sprintf("%10s", Tools::number($item['taxbase'])) . "\n"
-                . sprintf("%" . ($printer->linelen - 11) . "s", $item['tax']) . " "
-                . sprintf("%10s", Tools::number($item['taxamount']));
+        if ($totalDto1 > 0) {
+            $textDto1 = sprintf("%" . ($printer->linelen - 10) . "s", static::$i18n->trans('discount') . ' ' . $model->dtopor1 . '%') . " "
+                . sprintf("%9s", Tools::number($totalDto1));
+            static::$escpos->text(static::sanitize($textDto1) . "\n");
+        }
+
+        if ($totalDto2 > 0) {
+            $textDto2 = sprintf("%" . ($printer->linelen - 10) . "s", static::$i18n->trans('discount') . ' ' . $model->dtopor2 . '%') . " "
+                . sprintf("%9s", Tools::number($totalDto2));
+            static::$escpos->text(static::sanitize($textDto2) . "\n");
+        }
+
+        // mostramos el neto con descuentos si hay algún descuento global
+        if (count($subtotals['iva']) > 1 && ($totalDto1 > 0 || $totalDto2 > 0)) {
+            $netoConDto = sprintf("%" . ($printer->linelen - 10) . "s", static::$i18n->trans('net')) . " "
+                . sprintf("%9s", Tools::number($model->neto));
+            static::$escpos->text(static::sanitize($netoConDto) . "\n");
+
+            $tax = sprintf("%" . ($printer->linelen - 10) . "s", static::$i18n->trans('taxes')) . " "
+                . sprintf("%9s", Tools::number($subtotals['totaliva']));
+            static::$escpos->text(static::sanitize($tax) . "\n");
+
+            static::$escpos->text($printer->getDashLine() . "\n");
+        }
+
+        foreach ($subtotals['iva'] as $item) {
+            $text = sprintf("%" . ($printer->linelen - 11) . "s", static::$i18n->trans('tax-base') . ' ' . $item['iva']) . "%"
+                . sprintf("%10s", Tools::number($item['neto'])) . "\n"
+                . sprintf("%" . ($printer->linelen - 11) . "s", static::$i18n->trans('tax') . ' ' . $item['iva']) . "%"
+                . sprintf("%10s", Tools::number($item['totaliva']));
             static::$escpos->text(static::sanitize($text) . "\n");
 
-            if ($item['taxsurcharge']) {
-                $text = sprintf("%" . ($printer->linelen - 11) . "s", "RE " . $item['taxsurchargep']) . " "
-                    . sprintf("%10s", Tools::number($item['taxsurcharge']));
+            if ($item['recargo'] > 0) {
+                $text = sprintf("%" . ($printer->linelen - 11) . "s", static::$i18n->trans('surcharge') . ' ' . $item['recargop']) . "%"
+                    . sprintf("%10s", Tools::number($item['totalrecargo']));
                 static::$escpos->text(static::sanitize($text) . "\n");
             }
         }
+
         static::$escpos->text($printer->getDashLine() . "\n");
 
         // añadimos los totales
@@ -577,16 +657,10 @@ abstract class BaseTicket
         // imprimimos los datos del cliente
         if (in_array($model->modelClassName(), ['PresupuestoCliente', 'PedidoCliente', 'AlbaranCliente', 'FacturaCliente'])) {
             static::$escpos->text(static::sanitize(static::$i18n->trans('date') . ': ' . $model->fecha . ' ' . $model->hora) . "\n");
+            static::$escpos->text(static::sanitize(static::$i18n->trans('currency') . ': ' . Divisas::get($model->coddivisa)->descripcion) . "\n");
 
-            // comprobar si es un documento simplificado
-            $isSimplified = false;
-            $serie = new Serie();
-            if ($serie->load($model->codserie) && $serie->tipo === 'S') {
-                $isSimplified = true;
-            }
-
-            // si se permite imprimir los datos fiscales y no es simplificado el documento
-            if ($printer->print_client_fiscal_data && !$isSimplified) {
+            // si se permite imprimir los datos fiscales
+            if ($printer->print_client_fiscal_data) {
                 // Imprimir todos los datos fiscales
                 static::$escpos->text(static::sanitize("\n" . static::$i18n->trans('billing-address') . "\n"));
                 static::$escpos->text(static::sanitize($model->nombrecliente) . "\n");
@@ -595,12 +669,14 @@ abstract class BaseTicket
                 }
 
                 $billingAddress = Tools::fixHtml($model->direccion);
-                $billingAddress .= empty($model->apartado) ? '' : ', ' . $model->apartado;
-                $billingAddress .= empty($model->codpostal) ? '' : ', ' . $model->codpostal;
-                $billingAddress .= empty($model->ciudad) ? '' : ', ' . Tools::fixHtml($model->ciudad);
-                $billingAddress .= empty($model->provincia) ? '' : ' (' . Tools::fixHtml($model->provincia) . ')';
-                $billingAddress .= empty($model->codpais) ? '' : ', ' . Paises::get($model->codpais)->nombre;
-                static::$escpos->text(static::sanitize($billingAddress) . "\n");
+                if (!empty($billingAddress)) {
+                    $billingAddress .= empty($model->apartado) ? '' : ', ' . $model->apartado;
+                    $billingAddress .= empty($model->codpostal) ? '' : ', ' . $model->codpostal;
+                    $billingAddress .= empty($model->ciudad) ? '' : ', ' . Tools::fixHtml($model->ciudad);
+                    $billingAddress .= empty($model->provincia) ? '' : ' (' . Tools::fixHtml($model->provincia) . ')';
+                    $billingAddress .= empty($model->codpais) ? '' : ', ' . Paises::get($model->codpais)->nombre;
+                    static::$escpos->text(static::sanitize($billingAddress) . "\n");
+                }
             } else {
                 // si es simplificada solo imprimir el nombre o no permitir imprimir los datos fiscales, solo imprimir el nombre del cliente
                 static::$escpos->text(static::sanitize(static::$i18n->trans('customer') . ': ' . $model->nombrecliente) . "\n");
@@ -612,12 +688,14 @@ abstract class BaseTicket
                 static::$escpos->text(static::sanitize("\n" . static::$i18n->trans('shipping-address') . "\n"));
 
                 $shippingAddress = Tools::fixHtml($shippingContact->direccion);
-                $shippingAddress .= empty($shippingContact->apartado) ? '' : ', ' . $shippingContact->apartado;
-                $shippingAddress .= empty($shippingContact->codpostal) ? '' : ', ' . $shippingContact->codpostal;
-                $shippingAddress .= empty($shippingContact->ciudad) ? '' : ', ' . Tools::fixHtml($shippingContact->ciudad);
-                $shippingAddress .= empty($shippingContact->provincia) ? '' : ' (' . Tools::fixHtml($shippingContact->provincia) . ')';
-                $shippingAddress .= empty($shippingContact->codpais) ? '' : ', ' . Paises::get($shippingContact->codpais)->nombre;
-                static::$escpos->text(static::sanitize($shippingAddress) . "\n");
+                if (!empty($shippingAddress)) {
+                    $shippingAddress .= empty($shippingContact->apartado) ? '' : ', ' . $shippingContact->apartado;
+                    $shippingAddress .= empty($shippingContact->codpostal) ? '' : ', ' . $shippingContact->codpostal;
+                    $shippingAddress .= empty($shippingContact->ciudad) ? '' : ', ' . Tools::fixHtml($shippingContact->ciudad);
+                    $shippingAddress .= empty($shippingContact->provincia) ? '' : ' (' . Tools::fixHtml($shippingContact->provincia) . ')';
+                    $shippingAddress .= empty($shippingContact->codpais) ? '' : ', ' . Paises::get($shippingContact->codpais)->nombre;
+                    static::$escpos->text(static::sanitize($shippingAddress) . "\n");
+                }
             }
 
             static::$escpos->text("\n");
@@ -635,11 +713,13 @@ abstract class BaseTicket
 
     protected static function setHeaderTPV(ModelClass $model, TicketPrinter $printer): void
     {
-        if (false === Plugins::isEnabled('TPVneo') ||
+        if (
+            false === Plugins::isEnabled('TPVneo') ||
             false === isset($printer->print_name_terminal) ||
             false === $printer->print_name_terminal ||
             false === isset($model->idtpv) ||
-            empty($model->idtpv)) {
+            empty($model->idtpv)
+        ) {
             return;
         }
 
