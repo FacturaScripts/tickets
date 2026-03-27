@@ -23,7 +23,6 @@ use FacturaScripts\Dinamic\Model\User;
 use Mike42\Escpos\PrintConnectors\DummyPrintConnector;
 use Mike42\Escpos\Printer;
 use FacturaScripts\Dinamic\Model\Contacto;
-use FacturaScripts\Dinamic\Model\Serie;
 
 /**
  * @author Carlos Garcia Gomez      <carlos@facturascripts.com>
