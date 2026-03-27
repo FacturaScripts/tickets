@@ -5,6 +5,7 @@
 
 namespace FacturaScripts\Plugins\Tickets\Model;
 
+use FacturaScripts\Core\Session;
 use FacturaScripts\Core\Template\ModelClass;
 use FacturaScripts\Core\Template\ModelTrait;
 use FacturaScripts\Core\Tools;
@@ -167,6 +168,28 @@ class TicketPrinter extends ModelClass
         }
 
         return $line;
+    }
+
+    /**
+     * Abre la caja de una impresora
+     * 
+     * Esto lo consigue creando un ticket vacío que solo contiene la instrucción de abrir cajón
+     * 
+     * @return true si se ha enviado la instrucción de abrir cajón y false en cambio.
+     */
+    public function openDrawer(): bool
+    {
+        $ticket = new Ticket();
+        $ticket->idprinter = $this->id;
+        $ticket->title = Tools::trans('open-drawer');
+        $ticket->body = $this->getCommandStr('open');
+
+        $user = Session::user();
+        if ($user) {
+            $ticket->nick = $user->nick;
+        }
+
+        return $ticket->save();
     }
 
     public function install(): string
