@@ -5,6 +5,7 @@
 
 namespace FacturaScripts\Plugins\Tickets\Lib\Tickets;
 
+use FacturaScripts\Core\DataSrc\Paises;
 use FacturaScripts\Core\Plugins;
 use FacturaScripts\Core\Template\ModelClass;
 use FacturaScripts\Core\Tools;
@@ -563,7 +564,7 @@ abstract class BaseTicket
         if (in_array($model->modelClassName(), ['PresupuestoCliente', 'PedidoCliente', 'AlbaranCliente', 'FacturaCliente'])) {
             static::$escpos->text(static::sanitize(static::$i18n->trans('date') . ': ' . $model->fecha . ' ' . $model->hora) . "\n");
 
-            // comrpobar si es un documento simplificado
+            // comprobar si es un documento simplificado
             $isSimplified = false;
             $serie = new Serie();
             if ($serie->load($model->codserie) && $serie->tipo === 'S') {
@@ -573,48 +574,36 @@ abstract class BaseTicket
             // si se permite imprimir los datos fiscales y no es simplificado el documento
             if ($printer->print_client_fiscal_data && !$isSimplified) {
                 // Imprimir todos los datos fiscales
-                static::$escpos->text(static::sanitize(static::$i18n->trans('customer') . ': ' . $model->nombrecliente) . "\n");
+                static::$escpos->text(static::sanitize("\n" . static::$i18n->trans('billing-address') . "\n"));
+                static::$escpos->text(static::sanitize($model->nombrecliente) . "\n");
                 if (!empty($model->cifnif)) {
-                    static::$escpos->text(static::sanitize(static::$i18n->trans('cifnif') . ': ' . $model->cifnif) . "\n");
-                }
-                if (!empty($model->direccion)) {
-                    static::$escpos->text(static::sanitize(static::$i18n->trans('address') . ': ' . $model->direccion) . "\n");
+                    static::$escpos->text(static::sanitize($model->cifnif) . "\n");
                 }
 
-                $location = trim(($model->codpostal ?? '') . ' ' . ($model->ciudad ?? ''));
-                if (!empty($location)) {
-                    if (!empty($model->provincia)) {
-                        $location .= ', ' . $model->provincia;
-                    }
-                    static::$escpos->text(static::sanitize($location) . "\n");
-                } elseif (!empty($model->provincia)) {
-                    static::$escpos->text(static::sanitize($model->provincia) . "\n");
-                }
+                $billingAddress = Tools::fixHtml($model->direccion);
+                $billingAddress .= empty($model->apartado) ? '' : ', ' . $model->apartado;
+                $billingAddress .= empty($model->codpostal) ? '' : ', ' . $model->codpostal;
+                $billingAddress .= empty($model->ciudad) ? '' : ', ' . Tools::fixHtml($model->ciudad);
+                $billingAddress .= empty($model->provincia) ? '' : ' (' . Tools::fixHtml($model->provincia) . ')';
+                $billingAddress .= empty($model->codpais) ? '' : ', ' . Paises::get($model->codpais)->nombre;
+                static::$escpos->text(static::sanitize($billingAddress) . "\n");
             } else {
-                // si es simplificada solo imprimir el nombre
+                // si es simplificada solo imprimir el nombre o no permitir imprimir los datos fiscales, solo imprimir el nombre del cliente
                 static::$escpos->text(static::sanitize(static::$i18n->trans('customer') . ': ' . $model->nombrecliente) . "\n");
             }
 
             // si se debe imprimir la dirección de envio
-            if ($printer->print_shipping_address) {
-                static::$escpos->text(static::sanitize(static::$i18n->trans('address') . ': '));
-                $shippingAddress = new Contacto();
-                
-                if(empty($model->idcontactoenv) && empty($model->direccion)){
-                    // si las dos están vacías entonces un -
-                    static::$escpos->text(static::sanitize(' - '));
-                    
-                } else if ($shippingAddress->load($model->idcontactoenv)) {
-                    // si existe el contacto de envio lo imprimimos
-                    static::$escpos->text(static::sanitize($shippingAddress->direccion) . "\n");
-                    static::$escpos->text(static::sanitize(
-                            $shippingAddress->codpostal . ' (' . $shippingAddress->ciudad . '), ' . $shippingAddress->provincia
-                        ) . ", ");
+            $shippingContact = new Contacto();
+            if ($printer->print_shipping_address && $shippingContact->load($model->idcontactoenv)) {
+                static::$escpos->text(static::sanitize("\n" . static::$i18n->trans('shipping-address') . "\n"));
 
-                }else{
-                    // sino imprimimos la direccion de factura
-                    static::$escpos->text(static::sanitize($model->direccion) . "\n");
-                }
+                $shippingAddress = Tools::fixHtml($shippingContact->direccion);
+                $shippingAddress .= empty($shippingContact->apartado) ? '' : ', ' . $shippingContact->apartado;
+                $shippingAddress .= empty($shippingContact->codpostal) ? '' : ', ' . $shippingContact->codpostal;
+                $shippingAddress .= empty($shippingContact->ciudad) ? '' : ', ' . Tools::fixHtml($shippingContact->ciudad);
+                $shippingAddress .= empty($shippingContact->provincia) ? '' : ' (' . Tools::fixHtml($shippingContact->provincia) . ')';
+                $shippingAddress .= empty($shippingContact->codpais) ? '' : ', ' . Paises::get($shippingContact->codpais)->nombre;
+                static::$escpos->text(static::sanitize($shippingAddress) . "\n");
             }
 
             static::$escpos->text("\n");
