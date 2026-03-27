@@ -19,6 +19,7 @@ use FacturaScripts\Dinamic\Model\User;
 use Mike42\Escpos\PrintConnectors\DummyPrintConnector;
 use Mike42\Escpos\Printer;
 use FacturaScripts\Dinamic\Model\Contacto;
+use FacturaScripts\Dinamic\Model\Serie;
 
 /**
  * @author Carlos Garcia Gomez      <carlos@facturascripts.com>
@@ -558,10 +559,41 @@ abstract class BaseTicket
         static::setHeaderTPV($model, $printer);
 
         // si es un documento de venta
-        // imprimimos la fecha y el cliente
+        // imprimimos los datos del cliente
         if (in_array($model->modelClassName(), ['PresupuestoCliente', 'PedidoCliente', 'AlbaranCliente', 'FacturaCliente'])) {
             static::$escpos->text(static::sanitize(static::$i18n->trans('date') . ': ' . $model->fecha . ' ' . $model->hora) . "\n");
-            static::$escpos->text(static::sanitize(static::$i18n->trans('customer') . ': ' . $model->nombrecliente) . "\n");
+
+            // comrpobar si es un documento simplificado
+            $isSimplified = false;
+            $serie = new Serie();
+            if ($serie->load($model->codserie) && $serie->tipo === 'S') {
+                $isSimplified = true;
+            }
+
+            // si se permite imprimir los datos fiscales y no es simplificado el documento
+            if ($printer->print_client_fiscal_data && !$isSimplified) {
+                // Imprimir todos los datos fiscales
+                static::$escpos->text(static::sanitize(static::$i18n->trans('customer') . ': ' . $model->nombrecliente) . "\n");
+                if (!empty($model->cifnif)) {
+                    static::$escpos->text(static::sanitize(static::$i18n->trans('cifnif') . ': ' . $model->cifnif) . "\n");
+                }
+                if (!empty($model->direccion)) {
+                    static::$escpos->text(static::sanitize(static::$i18n->trans('address') . ': ' . $model->direccion) . "\n");
+                }
+
+                $location = trim(($model->codpostal ?? '') . ' ' . ($model->ciudad ?? ''));
+                if (!empty($location)) {
+                    if (!empty($model->provincia)) {
+                        $location .= ', ' . $model->provincia;
+                    }
+                    static::$escpos->text(static::sanitize($location) . "\n");
+                } elseif (!empty($model->provincia)) {
+                    static::$escpos->text(static::sanitize($model->provincia) . "\n");
+                }
+            } else {
+                // si es simplificada solo imprimir el nombre
+                static::$escpos->text(static::sanitize(static::$i18n->trans('customer') . ': ' . $model->nombrecliente) . "\n");
+            }
 
             // si se debe imprimir la dirección de envio
             if ($printer->print_shipping_address) {
