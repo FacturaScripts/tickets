@@ -177,12 +177,16 @@ class TicketPrinter extends ModelClass
      * 
      * @return true si se ha enviado la instrucción de abrir cajón y false en cambio.
      */
-    public function openDrawer(): bool
+    public function openDrawer(?string $codagent = null): bool
     {
         $ticket = new Ticket();
         $ticket->idprinter = $this->id;
         $ticket->title = Tools::trans('open-drawer');
         $ticket->body = $this->getCommandStr('open');
+
+        if (!empty($codagent)) {
+            $ticket->codagente = $codagent;
+        }
 
         $user = Session::user();
         if ($user) {
