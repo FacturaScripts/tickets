@@ -64,6 +64,7 @@
     "print-logo": "Print logo",
     "print-payment-methods": "Print payment methods",
     "print-preticket": "Pre-print tickets",
+    "print-shipping-address": "Print shipping address",
     "print-stored-logo": "Print logo stored in the printer",
     "print-test-ticket": "Print test ticket",
     "print-with-qz-tray": "Print with QZ Tray.",
@@ -96,9 +97,6 @@
     "unknown-device": "Unknown device",
     "vendor-id": "Vendor ID",
     "vendor-product-id-required-to-print": "Vendor ID and Product ID are required to print.",
-    "you-can-adjust-parameters": "You can adjust the parameters if necessary.",
-    "last-activity": "Last activity",
-    "print-shipping-address": "Print shipping address",
-    "print-client-fiscal-data": "Print customer's fiscal data",
-    "websocket-error": "Error connecting to the WebSocket"
+    "websocket-error": "Error connecting to the WebSocket",
+    "you-can-adjust-parameters": "You can adjust the parameters if necessary."
 }

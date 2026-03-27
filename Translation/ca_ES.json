@@ -64,6 +64,7 @@
     "print-logo": "Imprimir logo",
     "print-payment-methods": "Imprimir formes de pagament",
     "print-preticket": "Pre-imprimir tiquets",
+    "print-shipping-address": "Imprimir adreça d'enviament",
     "print-stored-logo": "Imprimir logotip emmagatzemat a la impressora",
     "print-test-ticket": "Imprimir tiquet de prova",
     "print-with-qz-tray": "Imprimir amb QZ Tray",

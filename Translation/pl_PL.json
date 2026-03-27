@@ -64,6 +64,7 @@
     "print-logo": "Drukuj logo",
     "print-payment-methods": "Drukuj formy płatności",
     "print-preticket": "Wydrukuj wstępny bilet",
+    "print-shipping-address": "Imprimir dirección de envío",
     "print-stored-logo": "Imprimir logotipo almacenado en la impresora",
     "print-test-ticket": "Drukuj bilet testowy",
     "print-with-qz-tray": "Drukuj z QZ Tray",
@@ -95,7 +96,7 @@
     "trying-to-connect-qz-tray": "Łączenie z QZ Tray...",
     "unknown-device": "Nieznane urządzenie",
     "vendor-id": "ID dostawcy",
-    "vendor-product-id-required-to-print": "Vendor ID i Product ID są wymagane do wydrukowania.",
+    "vendor-product-id-required-to-print": "ID dostawcy i ID produktu są wymagane do wydruku.",
     "websocket-error": "Błąd połączenia z websocketem",
     "you-can-adjust-parameters": "Możesz dostosować parametry, jeśli zajdzie taka potrzeba."
 }

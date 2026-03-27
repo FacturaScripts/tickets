@@ -64,6 +64,7 @@
     "print-logo": "Imprimer le logo",
     "print-payment-methods": "Imprimer les moyens de paiement",
     "print-preticket": "Billets pré-imprimés",
+    "print-shipping-address": "Imprimir dirección de envío",
     "print-stored-logo": "Imprimer le logo stocké sur l'imprimante",
     "print-test-ticket": "Imprimer un ticket de test",
     "print-with-qz-tray": "Imprimer avec QZ Tray",
@@ -88,7 +89,7 @@
     "settings-saved-automatically": "Paramètres enregistrés automatiquement dans le stockage local.",
     "ticket-footer": "Pied de page",
     "ticket-head": "En-tête",
-    "ticket-preview-and-print": "Impression de tickets",
+    "ticket-preview-and-print": "Aperçu et impression des tickets",
     "ticket-preview-html": "Aperçu du ticket (HTML)",
     "ticket-ready-to-print": "Ticket prêt à imprimer.",
     "total-abb": "Total",
@@ -96,6 +97,6 @@
     "unknown-device": "Appareil inconnu",
     "vendor-id": "ID fournisseur",
     "vendor-product-id-required-to-print": "L'ID fournisseur et l'ID produit sont nécessaires pour imprimer.",
-    "websocket-error": "Erreur lors de la connexion au websocket",
+    "websocket-error": "Erreur lors de la connexion au WebSocket",
     "you-can-adjust-parameters": "Vous pouvez ajuster les paramètres si nécessaire."
 }

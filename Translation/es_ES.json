@@ -64,6 +64,7 @@
     "print-logo": "Imprimir logo",
     "print-payment-methods": "Imprimir formas de pago",
     "print-preticket": "Pre-imprimir tickets",
+    "print-shipping-address": "Imprimir dirección de envío",
     "print-stored-logo": "Imprimir logotipo almacenado en la impresora",
     "print-test-ticket": "Imprimir ticket de prueba",
     "print-with-qz-tray": "Imprimir con QZ Tray",
@@ -96,9 +97,6 @@
     "unknown-device": "Dispositivo desconocido",
     "vendor-id": "Vendor ID",
     "vendor-product-id-required-to-print": "El Vendor ID y el Product ID son necesarios para imprimir.",
-    "you-can-adjust-parameters": "Puede ajustar los parámetros si es necesario.",
-    "last-activity": "Última actividad",
-    "print-shipping-address": "Imprimir dirección de envío",
-    "print-client-fiscal-data": "Imprimir datos fiscales del cliente",
-    "websocket-error": "Error al conectar al websocket"
+    "websocket-error": "Error al conectar al websocket",
+    "you-can-adjust-parameters": "Puede ajustar los parámetros si es necesario."
 }

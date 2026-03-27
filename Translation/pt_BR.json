@@ -64,6 +64,7 @@
     "print-logo": "Imprimir logotipo",
     "print-payment-methods": "Imprimir formas de pagamento",
     "print-preticket": "Pré-imprimir bilhetes",
+    "print-shipping-address": "Imprimir endereço de entrega",
     "print-stored-logo": "Imprimir logotipo armazenado na impressora",
     "print-test-ticket": "Imprimir cupom de teste",
     "print-with-qz-tray": "Imprimir com QZ Tray",
