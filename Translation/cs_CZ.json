@@ -1,4 +1,5 @@
 {
+    "allow-sales-without-payment": "Povolit prodej bez nabíjení",
     "check-connection-and-parameters": "Zkontrolujte připojení a parametry.",
     "configure-printer": "Nastavit tiskárnu",
     "connect-a-printer": "Conectar una impresora",
@@ -64,7 +65,7 @@
     "print-logo": "Tisknout logo",
     "print-payment-methods": "Tisk způsobů platby",
     "print-preticket": "Předtisknout vstupenky",
-    "print-shipping-address": "Imprimir dirección de envío",
+    "print-shipping-address": "Tisknout doručovací adresu",
     "print-stored-logo": "Tisk uloženého loga",
     "print-test-ticket": "Tisk zkušebního lístku",
     "print-with-qz-tray": "Tisknout pomocí QZ Tray",

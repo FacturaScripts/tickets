@@ -1,4 +1,5 @@
 {
+    "allow-sales-without-payment": "Consenti vendite non pagate",
     "check-connection-and-parameters": "Controlla la connessione e i parametri.",
     "configure-printer": "Configurare la stampante",
     "connect-a-printer": "Connettere una stampante",
@@ -95,7 +96,7 @@
     "total-abb": "Totale",
     "trying-to-connect-qz-tray": "Tentativo di connessione a QZ Tray...",
     "unknown-device": "Dispositivo sconosciuto",
-    "vendor-id": "ID Fornitore",
+    "vendor-id": "ID del venditore",
     "vendor-product-id-required-to-print": "Il Vendor ID e il Product ID sono necessari per stampare.",
     "websocket-error": "Errore nella connessione al websocket",
     "you-can-adjust-parameters": "Può regolare i parametri se necessario."

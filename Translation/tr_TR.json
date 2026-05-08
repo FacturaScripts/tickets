@@ -1,4 +1,5 @@
 {
+    "allow-sales-without-payment": "Ücret almadan satış yapılmasına izin verin.",
     "check-connection-and-parameters": "Bağlantıyı ve parametreleri kontrol edin.",
     "configure-printer": "Yazıcıyı yapılandır",
     "connect-a-printer": "Bir yazıcı bağlayın",
@@ -64,7 +65,7 @@
     "print-logo": "Logoyu yazdır",
     "print-payment-methods": "Ödeme yöntemlerini yazdır",
     "print-preticket": "Fişleri ön baskı",
-    "print-shipping-address": "Imprimir dirección de envío",
+    "print-shipping-address": "Gönderim adresini yazdırın",
     "print-stored-logo": "Yazıcıda saklanan logoyu yazdır",
     "print-test-ticket": "Test fişi yazdır",
     "print-with-qz-tray": "QZ Tray ile yazdır",

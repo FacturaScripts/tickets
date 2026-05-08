@@ -1,4 +1,5 @@
 {
+    "allow-sales-without-payment": "Allow sales without charging",
     "check-connection-and-parameters": "Check connection and parameters",
     "configure-printer": "Configure printer",
     "connect-a-printer": "Connect a printer",

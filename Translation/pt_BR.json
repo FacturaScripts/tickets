@@ -1,4 +1,5 @@
 {
+    "allow-sales-without-payment": "Permitir vendas sem cobrança",
     "check-connection-and-parameters": "Verifique a conexão e os parâmetros.",
     "configure-printer": "Configurar impressora",
     "connect-a-printer": "Conectar uma impressora",
@@ -74,7 +75,7 @@
     "printers": "Impressoras",
     "product-id": "ID do produto",
     "qz-tray-connection-error": "Erro de conexão com o QZ Tray.",
-    "qz-tray-disconnected": "QZ Tray desconectado",
+    "qz-tray-disconnected": "QZ Tray desligado",
     "qz-tray-disconnected-reload": "QZ Tray desconectado. Recarregue a página se necessário.",
     "qz-tray-not-connected": "Problemas para conectar? Certifique-se de que o QZ Tray está instalado e configurado",
     "qz-tray-not-connected-before-print": "O QZ Tray não está conectado. Conecte-o antes de imprimir.",

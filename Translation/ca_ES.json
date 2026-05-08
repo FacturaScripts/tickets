@@ -1,4 +1,5 @@
 {
+    "allow-sales-without-payment": "Permet vendes sense cobrar",
     "check-connection-and-parameters": "Comproveu la connexió i els paràmetres.",
     "configure-printer": "Configurar impressora",
     "connect-a-printer": "Connectar una impressora",

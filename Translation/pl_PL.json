@@ -1,4 +1,5 @@
 {
+    "allow-sales-without-payment": "Zezwalaj na nieodpłatną sprzedaż",
     "check-connection-and-parameters": "Sprawdź połączenie i parametry.",
     "configure-printer": "Konfiguruj drukarkę",
     "connect-a-printer": "Podłącz drukarkę",
@@ -64,7 +65,7 @@
     "print-logo": "Drukuj logo",
     "print-payment-methods": "Drukuj formy płatności",
     "print-preticket": "Wydrukuj wstępny bilet",
-    "print-shipping-address": "Imprimir dirección de envío",
+    "print-shipping-address": "Drukuj adres dostawy",
     "print-stored-logo": "Imprimir logotipo almacenado en la impresora",
     "print-test-ticket": "Drukuj bilet testowy",
     "print-with-qz-tray": "Drukuj z QZ Tray",

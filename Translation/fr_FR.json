@@ -1,4 +1,5 @@
 {
+    "allow-sales-without-payment": "Autoriser les ventes sans facturer",
     "check-connection-and-parameters": "Vérifiez la connexion et les paramètres.",
     "configure-printer": "Configurer l'imprimante",
     "connect-a-printer": "Connectez une imprimante",
@@ -64,7 +65,7 @@
     "print-logo": "Imprimer le logo",
     "print-payment-methods": "Imprimer les moyens de paiement",
     "print-preticket": "Billets pré-imprimés",
-    "print-shipping-address": "Imprimir dirección de envío",
+    "print-shipping-address": "Imprimer l'adresse de livraison",
     "print-stored-logo": "Imprimer le logo stocké sur l'imprimante",
     "print-test-ticket": "Imprimer un ticket de test",
     "print-with-qz-tray": "Imprimer avec QZ Tray",

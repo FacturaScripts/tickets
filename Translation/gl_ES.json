@@ -1,4 +1,5 @@
 {
+    "allow-sales-without-payment": "Permitir vendas sen cobrar",
     "check-connection-and-parameters": "Comprobe a conexión e os parámetros.",
     "configure-printer": "Configurar impresora",
     "connect-a-printer": "Conectar unha impresora",
@@ -64,7 +65,7 @@
     "print-logo": "Imprimir logo",
     "print-payment-methods": "Imprimir formas de pagamento",
     "print-preticket": "Pre-imprimir tickets",
-    "print-shipping-address": "Imprimir dirección de envío",
+    "print-shipping-address": "Imprimir enderezo de envío",
     "print-stored-logo": "Imprimir logotipo almacenado na impresora",
     "print-test-ticket": "Imprimir ticket de proba",
     "print-with-qz-tray": "Imprimir con QZ Tray",
