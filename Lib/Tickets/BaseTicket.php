@@ -552,7 +552,7 @@ abstract class BaseTicket
             static::$escpos->text(static::sanitize($text) . "\n");
 
             if ($item['recargo'] > 0) {
-                $text = sprintf("%" . ($printer->linelen - 11) . "s", static::$i18n->trans('surcharge') . ' ' . $item['recargop']) . "%"
+                $text = sprintf("%" . ($printer->linelen - 11) . "s", static::$i18n->trans('surcharge') . ' ' . $item['recargo']) . "%"
                     . sprintf("%10s", Tools::number($item['totalrecargo']));
                 static::$escpos->text(static::sanitize($text) . "\n");
             }
