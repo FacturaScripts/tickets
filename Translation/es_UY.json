@@ -50,6 +50,7 @@
     "preview-init-printer": "[Init Printer]",
     "preview-pulse-drawer": "[Abrir Cajón]",
     "price-abb": "Precio",
+    "print-client-fiscal-data": "Imprimir datos del cliente",
     "print-comp-shortname": "Imprimir nombre corto de empresa",
     "print-comp-tlf": "Imprimir teléfono empresa",
     "print-delay": "Tiempo impresión (s)",

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2019-2025 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2019-2025 Carlos García Gómez <carlos@facturascripts.com>
  */
 
 namespace FacturaScripts\Plugins\Tickets\Lib\Export;
@@ -9,7 +9,7 @@ use FacturaScripts\Core\Lib\Export\ExportBase;
 use FacturaScripts\Core\Response;
 
 /**
- * @author Carlos Garcia Gomez <carlos@facturascripts.com>
+ * @author Carlos García Gómez <carlos@facturascripts.com>
  */
 class TicketExport extends ExportBase
 {

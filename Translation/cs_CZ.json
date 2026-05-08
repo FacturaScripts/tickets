@@ -50,6 +50,7 @@
     "preview-init-printer": "[Inicializovat tiskárnu]",
     "preview-pulse-drawer": "[Otevřít zásuvku]",
     "price-abb": "Cena",
+    "print-client-fiscal-data": "Imprimir datos del cliente",
     "print-comp-shortname": "Tisk krátkého jména společnosti",
     "print-comp-tlf": "Tisk telefonního čísla společnosti",
     "print-delay": "Tiempo impresión (s)",

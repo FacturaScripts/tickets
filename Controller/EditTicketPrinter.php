@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2019-2026 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2019-2026 Carlos García Gómez <carlos@facturascripts.com>
  */
 
 namespace FacturaScripts\Plugins\Tickets\Controller;
@@ -11,7 +11,7 @@ use FacturaScripts\Core\Tools;
 use FacturaScripts\Core\Where;
 
 /**
- * @author Carlos Garcia Gomez <carlos@facturascripts.com>
+ * @author Carlos García Gómez <carlos@facturascripts.com>
  */
 class EditTicketPrinter extends EditController
 {
@@ -39,14 +39,17 @@ class EditTicketPrinter extends EditController
         return $data;
     }
 
-    protected function createViews()
+    protected function createViews(): void
     {
         parent::createViews();
 
         // desactivamos el botón de opciones
-        $this->setSettings($this->getMainViewName(), 'btnOptions', false);
+        $this->tab($this->getMainViewName())
+            ->setSettings('btnOptions', false)
+            ->setSettings('btnPrint', false);
 
         $this->setTabsPosition('bottom');
+
         $this->createViewsDownloadApp();
         $this->createViewsTicket();
     }
@@ -86,7 +89,7 @@ class EditTicketPrinter extends EditController
 
             case 'ListTicket':
                 $id = $this->views[$mvn]->model->id();
-                $where = [Where::column('idprinter', $id)];
+                $where = [Where::eq('idprinter', $id)];
                 $view->loadData('', $where);
                 break;
         }

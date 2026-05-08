@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (C) 2023-2026 Carlos Garcia Gomez <carlos@facturascripts.com>
+ * Copyright (C) 2023-2026 Carlos García Gómez <carlos@facturascripts.com>
  */
 
 namespace FacturaScripts\Plugins\Tickets\Lib\Tickets;
@@ -25,7 +25,7 @@ use Mike42\Escpos\Printer;
 use FacturaScripts\Dinamic\Model\Contacto;
 
 /**
- * @author Carlos Garcia Gomez      <carlos@facturascripts.com>
+ * @author Carlos García Gómez      <carlos@facturascripts.com>
  * @author Daniel Fernández Giménez <contacto@danielfg.es>
  */
 abstract class BaseTicket
