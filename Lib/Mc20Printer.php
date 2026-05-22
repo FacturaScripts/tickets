@@ -21,7 +21,7 @@ final class Mc20Printer
     {
         $normalized = self::normalize($siteUrl);
 
-        if (self::isLocalhost($siteUrl)) {
+        if (self::isLocalhost($normalized)) {
             $apikey = self::firstPrinterApiKey();
             if ($apikey !== '') {
                 $normalized .= ':' . $apikey;
