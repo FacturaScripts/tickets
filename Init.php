@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2019-2025 Carlos García Gómez <carlos@facturascripts.com>
+ * Copyright (C) 2019-2026 Carlos García Gómez <carlos@facturascripts.com>
  */
 
 namespace FacturaScripts\Plugins\Tickets;
@@ -12,6 +12,7 @@ use FacturaScripts\Core\Template\InitClass;
 use FacturaScripts\Core\Tools;
 use FacturaScripts\Dinamic\Controller\SendTicket;
 use FacturaScripts\Dinamic\Lib\ExportManager;
+use FacturaScripts\Dinamic\Lib\Mc20Printer;
 use FacturaScripts\Dinamic\Lib\Tickets\Gift;
 use FacturaScripts\Dinamic\Lib\Tickets\Normal;
 use FacturaScripts\Dinamic\Lib\Tickets\PaymentReceipt;
@@ -53,8 +54,7 @@ final class Init extends InitClass
     private function loadTwigFunctions(): void
     {
         Html::addFunction(new TwigFunction('mc20printerWs', function () {
-            $canal = md5(Tools::siteUrl());
-            return 'https://ai.factura.city/mc20printer/' . $canal . '/print';
+            return Mc20Printer::printUrl();
         }));
     }
 
