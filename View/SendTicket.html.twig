@@ -110,8 +110,6 @@
     </div>
 
     {% if fsc.printers|length > 0 %}
-        <img src="http://127.0.0.1:8089/" alt="remote-printer" class="d-none"/>
-
         <script>
             // Enviar petición al websocket al cargar la página
             const url = '{{ mc20printerWs() }}';

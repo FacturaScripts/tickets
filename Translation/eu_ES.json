@@ -29,7 +29,7 @@
     "invalid-format-class": "Formatu klase baliogabea",
     "line-length": "Lerro bakoitzeko karaktereak",
     "loading": "Kargatzen...",
-    "loading-ticket-preview": "Ticketaren aurrebista kargatzen...",
+    "loading-ticket-preview": "Tiketaren aurrebista kargatzen...",
     "manual-config-updated-for": "Eskuzko konfigurazioa eguneratu da %name%-entzat (Saltzaile: %vendorId%, Produktua: %productId%).",
     "manual-config-updated-for-user": "Konfigurazioa eguneratu da %name%-entzat.",
     "net-abb": "Netoa",
