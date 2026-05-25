@@ -8,7 +8,7 @@ namespace FacturaScripts\Plugins\Tickets\Lib;
 use FacturaScripts\Core\Tools;
 use FacturaScripts\Dinamic\Model\TicketPrinter;
 
-final class Mc20Printer
+class Mc20Printer
 {
     private const BASE_URL = 'https://ai.factura.city/mc20printer/';
 
