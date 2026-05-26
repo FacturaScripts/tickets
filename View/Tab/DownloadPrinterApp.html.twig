@@ -51,7 +51,7 @@
                         <i class="fa-solid fa-copy"></i>
                     </button>
                 </div>
-                <div class="alert alert-warning mt-3 mb-0 small">
+                <div id="macWarning" class="alert alert-warning mt-3 mb-0 small d-none">
                     <i class="fa-brands fa-apple fa-fw me-1"></i>
                     <strong>Mac:</strong> {{ trans('mac-unsigned-binary-warning') }}
                     <div class="d-flex align-items-center gap-2 mt-2">
@@ -92,4 +92,12 @@
             alert('{{ trans('error-copying-to-clipboard') }}');
         });
     }
+
+    // mostrar el aviso de Mac solo si el usuario está en un Mac
+    document.addEventListener('DOMContentLoaded', function () {
+        const platform = navigator.userAgentData ? navigator.userAgentData.platform : navigator.platform;
+        if (/mac/i.test(platform)) {
+            document.getElementById('macWarning').classList.remove('d-none');
+        }
+    });
 </script>
