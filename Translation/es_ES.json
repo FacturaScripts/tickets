@@ -32,6 +32,7 @@
     "loading-ticket-preview": "Cargando previsualización del ticket...",
     "manual-config-updated-for": "Configuración manual actualizada para %name% (Vendor: %vendorId%, Product: %productId%).",
     "manual-config-updated-for-user": "Configuración actualizada para %name%.",
+    "mac-unsigned-binary-warning": "El binario para Mac no está firmado. Tras instalarlo, abra el Terminal y ejecute este comando para poder usarlo:",
     "net-abb": "Neto",
     "no-printer-connected": "Ninguna impresora conectada o configurada.",
     "no-ticket-data-to-print-load-first": "No hay datos de ticket para imprimir. Cargue una previsualización primero.",

@@ -32,6 +32,7 @@
     "loading-ticket-preview": "Loading ticket preview...",
     "manual-config-updated-for": "Manual configuration updated for %name% (Vendor: %vendorId%, Product: %productId%).",
     "manual-config-updated-for-user": "Configuration updated for %name%.",
+    "mac-unsigned-binary-warning": "The Mac binary is not signed. After installing it, open Terminal and run this command to be able to use it:",
     "net-abb": "Net",
     "no-printer-connected": "No printer connected or configured.",
     "no-ticket-data-to-print-load-first": "No ticket data to print. Please load a preview first.",
