@@ -30,9 +30,10 @@ class EditTicket extends EditController
     {
         parent::createViews();
 
-        // desactivamos los botones de nuevo y opciones
-        $mvn = $this->getMainViewName();
-        $this->setSettings($mvn, 'btnNew', false);
-        $this->setSettings($mvn, 'btnOptions', false);
+        // desactivamos los botones de nuevo, opciones e imprimir
+        $this->tab($this->getMainViewName())
+            ->setSettings('btnNew', false)
+            ->setSettings('btnOptions', false)
+            ->setSettings('btnPrint', false);
     }
 }
