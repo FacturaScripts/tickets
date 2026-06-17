@@ -558,6 +558,28 @@ abstract class BaseTicket
             }
         }
 
+        // mostramos las retenciones de IRPF desglosadas por porcentaje, igual que el PDF
+        $eud = $model->getEUDiscount();
+        $irpfSubtotals = [];
+        foreach ($lines as $line) {
+            if (empty($line->irpf)) {
+                continue;
+            }
+
+            $key = (string)$line->irpf;
+            if (!isset($irpfSubtotals[$key])) {
+                $irpfSubtotals[$key] = 0;
+            }
+
+            $irpfSubtotals[$key] += $line->pvptotal * $eud * $line->irpf / 100;
+        }
+
+        foreach ($irpfSubtotals as $irpf => $totalirpf) {
+            $text = sprintf("%" . ($printer->linelen - 11) . "s", static::$i18n->trans('irpf') . ' ' . $irpf) . "%"
+                . sprintf("%10s", '-' . Tools::number($totalirpf));
+            static::$escpos->text(static::sanitize($text) . "\n");
+        }
+
         static::$escpos->text($printer->getDashLine() . "\n");
 
         // añadimos los totales
