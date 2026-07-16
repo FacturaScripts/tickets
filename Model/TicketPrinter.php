@@ -22,94 +22,94 @@ class TicketPrinter extends ModelClass
 
     const MAX_INACTIVITY = 600;
 
-    /** @var string */
+    /** Clave de la API key asociada a la impresora. @var string */
     public $apikey;
 
-    /** @var string */
+    /** Fecha de creación de la impresora. @var string */
     public $creationdate;
 
-    /** @var int */
+    /** Tamaño de fuente del cuerpo del ticket. @var int */
     public $font_size;
 
-    /** @var string */
+    /** Texto del pie del ticket. @var string */
     public $footer;
 
-    /** @var int */
+    /** Tamaño de fuente del pie del ticket. @var int */
     public $footer_font_size;
 
-    /** @var string */
+    /** Texto de la cabecera del ticket. @var string */
     public $head;
 
-    /** @var int */
+    /** Tamaño de fuente de la cabecera del ticket. @var int */
     public $head_font_size;
 
-    /** @var int */
+    /** Identificador de la impresora. @var int */
     public $id;
 
-    /** @var int */
+    /** Identificador de la API key asociada a la impresora. @var int */
     public $idapikey;
 
-    /** @var string */
+    /** Fecha y hora de la última actividad de la impresora. @var string */
     public $lastactivity;
 
-    /** @var int */
+    /** Longitud de línea (número de caracteres) del ticket. @var int */
     public $linelen;
 
-    /** @var string */
+    /** Nombre de la impresora. @var string */
     public $name;
 
-    /** @var string */
+    /** Nick del usuario propietario de la impresora. @var string */
     public $nick;
 
-    /** @var bool */
+    /** Indica si se imprime el nombre corto de la empresa. @var bool */
     public $print_comp_shortname;
 
-    /** @var bool */
+    /** Indica si se imprime el teléfono de la empresa. @var bool */
     public $print_comp_tlf;
 
-    /** @var bool */
+    /** Indica si se imprimen los datos fiscales del cliente. @var bool */
     public $print_client_fiscal_data;
 
-    /** @var bool */
+    /** Indica si se imprimen los recibos de la factura. @var bool */
     public $print_invoice_receipts;
 
-    /** @var bool */
+    /** Indica si se imprime la descripción de las líneas. @var bool */
     public $print_lines_description;
 
-    /** @var bool */
+    /** Indica si se imprime el descuento de las líneas. @var bool */
     public $print_lines_discount;
 
-    /** @var bool */
+    /** Indica si se imprime el neto de las líneas. @var bool */
     public $print_lines_net;
 
-    /** @var bool */
+    /** Indica si se imprime el precio de las líneas. @var bool */
     public $print_lines_price;
 
-    /** @var bool */
+    /** Indica si se imprime el precio con impuestos de las líneas. @var bool */
     public $print_lines_price_tax;
 
-    /** @var bool */
+    /** Indica si se imprime el precio unitario de las líneas. @var bool */
     public $print_lines_price_unitary;
 
-    /** @var bool */
+    /** Indica si se imprime la cantidad de las líneas. @var bool */
     public $print_lines_quantity;
 
-    /** @var bool */
+    /** Indica si se imprime la referencia de las líneas. @var bool */
     public $print_lines_reference;
 
-    /** @var bool */
+    /** Indica si se imprime el total de las líneas. @var bool */
     public $print_lines_total;
 
-    /** @var bool */
+    /** Indica si se imprimen las formas de pago. @var bool */
     public $print_payment_methods;
 
-    /** @var bool */
+    /** Indica si se imprime el logo almacenado de la empresa. @var bool */
     public $print_stored_logo;
 
-    /** @var bool */
+    /** Indica si se imprime la dirección de envío. @var bool */
     public $print_shipping_address;
 
-    /** @var int */
+    /** Tamaño de fuente del título del ticket. @var int */
     public $title_font_size;
 
     public function clear(): void

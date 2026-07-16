@@ -17,37 +17,37 @@ class Ticket extends ModelClass
 {
     use ModelTrait;
 
-    /** @var float */
+    /** Versión de la app que ha generado el ticket. @var float */
     public $appversion;
 
-    /** @var bool */
+    /** Indica si el cuerpo del ticket viene codificado en base64. @var bool */
     public $base64;
 
-    /** @var string */
+    /** Contenido del ticket a imprimir. @var string */
     public $body;
 
-    /** @var string */
+    /** Código del agente que ha generado el ticket. @var string */
     public $codagente;
 
-    /** @var string */
+    /** Fecha y hora de creación del ticket. @var string */
     public $creationdate;
 
-    /** @var int */
+    /** Identificador del ticket. @var int */
     public $id;
 
-    /** @var int */
+    /** Identificador de la impresora asociada al ticket. @var int */
     public $idprinter;
 
-    /** @var string */
+    /** Nick del usuario que ha generado el ticket. @var string */
     public $nick;
 
-    /** @var int */
+    /** Segundos transcurridos hasta que el ticket se ha impreso. @var int */
     public $printdelay;
 
-    /** @var bool */
+    /** Indica si el ticket ya se ha impreso. @var bool */
     public $printed;
 
-    /** @var string */
+    /** Título del ticket. @var string */
     public $title;
 
     public function clear(): void
