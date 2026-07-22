@@ -29,7 +29,7 @@
     "invalid-format-class": "Classe de formato inválida",
     "line-length": "Número de caracteres por linha",
     "loading-ticket-preview": "A carregar a pré-visualização do ticket...",
-    "mac-unsigned-binary-warning": "El binario para Mac no está firmado. Tras instalarlo, abra el Terminal y ejecute este comando para poder usarlo:",
+    "mac-unsigned-binary-warning": "O binário para Mac não está assinado. Depois de instalado, abra o Terminal e execute este comando para poder usá‑lo:",
     "manual-config-updated-for": "Configuração manual atualizada para %name% (Fornecedor: %vendorId%, Produto: %productId%).",
     "manual-config-updated-for-user": "Configuração atualizada para %name%.",
     "net-abb": "Líquido",
