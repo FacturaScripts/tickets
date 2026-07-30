@@ -10,7 +10,6 @@ require_once __DIR__ . '/vendor/autoload.php';
 use FacturaScripts\Core\Html;
 use FacturaScripts\Core\Template\InitClass;
 use FacturaScripts\Core\Tools;
-use FacturaScripts\Dinamic\Controller\SendTicket;
 use FacturaScripts\Dinamic\Lib\ExportManager;
 use FacturaScripts\Dinamic\Lib\Mc20Printer;
 use FacturaScripts\Dinamic\Lib\Tickets\Gift;
@@ -42,13 +41,18 @@ final class Init extends InitClass
 
     private function loadFormatTickets(): void
     {
-        $models = ['PresupuestoCliente', 'PedidoCliente', 'AlbaranCliente', 'FacturaCliente'];
-        foreach ($models as $model) {
-            SendTicket::addFormat(Normal::class, $model, 'normal');
-            SendTicket::addFormat(Gift::class, $model, 'gift');
+        $sendTicketClass = '\\FacturaScripts\\Dinamic\\Controller\\SendTicket';
+        if (false === class_exists($sendTicketClass)) {
+            return;
         }
 
-        SendTicket::addFormat(PaymentReceipt::class, 'ReciboCliente', 'receipt');
+        $models = ['PresupuestoCliente', 'PedidoCliente', 'AlbaranCliente', 'FacturaCliente'];
+        foreach ($models as $model) {
+            $sendTicketClass::addFormat(Normal::class, $model, 'normal');
+            $sendTicketClass::addFormat(Gift::class, $model, 'gift');
+        }
+
+        $sendTicketClass::addFormat(PaymentReceipt::class, 'ReciboCliente', 'receipt');
     }
 
     private function loadTwigFunctions(): void
