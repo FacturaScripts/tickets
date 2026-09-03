@@ -40,7 +40,7 @@
     "no-valid-ticket-data-received": "No se han recibido datos de ticket válidos del servidor.",
     "num-usb-devices-detected": "%num% dispositivos USB detectados.",
     "number-of-copies": "Nº de copias",
-    "old-mc20printer-version": "Probablemente esté usando una versión antigua de mc20printer. Descarga la última versión.",
+    "old-fsprinter-version": "Probablemente esté usando una versión antigua de mc20printer. Descarga la última versión.",
     "open-command": "Comando de apertura",
     "paper-width": "Ancho del papel",
     "please-select-a-format": "Por favor, seleccione un formato.",

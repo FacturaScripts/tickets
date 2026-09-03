@@ -40,7 +40,7 @@
     "no-valid-ticket-data-received": "Nie otrzymano od serwera prawidłowych danych paragonu.",
     "num-usb-devices-detected": "Wykryto %num% urządzeń USB.",
     "number-of-copies": "Liczba kopii",
-    "old-mc20printer-version": "Prawdopodobnie używasz starej wersji mc20printer. Pobierz najnowszą wersję.",
+    "old-fsprinter-version": "Prawdopodobnie używasz starej wersji mc20printer. Pobierz najnowszą wersję.",
     "open-command": "Komenda otwarcia",
     "paper-width": "Szerokość papieru",
     "please-select-a-format": "Proszę wybrać format.",

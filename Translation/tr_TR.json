@@ -40,7 +40,7 @@
     "no-valid-ticket-data-received": "Sunucudan geçerli bilet verisi alınamadı.",
     "num-usb-devices-detected": "%num% USB aygıtı tespit edildi.",
     "number-of-copies": "Kopya sayısı",
-    "old-mc20printer-version": "Muhtemelen eski bir mc20printer sürümü kullanıyorsunuz. En son sürümü indirin.",
+    "old-fsprinter-version": "Muhtemelen eski bir mc20printer sürümü kullanıyorsunuz. En son sürümü indirin.",
     "open-command": "Açılış Komutu",
     "paper-width": "Kağıt genişliği",
     "please-select-a-format": "Lütfen bir format seçin.",

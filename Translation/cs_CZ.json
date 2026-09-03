@@ -40,7 +40,7 @@
     "no-valid-ticket-data-received": "Nebyla přijata platná data o tiketu ze serveru.",
     "num-usb-devices-detected": "%num% zařízení USB detekováno.",
     "number-of-copies": "Počet kopií",
-    "old-mc20printer-version": "Pravděpodobně používáte starou verzi mc20printer. Stáhněte si nejnovější verzi.",
+    "old-fsprinter-version": "Pravděpodobně používáte starou verzi mc20printer. Stáhněte si nejnovější verzi.",
     "open-command": "Comando de apertura",
     "paper-width": "Šířka papíru",
     "please-select-a-format": "Vyberte prosím formát.",

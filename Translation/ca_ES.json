@@ -40,7 +40,7 @@
     "no-valid-ticket-data-received": "No s'han rebut dades de tiquet vàlides del servidor.",
     "num-usb-devices-detected": "%num% dispositius USB detectats.",
     "number-of-copies": "Nombre de còpies",
-    "old-mc20printer-version": "Probablement utilitzeu una versió antiga de mc20printer. Descarrega la darrera versió.",
+    "old-fsprinter-version": "Probablement utilitzeu una versió antiga de mc20printer. Descarrega la darrera versió.",
     "open-command": "Comanament d'obertura",
     "paper-width": "Amplada del paper",
     "please-select-a-format": "Si us plau, seleccioneu un format.",

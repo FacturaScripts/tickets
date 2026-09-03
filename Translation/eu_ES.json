@@ -40,7 +40,7 @@
     "no-valid-ticket-data-received": "Ez dira iritsiko ticket baliozkoa datuak zerbitzutik.",
     "num-usb-devices-detected": "%num% USB gailu detektatu dira.",
     "number-of-copies": "Kopia kopurua",
-    "old-mc20printer-version": "Agian mc20printer-en bertsio zaharra erabiltzen ari zara. Deskargatu azken bertsioa.",
+    "old-fsprinter-version": "Agian mc20printer-en bertsio zaharra erabiltzen ari zara. Deskargatu azken bertsioa.",
     "open-command": "Irekitzeko komandoa",
     "paper-width": "Paperaren zabalera",
     "please-select-a-format": "Mesedez, aukeratu formatua.",
