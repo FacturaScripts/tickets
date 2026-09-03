@@ -10,7 +10,7 @@ use FacturaScripts\Dinamic\Model\TicketPrinter;
 
 class FsPrinter
 {
-    private const BASE_URL = 'https://ai.factura.city/mc20printer/';
+    private const BASE_URL = 'https://ai.factura.city/fsprinter/';
 
     public static function printUrl(): string
     {
