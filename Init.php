@@ -11,7 +11,7 @@ use FacturaScripts\Core\Html;
 use FacturaScripts\Core\Template\InitClass;
 use FacturaScripts\Core\Tools;
 use FacturaScripts\Dinamic\Lib\ExportManager;
-use FacturaScripts\Dinamic\Lib\Mc20Printer;
+use FacturaScripts\Dinamic\Lib\FsPrinter;
 use FacturaScripts\Dinamic\Lib\Tickets\Gift;
 use FacturaScripts\Dinamic\Lib\Tickets\Normal;
 use FacturaScripts\Dinamic\Lib\Tickets\PaymentReceipt;
@@ -57,8 +57,13 @@ final class Init extends InitClass
 
     private function loadTwigFunctions(): void
     {
+        // se mantiene por compatibilidad hacia atrás, pero se recomienda usar fsprinterWs
         Html::addFunction(new TwigFunction('mc20printerWs', function () {
-            return Mc20Printer::printUrl();
+            return FsPrinter::printUrl();
+        }));
+
+        Html::addFunction(new TwigFunction('fsprinterWs', function () {
+            return FsPrinter::printUrl();
         }));
     }
 

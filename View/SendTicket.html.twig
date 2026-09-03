@@ -112,7 +112,7 @@
     {% if fsc.printers|length > 0 %}
         <script>
             // Enviar petición al websocket al cargar la página
-            const url = '{{ mc20printerWs() }}';
+            const url = '{{ fsprinterWs() }}';
 
             fetch(url, {
                 method: 'POST',
