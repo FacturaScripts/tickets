@@ -1,6 +1,9 @@
 {
     "allow-sales-without-payment": "Permitir vendas sen cobrar",
+    "app-connection-failed": "No se pudo contactar con la app fsprinter",
+    "app-connection-successful": "La app fsprinter respondió correctamente",
     "check-connection-and-parameters": "Comprobe a conexión e os parámetros.",
+    "checking-app-connection": "Comprobando conexión con la app fsprinter…",
     "configure-printer": "Configurar impresora",
     "connect-a-printer": "Conectar unha impresora",
     "connect-a-printer-p": "Para conectar unha impresora primeiro ten que añadila e despois usar a aplicación para imprimir tickets",
@@ -86,6 +89,7 @@
     "sending-to-printer": "Enviando á impresora",
     "settings-loaded-from-local-storage": "Axustes cargados dende o almacenamento local.",
     "settings-saved-automatically": "Axustes gardados automáticamente no almacenamento local.",
+    "test-app-connection": "Comprobar conexión con la app",
     "ticket-footer": "Pe de páxina",
     "ticket-head": "Cabeceira",
     "ticket-preview-and-print": "Impresión de tickets",

@@ -1,6 +1,9 @@
 {
     "allow-sales-without-payment": "Permet vendes sense cobrar",
+    "app-connection-failed": "No se pudo contactar con la app fsprinter",
+    "app-connection-successful": "La app fsprinter respondió correctamente",
     "check-connection-and-parameters": "Comproveu la connexió i els paràmetres.",
+    "checking-app-connection": "Comprobando conexión con la app fsprinter…",
     "configure-printer": "Configurar impressora",
     "connect-a-printer": "Connectar una impressora",
     "connect-a-printer-p": "Per connectar una impressora primer ha d'afegir-la i després emprar l'aplicació per imprimir tiquets.",
@@ -86,6 +89,7 @@
     "sending-to-printer": "Enviant el document a la impressora",
     "settings-loaded-from-local-storage": "Configuració carregada des de l'emmagatzematge local.",
     "settings-saved-automatically": "Ajustos guardats automàticament en l'emmagatzematge local.",
+    "test-app-connection": "Comprobar conexión con la app",
     "ticket-footer": "Peu de pàgina",
     "ticket-head": "Capçalera",
     "ticket-preview-and-print": "Impressió de tiquets",

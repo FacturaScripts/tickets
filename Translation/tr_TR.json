@@ -1,6 +1,9 @@
 {
     "allow-sales-without-payment": "Ücret almadan satış yapılmasına izin verin.",
+    "app-connection-failed": "No se pudo contactar con la app fsprinter",
+    "app-connection-successful": "La app fsprinter respondió correctamente",
     "check-connection-and-parameters": "Bağlantıyı ve parametreleri kontrol edin.",
+    "checking-app-connection": "Comprobando conexión con la app fsprinter…",
     "configure-printer": "Yazıcıyı yapılandır",
     "connect-a-printer": "Bir yazıcı bağlayın",
     "connect-a-printer-p": "Yazıcıyı bağlamak için önce eklemeniz ve ardından bilet yazdırmak için uygulamayı kullanmanız gerekir.",
@@ -86,6 +89,7 @@
     "sending-to-printer": "Yazıcıya gönderiliyor",
     "settings-loaded-from-local-storage": "Ayarlar yerel depolamadan yüklendi.",
     "settings-saved-automatically": "Ayarlar yerel depolamada otomatik olarak kaydedildi.",
+    "test-app-connection": "Comprobar conexión con la app",
     "ticket-footer": "Alt bilgi",
     "ticket-head": "Başlık",
     "ticket-preview-and-print": "Bilet önizleme ve yazdırma",

@@ -1,6 +1,9 @@
 {
     "allow-sales-without-payment": "Zezwalaj na nieodpłatną sprzedaż",
+    "app-connection-failed": "No se pudo contactar con la app fsprinter",
+    "app-connection-successful": "La app fsprinter respondió correctamente",
     "check-connection-and-parameters": "Sprawdź połączenie i parametry.",
+    "checking-app-connection": "Comprobando conexión con la app fsprinter…",
     "configure-printer": "Konfiguruj drukarkę",
     "connect-a-printer": "Podłącz drukarkę",
     "connect-a-printer-p": "Aby podłączyć drukarkę, najpierw musisz ją dodać, a następnie użyć aplikacji do drukowania paragonów.",
@@ -86,6 +89,7 @@
     "sending-to-printer": "Wysyłanie do drukarki",
     "settings-loaded-from-local-storage": "Ustawienia załadowane z pamięci lokalnej.",
     "settings-saved-automatically": "Ustawienia zapisane automatycznie w pamięci lokalnej.",
+    "test-app-connection": "Comprobar conexión con la app",
     "ticket-footer": "Stopka",
     "ticket-head": "Nagłówek",
     "ticket-preview-and-print": "Podgląd i druk biletów",

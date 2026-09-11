@@ -1,6 +1,9 @@
 {
     "allow-sales-without-payment": "Verkauf ohne Aufladung zulassen",
+    "app-connection-failed": "No se pudo contactar con la app fsprinter",
+    "app-connection-successful": "La app fsprinter respondió correctamente",
     "check-connection-and-parameters": "Überprüfen Sie die Verbindung und die Parameter.",
+    "checking-app-connection": "Comprobando conexión con la app fsprinter…",
     "configure-printer": "Drucker konfigurieren",
     "connect-a-printer": "einen Drucker anschließen",
     "connect-a-printer-p": "Um einen Drucker anzuschließen, müssen Sie ihn zuerst hinzufügen und dann die Anwendung zum Drucken von Tickets verwenden.",
@@ -86,6 +89,7 @@
     "sending-to-printer": "An den Drucker senden",
     "settings-loaded-from-local-storage": "Einstellungen aus dem lokalen Speicher geladen.",
     "settings-saved-automatically": "Einstellungen automatisch im lokalen Speicher gespeichert.",
+    "test-app-connection": "Comprobar conexión con la app",
     "ticket-footer": "Fußzeile",
     "ticket-head": "Kopfzeile",
     "ticket-preview-and-print": "Ticketvorschau und -druck",

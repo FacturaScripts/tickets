@@ -1,6 +1,9 @@
 {
     "allow-sales-without-payment": "Ordainketa gabe salmentak onartu",
+    "app-connection-failed": "No se pudo contactar con la app fsprinter",
+    "app-connection-successful": "La app fsprinter respondió correctamente",
     "check-connection-and-parameters": "Konexioa eta parametroak egiaztatu.",
+    "checking-app-connection": "Comprobando conexión con la app fsprinter…",
     "configure-printer": "Inprimagailua konfiguratu",
     "connect-a-printer": "Inpresora konektatu",
     "connect-a-printer-p": "Inprimagailu bat konektatzeko lehenik gehitu egin behar duzu eta gero aplikazioa erabili inprimatzeko.",
@@ -86,6 +89,7 @@
     "sending-to-printer": "Inpresorara bidaltzen",
     "settings-loaded-from-local-storage": "Ezarpenak tokiko biltegiratzeatik kargatu dira.",
     "settings-saved-automatically": "Ezarpenak automatikoki gordetzen dira tokiko biltegiratzean.",
+    "test-app-connection": "Comprobar conexión con la app",
     "ticket-footer": "Oina",
     "ticket-head": "Goiburua",
     "ticket-preview-and-print": "Ticketen inprimaketa",
