@@ -12,11 +12,6 @@ class FsPrinter
 {
     private const BASE_URL = 'https://ai.factura.city/fsprinter/';
 
-    public static function printUrl(): string
-    {
-        return self::BASE_URL . self::channel(Tools::siteUrl()) . '/print';
-    }
-
     public static function channel(string $siteUrl): string
     {
         $normalized = self::normalize($siteUrl);
@@ -29,6 +24,15 @@ class FsPrinter
         }
 
         return md5($normalized);
+    }
+
+    /**
+     * Devuelve los últimos 4 caracteres del canal websocket usado por esta instalación,
+     * para poder identificar visualmente a qué canal está conectada la app fsprinter.
+     */
+    public static function channelSuffix(): string
+    {
+        return substr(self::channel(Tools::siteUrl()), -4);
     }
 
     public static function isLocalhost(string $url): bool
@@ -72,6 +76,11 @@ class FsPrinter
         }
 
         return $result;
+    }
+
+    public static function printUrl(): string
+    {
+        return self::BASE_URL . self::channel(Tools::siteUrl()) . '/print';
     }
 
     private static function firstPrinterApiKey(): string

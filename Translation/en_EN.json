@@ -1,6 +1,9 @@
 {
     "allow-sales-without-payment": "Allow sales without charging",
+    "app-connection-failed": "Could not reach the fsprinter app",
+    "app-connection-successful": "The fsprinter app responded successfully",
     "check-connection-and-parameters": "Check connection and parameters",
+    "checking-app-connection": "Checking connection with the fsprinter app…",
     "configure-printer": "Configure printer",
     "connect-a-printer": "Connect a printer",
     "connect-a-printer-p": "To connect a printer you must first add it and then use the application to print tickets.",
@@ -86,6 +89,7 @@
     "sending-to-printer": "Sending to printer",
     "settings-loaded-from-local-storage": "Settings loaded from local storage.",
     "settings-saved-automatically": "Settings saved automatically to local storage.",
+    "test-app-connection": "Test app connection",
     "ticket-footer": "Footer",
     "ticket-head": "Header",
     "ticket-preview-and-print": "Ticket printing",
@@ -96,6 +100,7 @@
     "unknown-device": "Unknown device",
     "vendor-id": "Vendor ID",
     "vendor-product-id-required-to-print": "Vendor ID and Product ID are required to print.",
+    "websocket-channel": "Websocket channel",
     "websocket-error": "Error connecting to the WebSocket",
     "you-can-adjust-parameters": "You can adjust the parameters if necessary."
 }

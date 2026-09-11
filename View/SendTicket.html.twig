@@ -34,6 +34,7 @@
                                 <input type="number" name="copies" id="copies" class="form-control" value="1" min="1"
                                        max="10" required>
                             </div>
+                            {% set fsprinterChannelSuffix = fsprinterChannel() %}
                             {% for printer in fsc.printers %}
                                 {% if printer.isActive() %}
                                     <div class="btn-group w-100 mt-3" role="group">
@@ -48,6 +49,9 @@
                                             {{ printer.name }} - {{ trans('print') }} + {{ trans('open-drawer') }}
                                         </button>
                                     </div>
+                                    <p class="text-muted small mb-0 mt-1">
+                                        <i class="fa-solid fa-satellite-dish fa-fw me-1"></i>{{ trans('websocket-channel') }}: …{{ fsprinterChannelSuffix }}
+                                    </p>
                                 {% else %}
                                     <div class="btn-group w-100 mt-3" role="group">
                                         <button type="submit" name="printer" value="{{ printer.id }}"
@@ -61,6 +65,9 @@
                                             {{ printer.name }} - {{ trans('print') }} + {{ trans('open-drawer') }}
                                         </button>
                                     </div>
+                                    <p class="text-muted small mb-0 mt-1">
+                                        <i class="fa-solid fa-satellite-dish fa-fw me-1"></i>{{ trans('websocket-channel') }}: …{{ fsprinterChannelSuffix }}
+                                    </p>
                                     <p class="text-muted">
                                         {{ trans('last-activity') }}: {{ printer.lastactivity }}
                                     </p>

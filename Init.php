@@ -65,6 +65,11 @@ final class Init extends InitClass
         Html::addFunction(new TwigFunction('fsprinterWs', function () {
             return FsPrinter::printUrl();
         }));
+
+        // últimos 4 caracteres del canal websocket, para identificar visualmente la conexión
+        Html::addFunction(new TwigFunction('fsprinterChannel', function () {
+            return FsPrinter::channelSuffix();
+        }));
     }
 
     private function setAPI(): void

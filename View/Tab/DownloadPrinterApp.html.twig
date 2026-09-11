@@ -1,5 +1,5 @@
 {#
-* Copyright (C) 2019-2025 Carlos García Gómez <carlos@facturascripts.com>
+* Copyright (C) 2019-2026 Carlos García Gómez <carlos@facturascripts.com>
 * Author Carlos García Gómez <carlos@facturascripts.com>
 #}
 
@@ -51,6 +51,13 @@
                         <i class="fa-solid fa-copy"></i>
                     </button>
                 </div>
+                <h2 class="h4 mt-4 mb-1">{{ trans('websocket-channel') }}: …{{ fsprinterChannel() }}</h2>
+                <div class="mt-2">
+                    <button type="button" class="btn btn-outline-primary" id="testAppConnectionBtn" onclick="testFsPrinterConnection();">
+                        <i class="fa-solid fa-wifi fa-fw me-1"></i> {{ trans('test-app-connection') }}
+                    </button>
+                    <div id="testAppConnectionResult" class="mt-2 small d-none"></div>
+                </div>
                 <div id="macWarning" class="alert alert-warning mt-3 mb-0 small d-none">
                     <i class="fa-brands fa-apple fa-fw me-1"></i>
                     <strong>Mac:</strong> {{ trans('mac-unsigned-binary-warning') }}
@@ -100,4 +107,40 @@
             document.getElementById('macWarning').classList.remove('d-none');
         }
     });
+
+    // comprueba, en sentido inverso al botón "Probar conexión" de la app fsprinter,
+    // si la app está conectada y responde al canal websocket de esta instalación
+    function testFsPrinterConnection() {
+        const button = document.getElementById('testAppConnectionBtn');
+        const result = document.getElementById('testAppConnectionResult');
+
+        button.disabled = true;
+        result.className = 'mt-2 small alert alert-secondary';
+        result.textContent = '{{ trans('checking-app-connection') }}';
+
+        fetch('{{ fsprinterWs() }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ action: 'ping' })
+        })
+            .then(function (response) {
+                if (!response.ok) {
+                    throw new Error('Error ' + response.status + ': ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(function () {
+                result.className = 'mt-2 small alert alert-success';
+                result.textContent = '{{ trans('app-connection-successful') }}';
+            })
+            .catch(function (error) {
+                result.className = 'mt-2 small alert alert-danger';
+                result.textContent = '{{ trans('app-connection-failed') }}: ' + error.message;
+            })
+            .finally(function () {
+                button.disabled = false;
+            });
+    }
 </script>
