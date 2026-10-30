@@ -1,6 +1,6 @@
 {
     "allow-sales-without-payment": "Permitir ventas sin cobrar",
-    "app-connection-failed": "No se pudo contactar con la app fsprinter",
+    "app-connection-failed": "No se pudo conectar con la app fsprinter",
     "app-connection-successful": "La app fsprinter respondió correctamente",
     "check-connection-and-parameters": "Compruebe la conexión y los parámetros.",
     "checking-app-connection": "Comprobando conexión con la app fsprinter…",
